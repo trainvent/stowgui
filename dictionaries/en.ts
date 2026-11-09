@@ -94,7 +94,7 @@ const en = {
       },
       {
         q: "Can I get a refund?",
-        a: "Write to us within 14 days and we'll refund you. Your key stops working afterwards.",
+        a: "No. The key is delivered right after payment, and you agree at checkout that your right of withdrawal ends then. Try the free download first to see if StowGUI fits you.",
       },
     ],
   },
@@ -207,7 +207,6 @@ const en = {
           "To withdraw, inform us (Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, Germany, support@trainvent.com, +49 160 3455942) by a clear statement, for example an email. You may use the model withdrawal form below, but you don't have to. Sending your withdrawal before the period ends is enough.",
           "If you withdraw, we refund all payments received from you without undue delay and at the latest within 14 days, using the same means of payment you used. Your license key is deactivated.",
           "Early expiry: the right of withdrawal expires once we have started delivering the digital content (sending the license key) after you expressly agreed at checkout that we start before the withdrawal period ends and confirmed that you know you lose your right of withdrawal by doing so.",
-          "Regardless of this, we refund any purchase on request within 14 days.",
         ],
       },
       {

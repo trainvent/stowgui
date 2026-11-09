@@ -2,7 +2,6 @@
 
 Things only you can do, roughly in order.
 
-- [ ] Decide: the FAQ and terms promise a voluntary refund within 14 days. Keep it or remove it (`dictionaries/*.ts`).
 - [ ] Have the terms, withdrawal notice and privacy policy reviewed (`dictionaries/en.ts`, `de.ts`). The German texts are the legally relevant ones.
 - [x] Enable GitHub Pages and set the custom domain and DNS (`docs/dev/deploy.md`).
 - [x] Create the Cloudflare D1 database, key pair and signing secret; deploy the Worker.

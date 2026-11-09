@@ -93,7 +93,7 @@ const de: Dictionary = {
       },
       {
         q: "Bekomme ich mein Geld zurück?",
-        a: "Schreib uns innerhalb von 14 Tagen und du bekommst dein Geld zurück. Dein Schlüssel funktioniert danach nicht mehr.",
+        a: "Nein. Der Schlüssel wird direkt nach der Zahlung geliefert, und du stimmst beim Kauf zu, dass dein Widerrufsrecht damit erlischt. Probier vorher den kostenlosen Download aus, ob StowGUI zu dir passt.",
       },
     ],
   },
@@ -206,7 +206,6 @@ const de: Dictionary = {
           "Um dein Widerrufsrecht auszuüben, musst du uns (Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, support@trainvent.com, +49 160 3455942) mittels einer eindeutigen Erklärung, zum Beispiel per E-Mail, über deinen Entschluss informieren. Du kannst dafür das untenstehende Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist. Zur Wahrung der Frist reicht es aus, dass du die Mitteilung vor Ablauf der Frist absendest.",
           "Wenn du widerrufst, erstatten wir dir alle Zahlungen unverzüglich und spätestens binnen vierzehn Tagen über dasselbe Zahlungsmittel. Dein Lizenzschlüssel wird deaktiviert.",
           "Vorzeitiges Erlöschen: Das Widerrufsrecht erlischt, sobald wir mit der Lieferung der digitalen Inhalte (Versand des Lizenzschlüssels) begonnen haben, nachdem du beim Kauf ausdrücklich zugestimmt hast, dass wir vor Ablauf der Widerrufsfrist beginnen, und bestätigt hast, dass du dadurch dein Widerrufsrecht verlierst.",
-          "Unabhängig davon erstatten wir jeden Kauf auf Wunsch innerhalb von 14 Tagen.",
         ],
       },
       {
