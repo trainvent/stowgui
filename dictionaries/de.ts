@@ -160,7 +160,7 @@ const de: Dictionary = {
         heading: "Kauf von StowGUI",
         paragraphs: [
           "Zahlungen wickelt Stripe Payments Europe Ltd., Irland, ab. Stripe verarbeitet Name, E-Mail-Adresse, Rechnungsadresse und Zahlungsdaten zur Zahlungsabwicklung und Betrugsvermeidung (Art. 6 Abs. 1 lit. b und c DSGVO).",
-          "Um deine Lizenz auszuliefern und zu verwalten, speichern wir deine E-Mail-Adresse, die Kaufreferenz und deinen Lizenzschlüssel. Das läuft bei Cloudflare, Inc. (USA, EU-US Data Privacy Framework). Die E-Mail mit dem Schlüssel versenden wir über Resend (Plus Five Five, Inc., USA, EU-US Data Privacy Framework).",
+          "Um deine Lizenz auszuliefern und zu verwalten, speichern wir deine E-Mail-Adresse, die Kaufreferenz und deinen Lizenzschlüssel. Das läuft bei Cloudflare, Inc. (USA, EU-US Data Privacy Framework). Die E-Mail mit dem Schlüssel versenden wir über Brevo (Sendinblue SAS, Frankreich).",
           "Kaufbelege bewahren wir so lange auf, wie es das Steuerrecht verlangt (bis zu 10 Jahre).",
         ],
       },

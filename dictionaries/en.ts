@@ -161,7 +161,7 @@ const en = {
         heading: "Buying StowGUI",
         paragraphs: [
           "Payments are handled by Stripe Payments Europe Ltd., Ireland. Stripe processes your name, email address, billing address and payment details to process the payment and prevent fraud (Art. 6 (1) (b) and (c) GDPR).",
-          "To deliver and manage your license we store your email address, the purchase reference and your license key. This runs on Cloudflare, Inc. (USA, EU-US Data Privacy Framework). We send the key email through Resend (Plus Five Five, Inc., USA, EU-US Data Privacy Framework).",
+          "To deliver and manage your license we store your email address, the purchase reference and your license key. This runs on Cloudflare, Inc. (USA, EU-US Data Privacy Framework). We send the key email through Brevo (Sendinblue SAS, France).",
           "We keep purchase records for as long as tax law requires (up to 10 years).",
         ],
       },

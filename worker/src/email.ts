@@ -1,4 +1,4 @@
-const RESEND_URL = "https://api.resend.com/emails";
+const BREVO_URL = "https://api.brevo.com/v3/smtp/email";
 const GERMAN_COUNTRIES = new Set(["DE", "AT", "CH", "LI"]);
 
 export type Locale = "en" | "de";
@@ -24,14 +24,22 @@ const MESSAGES = {
 
 export type Mailer = (to: string, locale: Locale, licenseKeys: string[]) => Promise<void>;
 
-export function resendMailer(apiKey: string, from: string, downloadUrl: string, replyTo = "support@trainvent.com"): Mailer {
+export type Sender = { name: string; email: string };
+
+export function brevoMailer(apiKey: string, sender: Sender, downloadUrl: string, replyTo = "support@trainvent.com"): Mailer {
   return async (to, locale, licenseKeys) => {
     const message = MESSAGES[locale];
     const download = locale === "de" ? downloadUrl.replace("/en/", "/de/") : downloadUrl;
-    const response = await fetch(RESEND_URL, {
+    const response = await fetch(BREVO_URL, {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to, reply_to: replyTo, subject: message.subject, text: message.body(licenseKeys.join("\n\n"), download) }),
+      headers: { "api-key": apiKey, "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        sender,
+        to: [{ email: to }],
+        replyTo: { email: replyTo },
+        subject: message.subject,
+        textContent: message.body(licenseKeys.join("\n\n"), download),
+      }),
     });
     if (!response.ok) throw new Error(`Email failed: ${response.status} ${await response.text()}`);
   };

@@ -5,10 +5,11 @@ workers_dev = true
 
 [vars]
 ALLOWED_ORIGINS = "https://stowgui.com"
-EMAIL_FROM = "StowGUI <license@stowgui.com>"
+EMAIL_FROM_NAME = "StowGUI"
+EMAIL_FROM_ADDRESS = "license@stowgui.com"
 DOWNLOAD_URL = "https://stowgui.com/en/download/"
 # Optional: only handle purchases from this Payment Link (plink_...)
-STRIPE_PAYMENT_LINK_ID = ""
+STRIPE_PAYMENT_LINK_ID = "plink_1UZwOj3SIDKPozJgKEF9GUO7"
 
 [[d1_databases]]
 binding = "DB"
@@ -16,4 +17,4 @@ database_name = "stowgui-licenses"
 database_id = "f45f002f-53ca-424c-8d5a-5f19a501bf74"
 migrations_dir = "migrations"
 
-# Secrets (wrangler secret put …): STRIPE_WEBHOOK_SECRET, LICENSE_SIGNING_KEY, RESEND_API_KEY
+# Secrets (wrangler secret put …): STRIPE_WEBHOOK_SECRET, LICENSE_SIGNING_KEY, BREVO_API_KEY

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createApp, RESEND_COOLDOWN_SECONDS } from "../src/app";
+import { brevoMailer } from "../src/email";
 import { verifyLicense } from "../src/license";
 import { checkoutCompleted, testDeps, webhookRequest } from "./helpers";
 
@@ -88,5 +89,44 @@ describe("resend key", () => {
 
     expect((await app(resendRequest({ email: "nobody@example.com" }))).status).toBe(202);
     expect((await app(resendRequest({ email: "not-an-email" }))).status).toBe(400);
+  });
+});
+
+describe("Brevo mailer", () => {
+  it("posts a German text email with sender, recipient and reply-to", async () => {
+    const calls: { url: string; init: RequestInit }[] = [];
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return new Response("{}", { status: 201 });
+    }) as typeof fetch;
+    try {
+      const mail = brevoMailer("key_1", { name: "StowGUI", email: "license@stowgui.com" }, "https://stowgui.com/en/download/");
+      await mail("buyer@example.com", "de", ["KEY.SIG"]);
+    } finally {
+      globalThis.fetch = realFetch;
+    }
+    expect(calls[0].url).toBe("https://api.brevo.com/v3/smtp/email");
+    expect((calls[0].init.headers as Record<string, string>)["api-key"]).toBe("key_1");
+    const body = JSON.parse(calls[0].init.body as string);
+    expect(body).toMatchObject({
+      sender: { name: "StowGUI", email: "license@stowgui.com" },
+      to: [{ email: "buyer@example.com" }],
+      replyTo: { email: "support@trainvent.com" },
+      subject: "Dein StowGUI-Lizenzschlüssel",
+    });
+    expect(body.textContent).toContain("KEY.SIG");
+    expect(body.textContent).toContain("https://stowgui.com/de/download/");
+  });
+
+  it("throws when Brevo rejects the email so Stripe retries", async () => {
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async () => new Response("unauthorized", { status: 401 })) as typeof fetch;
+    try {
+      const mail = brevoMailer("bad", { name: "StowGUI", email: "license@stowgui.com" }, "https://stowgui.com/en/download/");
+      await expect(mail("buyer@example.com", "en", ["KEY.SIG"])).rejects.toThrow("401");
+    } finally {
+      globalThis.fetch = realFetch;
+    }
   });
 });

@@ -27,6 +27,6 @@ npm run db:migrate
 npm run keypair                              # keep the output safe
 npx wrangler secret put LICENSE_SIGNING_KEY
 npx wrangler secret put STRIPE_WEBHOOK_SECRET
-npx wrangler secret put RESEND_API_KEY
+npx wrangler secret put BREVO_API_KEY
 npm run deploy
 ```
