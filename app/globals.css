@@ -45,6 +45,7 @@ section[id] { scroll-margin-top: 24px; }
 /* Landing */
 .hero { display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: center; padding: 40px 0 8px; }
 .hero h1 { margin-top: 0; }
+.coming-soon { margin-bottom: 16px; }
 .hero .actions { margin-bottom: 0; }
 
 .app-mock { border: 1px solid var(--gray-7); background: var(--gray-2); font: 400 13px var(--font-ui); color: var(--gray-12); box-shadow: 0 12px 40px var(--gray-a4); }

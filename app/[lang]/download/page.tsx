@@ -1,6 +1,7 @@
 import { Button, Card, CodeBlock } from "@trainvent/arcubic";
 import SiteHeader from "../../components/SiteHeader";
-import { RELEASES_URL } from "@/lib/config";
+import ReleaseAction from "../../components/ReleaseAction";
+import { RELEASED, RELEASES_URL } from "@/lib/config";
 import { pageMetadata } from "@/lib/metadata";
 import { resolveLang, type LangParams } from "@/lib/params";
 
@@ -22,8 +23,9 @@ export default async function DownloadPage(props: LangParams) {
       <SiteHeader locale={locale} dict={dict} currentPath="/download" />
       <main className="narrow">
         <h1>{text.title}</h1>
-        <p className="lead">{text.lead}</p>
-        <div className="card-grid two">
+        <p className="lead">{RELEASED ? text.lead : dict.notifyHint}</p>
+        {!RELEASED && <ReleaseAction dict={dict} />}
+        {RELEASED && <div className="card-grid two">
           {(["linux", "macos"] as const).map((os) => (
             <Card key={os} className="download">
               <h3>{text[os]}</h3>
@@ -32,7 +34,7 @@ export default async function DownloadPage(props: LangParams) {
               </Button>
             </Card>
           ))}
-        </div>
+        </div>}
         <h2>{text.stowTitle}</h2>
         <p>{text.stowLead}</p>
         <div className="card-grid two">
