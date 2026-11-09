@@ -1,7 +1,7 @@
 name = "stowgui-license"
 main = "src/index.ts"
 compatibility_date = "2026-11-01"
-routes = [{ pattern = "license.stowgui.com", custom_domain = true }]
+workers_dev = true
 
 [vars]
 ALLOWED_ORIGINS = "https://stowgui.com"
@@ -13,7 +13,7 @@ STRIPE_PAYMENT_LINK_ID = ""
 [[d1_databases]]
 binding = "DB"
 database_name = "stowgui-licenses"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "f45f002f-53ca-424c-8d5a-5f19a501bf74"
 migrations_dir = "migrations"
 
 # Secrets (wrangler secret put …): STRIPE_WEBHOOK_SECRET, LICENSE_SIGNING_KEY, RESEND_API_KEY

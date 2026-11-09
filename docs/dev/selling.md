@@ -20,7 +20,7 @@
      > I agree that delivery of the license key begins immediately, and I know that I lose my right of withdrawal once delivery has begun. / Ich stimme zu, dass die Lieferung des Lizenzschlüssels sofort beginnt, und weiß, dass ich dadurch mein Widerrufsrecht verliere.
    - After payment: redirect to `https://stowgui.com/buy/success/`.
    - Put the link URL into the GitHub variable `PAYMENT_LINK` and its id (`plink_…`) into `STRIPE_PAYMENT_LINK_ID` in `worker/wrangler.toml`.
-5. **Webhook endpoint**: `https://license.stowgui.com/stripe/webhook` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`, `charge.dispute.created`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
+5. **Webhook endpoint**: `https://stowgui-license.trainvent.workers.dev/stripe/webhook` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`, `charge.dispute.created`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
 
 ## Resend setup
 
