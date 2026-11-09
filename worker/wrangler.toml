@@ -1,0 +1,19 @@
+name = "stowgui-license"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+routes = [{ pattern = "license.stowgui.com", custom_domain = true }]
+
+[vars]
+ALLOWED_ORIGINS = "https://stowgui.com"
+EMAIL_FROM = "StowGUI <license@stowgui.com>"
+DOWNLOAD_URL = "https://stowgui.com/en/download/"
+# Optional: only handle purchases from this Payment Link (plink_...)
+STRIPE_PAYMENT_LINK_ID = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "stowgui-licenses"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+# Secrets (wrangler secret put …): STRIPE_WEBHOOK_SECRET, LICENSE_SIGNING_KEY, RESEND_API_KEY
