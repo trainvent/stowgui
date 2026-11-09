@@ -93,7 +93,7 @@ const de: Dictionary = {
       },
       {
         q: "Bekomme ich mein Geld zurück?",
-        a: "Nein. Der Schlüssel wird direkt nach der Zahlung geliefert, und du stimmst beim Kauf zu, dass dein Widerrufsrecht damit erlischt. Probier vorher den kostenlosen Download aus, ob StowGUI zu dir passt.",
+        a: "Nein. Der Schlüssel wird direkt nach der Zahlung geliefert, und du stimmst beim Kauf zu, dass dein Widerrufsrecht damit erlischt. Probier vorher den kostenlosen Download aus, ob StowGUI zu dir passt. Funktioniert StowGUI nicht wie beschrieben, schreib uns und wir beheben den Fehler oder erstatten dir den Kaufpreis.",
       },
     ],
   },

@@ -94,7 +94,7 @@ const en = {
       },
       {
         q: "Can I get a refund?",
-        a: "No. The key is delivered right after payment, and you agree at checkout that your right of withdrawal ends then. Try the free download first to see if StowGUI fits you.",
+        a: "No. The key is delivered right after payment, and you agree at checkout that your right of withdrawal ends then. Try the free download first to see if StowGUI fits you. If StowGUI doesn't work as described, write to us and we'll fix it or refund you.",
       },
     ],
   },
