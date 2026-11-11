@@ -1,3 +1,4 @@
+import { handleActivation, type ActivationStore } from "./activation";
 import { pickLocale, type Locale, type Mailer } from "./email";
 import { newLicensePayload, signLicense } from "./license";
 import type { LicenseRecord, LicenseStore } from "./store";
@@ -8,6 +9,8 @@ const MAX_EMAIL_LENGTH = 254;
 
 export type Deps = {
   store: LicenseStore;
+  activations: ActivationStore;
+  allowActivation: (licenseId: string) => Promise<boolean>;
   mail: Mailer;
   signingKey: () => Promise<CryptoKey>;
   webhookSecret: string;
@@ -132,6 +135,9 @@ export function createApp(deps: Deps) {
         const response = await handleResend(request);
         return new Response(response.body, { status: response.status, headers });
       }
+    }
+    if (route === "POST /license/activate" || route === "POST /license/check-in") {
+      return handleActivation(request, route === "POST /license/activate", deps);
     }
     if (route === "POST /stripe/webhook") return handleWebhook(request);
     if (route === "GET /license/status") return handleStatus(url);

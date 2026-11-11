@@ -18,3 +18,8 @@ database_id = "f45f002f-53ca-424c-8d5a-5f19a501bf74"
 migrations_dir = "migrations"
 
 # Secrets (wrangler secret put …): STRIPE_WEBHOOK_SECRET, LICENSE_SIGNING_KEY, BREVO_API_KEY
+
+[[ratelimits]]
+name = "ACTIVATION_LIMIT"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }

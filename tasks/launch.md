@@ -8,7 +8,10 @@ Things only you can do, roughly in order.
 - [ ] Move the private key from `~/Dokumente/Agents/stowgui/license-signing-key.txt` into your password manager, then delete the file.
 - [x] Add the Worker secret `STRIPE_WEBHOOK_SECRET` (test mode).
 - [ ] Add the Worker secret `BREVO_API_KEY` (`cd worker && npx wrangler secret put BREVO_API_KEY`).
-- [ ] Give the public key to the app repo (`stowgui_source`) for the offline license check.
+- [x] Embed the existing public key in the app repo (`stowgui_source`) for signature verification.
+- [ ] Apply `worker/migrations/0002_activations.sql` and deploy the activation/check-in API with its `ACTIVATION_LIMIT` binding.
+- [ ] Validate three devices, fourth-device eviction, explicit reclaim and renewal from the built app against the deployed Worker.
+- [ ] Review public purchase copy/terms for the 30-day connectivity requirement.
 - [ ] Authenticate stowgui.com in Brevo and add the sender `license@stowgui.com` (`docs/dev/selling.md`).
 - [x] Stripe test mode: product `prod_Vb8fRfea3E5K6M`, Payment Link `plink_1UZwOj3SIDKPozJgKEF9GUO7`, webhook `we_1UZwOq3SIDKPozJgy4z0m2DW`.
 - [x] Run a test purchase end to end (2026-11-09: key issued, emailed via Brevo, signature valid, refund revoked it).

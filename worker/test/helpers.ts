@@ -1,3 +1,4 @@
+import type { ActivationRecord, ActivationStore } from "../src/activation";
 import { encode } from "../src/base64url";
 import type { Deps } from "../src/app";
 import type { LicenseRecord, LicenseStore } from "../src/store";
@@ -43,6 +44,8 @@ export async function testDeps(overrides: Partial<Deps> = {}) {
   let ids = 0;
   const deps: Deps = {
     store,
+    activations: memoryActivations(),
+    allowActivation: async () => true,
     mail: async (to, locale, licenseKeys) => void mails.push({ to, locale, keys: licenseKeys }),
     signingKey: async () => keys.privateKey,
     webhookSecret: WEBHOOK_SECRET,
@@ -79,6 +82,26 @@ export function checkoutCompleted(overrides: Record<string, unknown> = {}) {
         customer_details: { email: "Buyer@Example.com", address: { country: "DE" } },
         ...overrides,
       },
+    },
+  };
+}
+
+export function memoryActivations(): ActivationStore {
+  let records: ActivationRecord[] = [];
+  return {
+    async activate(r) {
+      records = records.filter((x) => x.license_id !== r.license_id || x.device_id !== r.device_id);
+      records.push({ ...r });
+      const others = records.filter((x) => x.license_id === r.license_id && x.device_id !== r.device_id)
+        .sort((a, b) => b.last_seen - a.last_seen || b.device_id.localeCompare(a.device_id));
+      const evicted = others.slice(2);
+      records = records.filter((x) => !evicted.includes(x));
+      return { ...r };
+    },
+    async check(licenseId, deviceId, activationId, now) {
+      const r = records.find((x) => x.license_id === licenseId && x.device_id === deviceId && x.activation_id === activationId);
+      if (r) r.last_seen = now;
+      return r ? { ...r } : null;
     },
   };
 }

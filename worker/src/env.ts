@@ -1,5 +1,6 @@
 export interface Env {
   DB: D1Database;
+  ACTIVATION_LIMIT: RateLimit;
   ALLOWED_ORIGINS: string;
   EMAIL_FROM_NAME: string;
   EMAIL_FROM_ADDRESS: string;
