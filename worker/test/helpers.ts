@@ -90,11 +90,25 @@ export function memoryActivations(): ActivationStore {
   let records: ActivationRecord[] = [];
   return {
     async list(id) { return records.filter(r => r.license_id === id).map(r => ({ ...r })); },
-    async rename(id, device, name) { const r = records.find(r => r.license_id === id && r.device_id === device); if (r) r.device_name = name; },
+    async rename(id, device, name) {
+      if (records.some(r => r.license_id === id && r.device_id !== device && r.device_name?.toLowerCase() === name.toLowerCase())) return false;
+      const r = records.find(r => r.license_id === id && r.device_id === device);
+      if (r) r.device_name = name;
+      return true;
+    },
     async remove(id, device) { records = records.filter(r => r.license_id !== id || r.device_id !== device); },
     async activate(r) {
       const previous = records.find(x => x.license_id === r.license_id && x.device_id === r.device_id);
       if (previous?.device_name) r.device_name = previous.device_name;
+      else {
+        const base = r.device_name || "Computer";
+        let name = base;
+        for (let n = 1; records.some(x => x.license_id === r.license_id && x.device_id !== r.device_id && x.device_name?.toLowerCase() === name.toLowerCase()); n++) {
+          const suffix = ` (${n})`;
+          name = [...base].slice(0, 128 - suffix.length).join("") + suffix;
+        }
+        r.device_name = name;
+      }
       records = records.filter((x) => x.license_id !== r.license_id || x.device_id !== r.device_id);
       records.push({ ...r });
       const others = records.filter((x) => x.license_id === r.license_id && x.device_id !== r.device_id)

@@ -13,7 +13,7 @@ const mf = new Miniflare({ workers: [{ config: {
 } }] });
 try {
   const db = await mf.getD1Database("DB");
-  for (const name of ["0001_licenses.sql", "0002_activations.sql", "0003_device_names.sql"]) {
+  for (const name of ["0001_licenses.sql", "0002_activations.sql", "0003_device_names.sql", "0004_unique_device_names.sql"]) {
     const sql = await readFile(new NodeURL(`../migrations/${name}`, import.meta.url), "utf8");
     await db.batch(sql.split(";").map((s) => s.trim()).filter(Boolean).map((s) => db.prepare(s)));
   }
@@ -45,7 +45,41 @@ try {
   assert.ok((await store.list("l")).find(r => r.device_id === "named"));
   await store.remove("l", "named");
   assert.equal(await store.check("l", "named", "token-named-41", 42), null);
+  const names = (await store.list("l")).map(r => r.device_name!.toLowerCase());
+  assert.equal(new Set(names).size, names.length);
+  const current = await store.list("l");
+  if (current.length > 1) assert.equal(await store.rename("l", current[0].device_id, current[1].device_name!), false);
   console.log("D1 activation integration: passed (eviction, concurrency, stale tokens, revocation)");
 } finally { await mf.dispose(); }
 
+}, 15000);
+
+it("migrates duplicate names and allocates names atomically", async () => {
+ const mf = new Miniflare({ workers: [{ config: {
+  name: "names", compatibilityDate: "2026-11-01",
+  manifest: { mainModule: "index.js", modules: { "index.js": { type: "esm", contents: "export default { fetch() { return new Response('ok'); } }" } } },
+  env: { DB: { type: "d1", id: "names-db" } },
+ } }] });
+ try {
+  const db = await mf.getD1Database("DB");
+  const migrate = async (name: string) => {
+   const sql = await readFile(new NodeURL(`../migrations/${name}`, import.meta.url), "utf8");
+   await db.batch(sql.split(";").map(s => s.trim()).filter(Boolean).map(s => db.prepare(s)));
+  };
+  for (const name of ["0001_licenses.sql", "0002_activations.sql", "0003_device_names.sql"]) await migrate(name);
+  await db.prepare("INSERT INTO licenses (id,email,locale,checkout_session,license_key,created_at) VALUES ('l','test@example.com','en','cs','key',0)").run();
+  const add = (device: string, name: string, at: number) => db.prepare("INSERT INTO activations VALUES ('l',?,?,?, ?,?)").bind(device, `token-${device}`, at, at, name).run();
+  await add("a", "EliteBook", 1); await add("b", "EliteBook", 2); await add("c", "EliteBook (1)", 3);
+  await migrate("0004_unique_device_names.sql");
+  const store = d1Activations(db);
+  assert.deepEqual((await store.list("l")).map(r => r.device_name), ["EliteBook", "EliteBook (2)", "EliteBook (1)"]);
+  assert.equal(await store.rename("l", "b", "elitebook"), false);
+  assert.equal(await store.rename("l", "b", "EliteBook (2)"), true);
+  const base = "x".repeat(128);
+  await Promise.all(Array.from({ length: 8 }, (_, n) => store.activate({ license_id: "l", device_id: `parallel-${n}`, activation_id: `p-${n}`, activated_at: 10+n, last_seen: 10+n, device_name: base })));
+  const names = (await store.list("l")).map(r => r.device_name!);
+  assert.equal(names.length, 3); assert.equal(new Set(names).size, 3);
+  assert.ok(names.every(name => [...name].length <= 128));
+  await assert.rejects(add("bad", names[0], 50));
+ } finally { await mf.dispose(); }
 }, 15000);

@@ -71,9 +71,19 @@ limits management requests.
 Migration `0003_device_names.sql` adds a display name. The system hostname fills
 new or unnamed records on activation/check-in. Checks and repeated activation of an existing seat preserve its custom name;
 removing or evicting the seat removes its name. On later activation the system
-hostname is used again; duplicate names are allowed. Names are trimmed, cannot contain
+hostname is used again; active names must be unique per license (ASCII case-insensitive). Names are trimmed, cannot contain
 control characters and have a 128 Unicode character limit. Removing a computer
 invalidates its next check-in; issued offline tokens remain valid until expiry.
 
 Before distributing the updated desktop app, apply migration 0003 and deploy
 this Worker. This source change does not deploy or modify the live database.
+
+
+Device-name uniqueness uses migration `0004_unique_device_names.sql`. Existing
+collisions receive the next free numeric suffix; new automatically detected
+collisions become `Name (1)`, `Name (2)`, etc. The database index and allocation
+statement prevent concurrent activations from creating duplicate active names.
+Renaming to an occupied name returns `409 {error: "name_taken"}`; renaming a
+computer to its own current name remains valid. Names remain bounded to 128
+Unicode characters after adding a suffix. Apply migration 0004 before deploying
+this Worker. Sandbox rollout is separate from production rollout.

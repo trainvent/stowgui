@@ -19,7 +19,7 @@ export type ActivationRecord = {
 
 export interface ActivationStore {
   list(licenseId: string): Promise<ActivationRecord[]>;
-  rename(licenseId: string, deviceId: string, name: string): Promise<void>;
+  rename(licenseId: string, deviceId: string, name: string): Promise<boolean>;
   remove(licenseId: string, deviceId: string): Promise<void>;
   activate(record: ActivationRecord): Promise<ActivationRecord | null>;
   check(licenseId: string, deviceId: string, activationId: string, now: number, deviceName?: string): Promise<ActivationRecord | null>;
@@ -83,7 +83,9 @@ export async function handleActivation(request: Request, operation: string, deps
   if (license.revoked_at !== null) return Response.json({ error: "revoked" }, { status: 403 });
   if ((activate || manage) && !(await deps.allowActivation(id))) return Response.json({ error: "rate_limited" }, { status: 429 });
   if (manage) {
-    if (operation === "rename-device") await deps.activations.rename(id, device_id, (name as string).trim());
+    if (operation === "rename-device" && !(await deps.activations.rename(id, device_id, (name as string).trim()))) {
+      return Response.json({ error: "name_taken" }, { status: 409 });
+    }
     if (operation === "deactivate-device") await deps.activations.remove(id, device_id);
     const records = await deps.activations.list(id);
     return Response.json({ devices: records.map(r => ({ device_id: r.device_id, name: r.device_name || DEFAULT_DEVICE_NAME })) }, { headers: { "Cache-Control": "no-store" } });
@@ -108,20 +110,39 @@ export function d1Activations(db: D1Database): ActivationStore {
       return (await db.prepare("SELECT a.* FROM activations a JOIN licenses l ON l.id = a.license_id WHERE a.license_id = ? AND l.revoked_at IS NULL ORDER BY a.activated_at, a.device_id").bind(id).all<ActivationRecord>()).results;
     },
     async rename(id, device, name) {
-      await db.prepare("UPDATE activations SET device_name = ? WHERE license_id = ? AND device_id = ? AND EXISTS (SELECT 1 FROM licenses WHERE id = ? AND revoked_at IS NULL)").bind(name, id, device, id).run();
+      const result = await db.batch([
+        db.prepare(`UPDATE activations SET device_name = ? WHERE license_id = ? AND device_id = ?
+          AND EXISTS (SELECT 1 FROM licenses WHERE id = ? AND revoked_at IS NULL)
+          AND NOT EXISTS (SELECT 1 FROM activations AS other WHERE other.license_id = ?
+            AND other.device_id != ? AND other.device_name = ? COLLATE NOCASE)`)
+          .bind(name, id, device, id, id, device, name),
+        db.prepare("SELECT device_id FROM activations WHERE license_id = ? AND device_id = ?").bind(id, device),
+      ]);
+      return result[0].meta.changes > 0 || result[1].results.length === 0;
     },
     async remove(id, device) {
       await db.prepare("DELETE FROM activations WHERE license_id = ? AND device_id = ? AND EXISTS (SELECT 1 FROM licenses WHERE id = ? AND revoked_at IS NULL)").bind(id, device, id).run();
     },
     async activate(r) {
+      const base = r.device_name || DEFAULT_DEVICE_NAME;
+      const candidates = [base, ...Array.from({ length: MAX_ACTIVE_DEVICES }, (_, i) => {
+        const suffix = ` (${i + 1})`;
+        return [...base].slice(0, MAX_DEVICE_NAME - suffix.length).join("") + suffix;
+      })];
       // D1 batches are transactional: concurrent activations cannot exceed the seat limit.
       const result = await db.batch([
         db.prepare(`INSERT INTO activations (license_id, device_id, activation_id, activated_at, last_seen, device_name)
-          SELECT ?, ?, ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM licenses WHERE id = ? AND revoked_at IS NULL)
+          SELECT ?, ?, ?, ?, ?, COALESCE(
+            (SELECT device_name FROM activations WHERE license_id = ? AND device_id = ?),
+            (SELECT value FROM json_each(?) AS candidate WHERE NOT EXISTS (
+              SELECT 1 FROM activations AS other WHERE other.license_id = ?
+                AND other.device_id != ? AND other.device_name = candidate.value COLLATE NOCASE
+            ) ORDER BY CAST(candidate.key AS INTEGER) LIMIT 1)
+          ) WHERE EXISTS (SELECT 1 FROM licenses WHERE id = ? AND revoked_at IS NULL)
           ON CONFLICT (license_id, device_id) DO UPDATE SET activation_id = excluded.activation_id,
           activated_at = excluded.activated_at, last_seen = excluded.last_seen,
-          device_name = CASE WHEN activations.device_name = '' THEN excluded.device_name ELSE activations.device_name END`)
-          .bind(r.license_id, r.device_id, r.activation_id, r.activated_at, r.last_seen, r.device_name || "", r.license_id),
+          device_name = excluded.device_name`)
+          .bind(r.license_id, r.device_id, r.activation_id, r.activated_at, r.last_seen, r.license_id, r.device_id, JSON.stringify(candidates), r.license_id, r.device_id, r.license_id),
         db.prepare(`DELETE FROM activations WHERE license_id = ? AND device_id != ? AND device_id NOT IN
           (SELECT device_id FROM activations WHERE license_id = ? AND device_id != ?
            ORDER BY last_seen DESC, device_id DESC LIMIT ?)`)

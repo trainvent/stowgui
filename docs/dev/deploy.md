@@ -99,3 +99,13 @@ migrations 0001–0003 applied to the sandbox database. Hosted checks confirmed
 route restrictions, forged-key rejection, three active seats after a fourth
 activation and explicit reclaim. Production's deployment remained
 `0f981bf6-f6f2-4ac5-906a-dc2e9f7c1c4b`.
+
+
+Device-name uniqueness uses migration `0004_unique_device_names.sql`. Existing
+collisions receive the next free numeric suffix; new automatically detected
+collisions become `Name (1)`, `Name (2)`, etc. The database index and allocation
+statement prevent concurrent activations from creating duplicate active names.
+Renaming to an occupied name returns `409 {error: "name_taken"}`; renaming a
+computer to its own current name remains valid. Names remain bounded to 128
+Unicode characters after adding a suffix. Apply migration 0004 before deploying
+this Worker. Sandbox rollout is separate from production rollout.

@@ -118,3 +118,20 @@ describe("device management", () => {
     expect(await original.json()).toEqual({ devices: [{ device_id: devices[0], name: "Original" }] });
   });
 });
+
+it("suffixes duplicate automatic names and rejects duplicate renames", async () => {
+  const t = await setup();
+  const send = (route: string, device: string, name: string) => t.app(new Request(`https://license.test/license/${route}`, {
+    method: "POST", body: JSON.stringify({ key: t.key, device_id: device, device_name: name }),
+  }));
+  await send("activate", devices[0], "EliteBook");
+  await send("activate", devices[1], "EliteBook");
+  let records = await t.deps.activations.list(t.store.records[0].id);
+  expect(records.map(r => r.device_name)).toEqual(["EliteBook", "EliteBook (1)"]);
+  const conflict = await send("rename-device", devices[1], "elitebook");
+  expect(conflict.status).toBe(409);
+  expect(await conflict.json()).toEqual({ error: "name_taken" });
+  expect((await send("rename-device", devices[1], "EliteBook (1)")).status).toBe(200);
+  records = await t.deps.activations.list(t.store.records[0].id);
+  expect(records[1].device_name).toBe("EliteBook (1)");
+});
