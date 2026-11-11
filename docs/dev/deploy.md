@@ -38,3 +38,64 @@ Use `npm run deploy` in `worker/`, not a direct `wrangler deploy`. `scripts/depl
 On 2026-11-11, standard uploads with Wrangler 4.159.0 and 4.160.0 failed with error 10021, while the same Worker and database using `database_id` uploaded and deployed successfully. The deployed version is `0f981bf6-f6f2-4ac5-906a-dc2e9f7c1c4b`. See [the upstream follow-up](../../tasks/wrangler-d1-binding.md) for the removal condition. The workaround uses Wrangler's experimental raw-config API and metadata escape hatch, so rerun the dry run and deployment checks after upgrading Wrangler.
 
 A local bundle check is `npm run deploy -- --dry-run`. This does not test whether Cloudflare accepts the remote binding: the regression occurs in the upload API, and the live upload/endpoint checks are the verification for that failure.
+
+
+## Hosted license sandbox
+
+The separate Worker is `https://stowgui-license-sandbox.trainvent.workers.dev`.
+Its configuration is `worker/wrangler.sandbox.toml`; its D1 database is
+`stowgui-licenses-sandbox` (`2aebb254-ecf8-483c-81d0-62930fc9c33c`). Its signing
+key, credentials and rate-limit namespace are separate from production.
+The sandbox entrypoint runs the production license handler but exposes only
+activation, check-in, list, rename and deactivate routes, plus a `/health`
+marker. Payment webhooks, recovery email and all other routes return 404.
+
+From `worker/`, prepare private test credentials and desktop profiles:
+
+```sh
+npm run sandbox:seed
+```
+
+This preserves existing sandbox credentials in `.wrangler/sandbox/credentials.json`
+and writes private `secrets.json` and `seed.sql` files alongside them. Do not
+commit these files or copy production signing keys here. The default desktop
+checkout is `../../stowgui_source`; set `STOWGUI_APP_DIR` if it is elsewhere.
+A new machine must receive the private sandbox credentials securely, or provision
+new credentials and redeploy/reseed the sandbox together. Preparing a new local
+key alone does not change the hosted service's signing key.
+
+Migrate and seed only the sandbox, then check and deploy its bundle:
+
+```sh
+npm run sandbox:migrate
+npx wrangler d1 execute stowgui-licenses-sandbox --config wrangler.sandbox.toml --remote --file .wrangler/sandbox/seed.sql
+npm run sandbox:deploy -- --dry-run
+npm run sandbox:deploy
+```
+
+The deployment wrapper now accepts `--config`; its default remains the original
+production `wrangler.toml`. Sandbox deployment explicitly selects the separate
+config and uploads only the sandbox signing key using `--secrets-file`.
+The database seed is idempotent and does not reset existing activation or
+revocation scenarios. Interactive testing and the Rust smoke check use different
+synthetic licenses.
+
+From the desktop repository, launch without a local server:
+
+```sh
+node scripts/license-sandbox.mjs cloud 1
+node scripts/license-sandbox.mjs cloud-check
+```
+
+Use the key in `target/cloud-license-sandbox/test-key.txt` in the desktop app's
+License settings; `2`, `3` and `4` select other profiles. `cloud-check` uses its
+own credential/profile under `target/cloud-license-sandbox/check/` and checks
+activation, signatures, persistence, renewal, rename and self-deactivation.
+The normal activation limit remains ten management/activation requests per
+minute per license; wait a minute if repeatedly running checks triggers it.
+
+Deployed on 2026-11-11 as version `044a7609-844f-4c25-a758-f3dbe14abc6b`, with
+migrations 0001–0003 applied to the sandbox database. Hosted checks confirmed
+route restrictions, forged-key rejection, three active seats after a fourth
+activation and explicit reclaim. Production's deployment remained
+`0f981bf6-f6f2-4ac5-906a-dc2e9f7c1c4b`.

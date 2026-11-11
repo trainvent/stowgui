@@ -62,3 +62,11 @@ The corrected key email reached the Gmail inbox and contains `multipart/alternat
 - [ ] Apply Worker migration `0003_device_names.sql` and deploy the device-list,
   rename and deactivate endpoints before distributing the updated desktop app.
   Local Worker tests and app sandbox checks pass; live rollout is not performed.
+
+
+## Hosted license sandbox
+
+- [x] Separate Cloudflare Worker, D1 database, signing key, test licenses and desktop profiles.
+- [x] Deployment configuration and private credential/seed preparation; production deployment unchanged.
+- [x] Local tests and dry run; hosted route isolation, forged-key rejection, seat eviction and reclaim checks.
+- [ ] Separate staging coverage for purchase delivery/email and signed app updates; license sandbox routes intentionally exclude these.

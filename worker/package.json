@@ -8,7 +8,10 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "keypair": "node scripts/gen-keypair.mjs",
-    "db:migrate": "wrangler d1 migrations apply stowgui-licenses --remote"
+    "db:migrate": "wrangler d1 migrations apply stowgui-licenses --remote",
+    "sandbox:seed": "node scripts/sandbox-seed.mjs",
+    "sandbox:migrate": "wrangler d1 migrations apply stowgui-licenses-sandbox --config wrangler.sandbox.toml --remote",
+    "sandbox:deploy": "node scripts/deploy.mjs --config wrangler.sandbox.toml --secrets-file .wrangler/sandbox/secrets.json"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20261109.1",

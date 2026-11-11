@@ -1,0 +1,24 @@
+name = "stowgui-license-sandbox"
+main = "src/sandbox.ts"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = ""
+EMAIL_FROM_NAME = "StowGUI Sandbox"
+EMAIL_FROM_ADDRESS = "sandbox@example.invalid"
+DOWNLOAD_URL = "https://example.invalid/"
+STRIPE_PAYMENT_LINK_ID = ""
+STRIPE_WEBHOOK_SECRET = ""
+BREVO_API_KEY = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "stowgui-licenses-sandbox"
+database_id = "2aebb254-ecf8-483c-81d0-62930fc9c33c"
+migrations_dir = "migrations"
+
+[[ratelimits]]
+name = "ACTIVATION_LIMIT"
+namespace_id = "1002"
+simple = { limit = 10, period = 60 }

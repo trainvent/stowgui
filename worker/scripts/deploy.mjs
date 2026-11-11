@@ -6,7 +6,15 @@ import { fileURLToPath } from "node:url";
 import { experimental_readRawConfig } from "wrangler";
 
 const workerDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const { rawConfig } = experimental_readRawConfig({ config: join(workerDir, "wrangler.toml") });
+const args = process.argv.slice(2);
+const configFlag = args.indexOf("--config");
+let sourceConfig = join(workerDir, "wrangler.toml");
+if (configFlag !== -1) {
+  if (!args[configFlag + 1] || args[configFlag + 1].startsWith("--")) throw new Error("--config requires a path");
+  sourceConfig = resolve(workerDir, args[configFlag + 1]);
+  args.splice(configFlag, 2);
+}
+const { rawConfig } = experimental_readRawConfig({ config: sourceConfig });
 const config = structuredClone(rawConfig);
 const databases = config.d1_databases ?? [];
 if (!databases.length || databases.some((db) => !db.database_id || !db.binding)) {
@@ -29,7 +37,7 @@ try {
   writeFileSync(configPath, JSON.stringify(config), { mode: 0o600 });
   result = spawnSync(process.execPath, [
     join(dirname(fileURLToPath(import.meta.resolve("wrangler/package.json"))), "bin/wrangler.js"),
-    "deploy", "--config", configPath, ...process.argv.slice(2),
+    "deploy", "--config", configPath, ...args,
   ], { cwd: workerDir, stdio: "inherit" });
   if (result.error) throw result.error;
 } finally {
