@@ -45,7 +45,7 @@ The received test message was inspected through Gmail's MIME representation. It 
 - [x] Add explicit HTML with wrapping key paragraphs and a plain-text alternative, without changing key bytes or inserting copy-breaking characters. Escape dynamic values and avoid images, scripts, frames or fixed heights in authored HTML.
 - [x] Verify the request format, full footer, key preservation and escaping in regression tests; all 21 Worker tests and type checking pass.
 - [x] Deploy and resend to `dummy@trainvent.com`; Gmail confirms receipt of both plain-text and wrapping HTML parts with the full footer (2026-11-11).
-- [ ] Verify key selection, width and footer visibility in Nextcloud Mail; recipient retest requested.
+- [x] Verify key selection, width and footer visibility in Nextcloud Mail; the user confirmed the corrected message displays properly (2026-11-11).
 - [ ] Review Brevo's injected open tracking and the website's no-tracking statements before launch. Do not assume the provider leaves authored HTML or requested plain-text parts unchanged. No tracking configuration or privacy copy was changed by this formatting fix.
 
 ## Deployment resolution and completed live checks — 2026-11-11
@@ -54,4 +54,4 @@ Using `database_id` instead of Wrangler's deprecated `id` in upload metadata res
 
 The purchased dummy test key activated successfully through the production Rust `Session` and embedded public key, survived private-file save/reload with offline verification, renewed online, and reported expired when checked beyond the signed offline lifetime. Three additional isolated device activations released the original installation; check-in correctly returned `moved`. Explicit reclaim succeeded. A database query confirmed exactly three active installations for this test license.
 
-The corrected key email reached the Gmail inbox and contains `multipart/alternative` with text/plain and text/html. Its HTML preserves key wrapping and the full footer, has no fixed height, and still contains a provider-injected tracking pixel. Nextcloud-specific display verification and the tracking review remain separate pending checks. The static website was not published by this deployment.
+The corrected key email reached the Gmail inbox and contains `multipart/alternative` with text/plain and text/html. Its HTML preserves key wrapping and the full footer, has no fixed height, and still contains a provider-injected tracking pixel. The user confirmed the corrected message displays properly in Nextcloud Mail. The provider-tracking review remains pending. The static website was not published by this deployment.
