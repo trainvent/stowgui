@@ -55,3 +55,10 @@ Using `database_id` instead of Wrangler's deprecated `id` in upload metadata res
 The purchased dummy test key activated successfully through the production Rust `Session` and embedded public key, survived private-file save/reload with offline verification, renewed online, and reported expired when checked beyond the signed offline lifetime. Three additional isolated device activations released the original installation; check-in correctly returned `moved`. Explicit reclaim succeeded. A database query confirmed exactly three active installations for this test license.
 
 The corrected key email reached the Gmail inbox and contains `multipart/alternative` with text/plain and text/html. Its HTML preserves key wrapping and the full footer, has no fixed height, and still contains a provider-injected tracking pixel. The user confirmed the corrected message displays properly in Nextcloud Mail. The provider-tracking review remains pending. The static website was not published by this deployment.
+
+
+## Computer management rollout
+
+- [ ] Apply Worker migration `0003_device_names.sql` and deploy the device-list,
+  rename and deactivate endpoints before distributing the updated desktop app.
+  Local Worker tests and app sandbox checks pass; live rollout is not performed.

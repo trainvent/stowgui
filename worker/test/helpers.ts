@@ -89,7 +89,12 @@ export function checkoutCompleted(overrides: Record<string, unknown> = {}) {
 export function memoryActivations(): ActivationStore {
   let records: ActivationRecord[] = [];
   return {
+    async list(id) { return records.filter(r => r.license_id === id).map(r => ({ ...r })); },
+    async rename(id, device, name) { const r = records.find(r => r.license_id === id && r.device_id === device); if (r) r.device_name = name; },
+    async remove(id, device) { records = records.filter(r => r.license_id !== id || r.device_id !== device); },
     async activate(r) {
+      const previous = records.find(x => x.license_id === r.license_id && x.device_id === r.device_id);
+      if (previous?.device_name) r.device_name = previous.device_name;
       records = records.filter((x) => x.license_id !== r.license_id || x.device_id !== r.device_id);
       records.push({ ...r });
       const others = records.filter((x) => x.license_id === r.license_id && x.device_id !== r.device_id)
@@ -98,9 +103,9 @@ export function memoryActivations(): ActivationStore {
       records = records.filter((x) => !evicted.includes(x));
       return { ...r };
     },
-    async check(licenseId, deviceId, activationId, now) {
+    async check(licenseId, deviceId, activationId, now, name) {
       const r = records.find((x) => x.license_id === licenseId && x.device_id === deviceId && x.activation_id === activationId);
-      if (r) r.last_seen = now;
+      if (r) { r.last_seen = now; if (!r.device_name) r.device_name = name; }
       return r ? { ...r } : null;
     },
   };

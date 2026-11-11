@@ -175,7 +175,7 @@ const en = {
       {
         heading: "Using the app",
         paragraphs: [
-          "When you activate or check your license, the app sends your license key, a randomly generated installation ID and, for renewal, the activation ID to our Cloudflare service. We store the link to your license, activation time and last successful check to manage the three-computer limit and renew your offline allowance (Art. 6 (1) (b) GDPR). These IDs are pseudonymous, not anonymous, because the license is linked to your purchase. We do not use a hardware fingerprint.",
+          "When you activate or check your license, the app sends your license key, a randomly generated installation ID, your computer name and, for renewal, the activation ID to our Cloudflare service. We store the link to your license, the computer name (which you can rename in the app), activation time and last successful check to manage the three-computer limit and renew your offline allowance (Art. 6 (1) (b) GDPR). These IDs are pseudonymous, not anonymous, because the license is linked to your purchase. We do not use a hardware fingerprint.",
           "Cloudflare also processes your IP address and technical request data to deliver and protect the activation service. Background license checks occur at most once a day; manual activation and checks also contact the service. Each successful check grants up to 30 days offline.",
           "If update checks are enabled, the app requests release information and downloads from GitHub. GitHub receives your IP address and technical request data. You can turn automatic update checks off in Settings. StowGUI does not upload your managed configuration files as part of license or update checks.",
         ],

@@ -136,8 +136,8 @@ export function createApp(deps: Deps) {
         return new Response(response.body, { status: response.status, headers });
       }
     }
-    if (route === "POST /license/activate" || route === "POST /license/check-in") {
-      return handleActivation(request, route === "POST /license/activate", deps);
+    if (route === "POST /license/activate" || route === "POST /license/check-in" || ["POST /license/devices", "POST /license/rename-device", "POST /license/deactivate-device"].includes(route)) {
+      return handleActivation(request, url.pathname.split("/").pop()!, deps);
     }
     if (route === "POST /stripe/webhook") return handleWebhook(request);
     if (route === "GET /license/status") return handleStatus(url);

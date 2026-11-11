@@ -77,3 +77,44 @@ it("verifies the same signed wire fixture as the Rust client", async () => {
   expect(await verifyLicense(fixture.key, verifyKey)).toMatchObject({ id: "license-1", major: 1 });
   expect(await verifyLicense(fixture.token, verifyKey)).toMatchObject({ kind: "activation", device_id: fixture.device_id });
 });
+
+describe("device management", () => {
+  const request = (route: string, key: string, device: string, name?: string) => new Request(`https://license.test/license/${route}`, {
+    method: "POST", body: JSON.stringify({ key, device_id: device, ...(name === undefined ? {} : { device_name: name }) }),
+  });
+  it("lists names, preserves renames on renewal and repeated activation, and deactivates", async () => {
+    const t = await setup();
+    const a = await payload(await t.app(request("activate", t.key, devices[0], "EliteBook")), t.keys.publicKey);
+    const list = async () => (await (await t.app(request("devices", t.key, devices[0]))).json());
+    expect(await list()).toEqual({ devices: [{ device_id: devices[0], name: "EliteBook" }] });
+    await t.app(request("rename-device", t.key, devices[0], "  Leon’s EliteBook  "));
+    await t.app(req("check-in", t.key, devices[0], a.activation_id));
+    await t.app(request("activate", t.key, devices[0], "System hostname"));
+    expect(await list()).toEqual({ devices: [{ device_id: devices[0], name: "Leon’s EliteBook" }] });
+    await t.app(request("deactivate-device", t.key, devices[0]));
+    expect(await list()).toEqual({ devices: [] });
+    expect((await t.app(req("check-in", t.key, devices[0], a.activation_id))).status).toBe(403);
+  });
+  it("rejects invalid names, forged credentials and revoked licenses", async () => {
+    const t = await setup();
+    for (const name of ["", "   ", "x".repeat(129), "bad\nname"]) {
+      expect((await t.app(request("rename-device", t.key, devices[0], name))).status).toBe(400);
+    }
+    for (const route of ["devices", "rename-device", "deactivate-device"]) {
+      expect((await t.app(request(route, `${t.key}x`, devices[0], "Name"))).status).toBe(403);
+    }
+    t.store.records[0].revoked_at = NOW;
+    expect((await t.app(request("devices", t.key, devices[0]))).status).toBe(403);
+  });
+  it("never lists or changes another license’s devices", async () => {
+    const t = await setup();
+    await t.app(request("activate", t.key, devices[0], "Original"));
+    await t.app(await webhookRequest(checkoutCompleted({ id: "cs_second", payment_intent: "pi_second" })));
+    const otherKey = t.mails[1].keys[0];
+    await t.app(request("rename-device", otherKey, devices[0], "Wrong"));
+    const result = await t.app(request("deactivate-device", otherKey, devices[0]));
+    expect(await result.json()).toEqual({ devices: [] });
+    const original = await t.app(request("devices", t.key, devices[0]));
+    expect(await original.json()).toEqual({ devices: [{ device_id: devices[0], name: "Original" }] });
+  });
+});

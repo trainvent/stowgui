@@ -1,0 +1,1 @@
+ALTER TABLE activations ADD COLUMN device_name TEXT NOT NULL DEFAULT '';

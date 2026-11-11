@@ -13,7 +13,7 @@ const mf = new Miniflare({ workers: [{ config: {
 } }] });
 try {
   const db = await mf.getD1Database("DB");
-  for (const name of ["0001_licenses.sql", "0002_activations.sql"]) {
+  for (const name of ["0001_licenses.sql", "0002_activations.sql", "0003_device_names.sql"]) {
     const sql = await readFile(new NodeURL(`../migrations/${name}`, import.meta.url), "utf8");
     await db.batch(sql.split(";").map((s) => s.trim()).filter(Boolean).map((s) => db.prepare(s)));
   }
@@ -36,6 +36,15 @@ try {
   await db.prepare("UPDATE licenses SET revoked_at = 32 WHERE id = 'l'").run();
   assert.equal(await store.activate(record("revoked", 33)), null);
   assert.equal(await store.check("l", active.device_id, `token-${active.device_id}-30`, 33), null);
+  await db.prepare("UPDATE licenses SET revoked_at = NULL WHERE id = 'l'").run();
+  await store.activate({ ...record("named", 40), device_name: "EliteBook" });
+  await store.rename("l", "named", "Leon’s EliteBook");
+  await store.activate({ ...record("named", 41), device_name: "OS hostname" });
+  assert.equal((await store.list("l")).find(r => r.device_id === "named")?.device_name, "Leon’s EliteBook");
+  await store.remove("other-license", "named");
+  assert.ok((await store.list("l")).find(r => r.device_id === "named"));
+  await store.remove("l", "named");
+  assert.equal(await store.check("l", "named", "token-named-41", 42), null);
   console.log("D1 activation integration: passed (eviction, concurrency, stale tokens, revocation)");
 } finally { await mf.dispose(); }
 

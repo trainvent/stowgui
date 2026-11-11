@@ -37,8 +37,8 @@ The app verifies the signature, format, kind, product, entitlement, license and 
 
 ## API extension
 
-- `POST /license/activate`: `{key, device_id}`. Verifies the exact issued credential against the database, requires an active license, and activates/reclaims a seat.
-- `POST /license/check-in`: `{key, device_id, activation_id}`. Renews an existing seat; never creates one.
+- `POST /license/activate`: `{key, device_id, device_name}`. Verifies the exact issued credential against the database, requires an active license, and activates/reclaims a seat.
+- `POST /license/check-in`: `{key, device_id, activation_id, device_name}`. Renews an existing seat; never creates one.
 - Success: `200 {token}` with a signed activation and `Cache-Control: no-store`.
 - Denial: `403 {error: "invalid" | "revoked" | "moved"}`. The app persists the denial and removes its old token.
 - Rate limiting: `429`; transient server, connection, malformed or unverifiable response errors preserve the existing token and its original expiry.
@@ -56,3 +56,24 @@ The core library remains usable independently; enforcement is in the shipping ap
 Core tests cover signatures, bindings, expiry boundaries, clock rollback, private storage, renewal, server failures and revocation. A shared fixed fixture is verified by both Rust and Worker tests. Worker tests cover four devices and stale credentials, plus real local D1 concurrency and eviction. UI tests exercise preview/apply locking and unlicensed unlink; layout and screenshot tests include the License tab.
 
 Before shipping the app, apply the new D1 migration and deploy the Worker with the `ACTIVATION_LIMIT` binding. Existing purchase keys and the old status/recovery endpoints remain valid. Then exercise activation/renewal from the built app against the deployed Worker using a test purchase. Local tests do not establish live deployment readiness. No migration, deployment, purchase, push or release is performed by building/testing this code.
+
+
+## Active computer management
+
+The desktop License tab lists computers, marks the current installation and
+allows inline renaming and deactivation of other installations. The purchase
+key authorizes `POST /license/devices`, `POST /license/rename-device` and
+`POST /license/deactivate-device`. All three take `{key, device_id}`; rename also
+requires `device_name`. Responses contain `{devices: [{device_id, name}]}` and
+never include activation credentials. The shared activation rate limiter also
+limits management requests.
+
+Migration `0003_device_names.sql` adds a display name. The system hostname fills
+new or unnamed records on activation/check-in. Checks and repeated activation of an existing seat preserve its custom name;
+removing or evicting the seat removes its name. On later activation the system
+hostname is used again; duplicate names are allowed. Names are trimmed, cannot contain
+control characters and have a 128 Unicode character limit. Removing a computer
+invalidates its next check-in; issued offline tokens remain valid until expiry.
+
+Before distributing the updated desktop app, apply migration 0003 and deploy
+this Worker. This source change does not deploy or modify the live database.
