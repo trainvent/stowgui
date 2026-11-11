@@ -30,3 +30,11 @@ npx wrangler secret put STRIPE_WEBHOOK_SECRET
 npx wrangler secret put BREVO_API_KEY
 npm run deploy
 ```
+
+## D1 deployment workaround
+
+Use `npm run deploy` in `worker/`, not a direct `wrangler deploy`. `scripts/deploy.mjs` reads the canonical `wrangler.toml` through Wrangler, writes a private temporary upload config, and delegates deployment to Wrangler. It changes only the D1 upload binding from deprecated `id` to current `database_id`; the database UUID, secret inheritance, variables and other bindings are preserved. The temporary file is removed afterward. Development and migrations continue to use `wrangler.toml` unchanged.
+
+On 2026-11-11, standard uploads with Wrangler 4.159.0 and 4.160.0 failed with error 10021, while the same Worker and database using `database_id` uploaded and deployed successfully. The deployed version is `0f981bf6-f6f2-4ac5-906a-dc2e9f7c1c4b`. See [the upstream follow-up](../../tasks/wrangler-d1-binding.md) for the removal condition. The workaround uses Wrangler's experimental raw-config API and metadata escape hatch, so rerun the dry run and deployment checks after upgrading Wrangler.
+
+A local bundle check is `npm run deploy -- --dry-run`. This does not test whether Cloudflare accepts the remote binding: the regression occurs in the upload API, and the live upload/endpoint checks are the verification for that failure.

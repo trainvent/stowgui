@@ -10,8 +10,9 @@ Things only you can do, roughly in order.
 - [ ] Add the Worker secret `BREVO_API_KEY` (`cd worker && npx wrangler secret put BREVO_API_KEY`).
 - [x] Embed the existing public key in the app repo (`stowgui_source`) for signature verification.
 - [x] Apply `worker/migrations/0002_activations.sql` to the remote database (2026-11-11).
-- [ ] Deploy the activation/check-in API with its `ACTIVATION_LIMIT` binding. Upload is blocked by Cloudflare error 10021 generating the existing D1 binding; see the test record below.
-- [ ] Validate three devices, fourth-device eviction, explicit reclaim and renewal from the built app against the deployed Worker.
+- [x] Deploy the activation/check-in API with its `ACTIVATION_LIMIT` binding (2026-11-11). Resolved the D1 upload error with the current `database_id` field; deploy through `npm run deploy`.
+- [x] Verify deployed activation/renewal through the production Rust license code, offline signature/expiry checks, fourth-device eviction, explicit reclaim and the three-seat limit (2026-11-11).
+- [ ] Enter the key in the desktop GUI against the deployed service; the automated live check used an isolated profile and the production Rust license code.
 - [x] Update German and English purchase copy, terms and privacy notice for 30-day offline use, whole-license transfers and service shutdown.
 - [ ] Provide a durable contract confirmation and verify explicit digital-delivery consent/acknowledgment in the real checkout; the current key email is not the complete confirmation.
 - [ ] Implement and test the support transfer procedure: authenticate the holder, revoke/reissue credentials, release old seats and move recovery to the new holder while preserving accounting records. See `docs/dev/selling.md`.
@@ -43,5 +44,14 @@ The received test message was inspected through Gmail's MIME representation. It 
 
 - [x] Add explicit HTML with wrapping key paragraphs and a plain-text alternative, without changing key bytes or inserting copy-breaking characters. Escape dynamic values and avoid images, scripts, frames or fixed heights in authored HTML.
 - [x] Verify the request format, full footer, key preservation and escaping in regression tests; all 21 Worker tests and type checking pass.
-- [ ] Deploy and resend to `dummy@trainvent.com`, then verify selectable key text, width and footer visibility in Nextcloud Mail. The upload again failed with the existing D1 binding-generation error 10021, so no corrected message was sent.
+- [x] Deploy and resend to `dummy@trainvent.com`; Gmail confirms receipt of both plain-text and wrapping HTML parts with the full footer (2026-11-11).
+- [ ] Verify key selection, width and footer visibility in Nextcloud Mail; recipient retest requested.
 - [ ] Review Brevo's injected open tracking and the website's no-tracking statements before launch. Do not assume the provider leaves authored HTML or requested plain-text parts unchanged. No tracking configuration or privacy copy was changed by this formatting fix.
+
+## Deployment resolution and completed live checks — 2026-11-11
+
+Using `database_id` instead of Wrangler's deprecated `id` in upload metadata resolved error 10021. `npm run deploy` now applies this transformation without changing the database; see `docs/dev/deploy.md` and `tasks/wrangler-d1-binding.md`. No secrets, payment-mode settings or purchased license credentials were replaced, and the database was not recreated.
+
+The purchased dummy test key activated successfully through the production Rust `Session` and embedded public key, survived private-file save/reload with offline verification, renewed online, and reported expired when checked beyond the signed offline lifetime. Three additional isolated device activations released the original installation; check-in correctly returned `moved`. Explicit reclaim succeeded. A database query confirmed exactly three active installations for this test license.
+
+The corrected key email reached the Gmail inbox and contains `multipart/alternative` with text/plain and text/html. Its HTML preserves key wrapping and the full footer, has no fixed height, and still contains a provider-injected tracking pixel. Nextcloud-specific display verification and the tracking review remain separate pending checks. The static website was not published by this deployment.
