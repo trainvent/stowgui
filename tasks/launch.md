@@ -36,3 +36,12 @@ The user completed the existing Stripe test Payment Link with `dummy@trainvent.c
 - D1 remains readable and its UUID matches the active Worker binding; jurisdiction is unset. The old Worker remains deployed. `POST /license/activate` currently returns 404. No configuration workaround, replacement database or secret change was applied; the cause remains unconfirmed.
 - App activation, renewal and the 30-day offline allowance have not been tested against the deployed service. Complete those after resolving the upload failure. Local tests from the implementation task remain separate evidence.
 - Revised website terms and revised key-email copy have not been published by this test. This purchase used the existing checkout and Worker; contract-confirmation and operator-transfer launch items remain open.
+
+## Nextcloud Mail rendering — 2026-11-11
+
+The received test message was inspected through Gmail's MIME representation. It is `text/html`, not an image. Although the original Worker supplied `textContent`, the received body contains Brevo-generated HTML with `<br>` separators, an unbroken signed key and an injected hidden open-tracking image. The screenshot shows horizontal overflow and a clipped message-frame bottom. The pixel explains the blocked-image banner; Nextcloud's exact height-sizing behavior has not been reproduced locally.
+
+- [x] Add explicit HTML with wrapping key paragraphs and a plain-text alternative, without changing key bytes or inserting copy-breaking characters. Escape dynamic values and avoid images, scripts, frames or fixed heights in authored HTML.
+- [x] Verify the request format, full footer, key preservation and escaping in regression tests; all 21 Worker tests and type checking pass.
+- [ ] Deploy and resend to `dummy@trainvent.com`, then verify selectable key text, width and footer visibility in Nextcloud Mail. The upload again failed with the existing D1 binding-generation error 10021, so no corrected message was sent.
+- [ ] Review Brevo's injected open tracking and the website's no-tracking statements before launch. Do not assume the provider leaves authored HTML or requested plain-text parts unchanged. No tracking configuration or privacy copy was changed by this formatting fix.

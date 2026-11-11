@@ -22,6 +22,24 @@ const MESSAGES = {
   },
 } as const;
 
+const BODY_STYLE = "margin:0;padding:16px;font-family:Arial,sans-serif;font-size:16px;line-height:1.5;overflow-wrap:anywhere";
+const CONTENT_STYLE = "width:100%;max-width:640px;margin:0 auto";
+const PARAGRAPH_STYLE = "margin:0 0 16px";
+const KEY_STYLE = `${PARAGRAPH_STYLE};font-family:monospace;white-space:normal;overflow-wrap:anywhere;word-break:break-all`;
+
+function escapeHtml(text: string): string {
+  return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+}
+
+function htmlBody(text: string, keys: string[], locale: Locale): string {
+  const paragraphs = text.split("\n\n").map((paragraph) => {
+    const style = keys.includes(paragraph) ? KEY_STYLE : PARAGRAPH_STYLE;
+    const content = escapeHtml(paragraph).replaceAll("\n", "<br>");
+    return `<p style="${style}">${content}</p>`;
+  }).join("\n");
+  return `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="${BODY_STYLE}"><div style="${CONTENT_STYLE}">${paragraphs}</div></body></html>`;
+}
+
 export type Mailer = (to: string, locale: Locale, licenseKeys: string[]) => Promise<void>;
 
 export type Sender = { name: string; email: string };
@@ -30,6 +48,7 @@ export function brevoMailer(apiKey: string, sender: Sender, downloadUrl: string,
   return async (to, locale, licenseKeys) => {
     const message = MESSAGES[locale];
     const download = locale === "de" ? downloadUrl.replace("/en/", "/de/") : downloadUrl;
+    const text = message.body(licenseKeys.join("\n\n"), download);
     const response = await fetch(BREVO_URL, {
       method: "POST",
       headers: { "api-key": apiKey, "Content-Type": "application/json", Accept: "application/json" },
@@ -38,7 +57,8 @@ export function brevoMailer(apiKey: string, sender: Sender, downloadUrl: string,
         to: [{ email: to }],
         replyTo: { email: replyTo },
         subject: message.subject,
-        textContent: message.body(licenseKeys.join("\n\n"), download),
+        textContent: text,
+        htmlContent: htmlBody(text, licenseKeys, locale),
       }),
     });
     if (!response.ok) throw new Error(`Email failed: ${response.status} ${await response.text()}`);
