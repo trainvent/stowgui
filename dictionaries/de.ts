@@ -58,7 +58,7 @@ const de: Dictionary = {
     items: [
       { title: "Dotfiles-Ordner wählen", text: "StowGUI zeigt deine Pakete und welche davon verknüpft sind." },
       { title: "Vorschau", text: "Prüfe jede Verknüpfung und jeden Konflikt vor dem Anwenden." },
-      { title: "Anwenden", text: "GNU Stow verknüpft. Du kannst es jederzeit rückgängig machen." },
+      { title: "Anwenden", text: "GNU Stow verknüpft. Du kannst die Verknüpfungen später wieder lösen und Kopien am bisherigen Ort behalten." },
     ],
   },
   pricing: {
@@ -68,10 +68,10 @@ const de: Dictionary = {
     points: [
       `Auf bis zu ${MAX_COMPUTERS} Computern nutzbar`,
       "Alle 1.x-Updates inklusive",
-      "Funktioniert offline",
+      "Online aktivieren; bis zu 30 Tage offline nutzen",
       "Der Schlüssel kommt direkt nach der Zahlung per E-Mail",
     ],
-    free: "Der kostenlose Download zeigt deine Pakete und Vorschauen. Mit dem Kauf schaltest du Anwenden, Importieren und Rückgängig frei.",
+    free: "Pakete und Vorschauen kannst du kostenlos ansehen. Eine Lizenz schaltet Verknüpfen, Importieren und weitere Dateiänderungen frei. Verknüpfungen lösen kannst du auch ohne Lizenz.",
     vat: "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.",
   },
   faq: {
@@ -79,7 +79,7 @@ const de: Dictionary = {
     items: [
       {
         q: "Brauche ich GNU Stow?",
-        a: "Ja. StowGUI nutzt das Stow auf deinem Computer. Installiere es über deinen Paketmanager oder Homebrew.",
+        a: "Ja. StowGUI nutzt das Stow auf deinem Computer. Installiere GNU Stow 2.4 oder neuer über deinen Paketmanager oder Homebrew.",
       },
       {
         q: "Kann ich weiter das Terminal nutzen?",
@@ -87,7 +87,7 @@ const de: Dictionary = {
       },
       {
         q: "Was passiert auf einem neuen Computer?",
-        a: `Gib dort einfach deinen Schlüssel ein. Nutzt du schon ${MAX_COMPUTERS} Computer, wird der am längsten nicht genutzte abgemeldet.`,
+        a: `Aktiviere dort deinen Schlüssel. Sind schon ${MAX_COMPUTERS} Computer aktiv, wird der Computer mit der am längsten zurückliegenden Prüfung freigegeben. Dort werden kostenpflichtige Änderungen bei der nächsten Online-Prüfung oder nach Ablauf der Offline-Frist gesperrt. Unter Einstellungen → Lizenz kannst du ihn erneut aktivieren.`,
       },
       {
         q: "Ich habe meinen Schlüssel verloren.",
@@ -95,8 +95,12 @@ const de: Dictionary = {
         link: "/license",
       },
       {
+        q: "Darf ich meine Lizenz weiterverkaufen oder verschenken?",
+        a: "Ja, vollständig. Stelle die Nutzung ein und lösche deine gespeicherten Schlüssel und Aktivierungstoken vor der Übertragung. Schreib an support@trainvent.com, damit wir die Übergabe und die Schlüsselwiederherstellung dem neuen Inhaber zuordnen können.",
+      },
+      {
         q: "Bekomme ich mein Geld zurück?",
-        a: "Nein. Der Schlüssel wird direkt nach der Zahlung geliefert, und du stimmst beim Kauf zu, dass dein Widerrufsrecht damit erlischt. Probier vorher den kostenlosen Download aus, ob StowGUI zu dir passt. Funktioniert StowGUI nicht wie beschrieben, schreib uns und wir beheben den Fehler oder erstatten dir den Kaufpreis.",
+        a: "Verbraucher haben grundsätzlich 14 Tage Zeit zum Widerruf. Bei sofortiger digitaler Lieferung erlischt dieses Recht nur, wenn die gesetzlichen Voraussetzungen erfüllt sind, darunter deine ausdrückliche Zustimmung und eine Vertragsbestätigung. Deine gesetzlichen Rechte bei Mängeln bleiben unberührt. Einzelheiten stehen in den AGB.",
       },
     ],
   },
@@ -107,12 +111,12 @@ const de: Dictionary = {
     macos: "macOS",
     getRelease: "Neueste Version laden",
     stowTitle: "Zuerst GNU Stow installieren",
-    stowLead: "StowGUI braucht GNU Stow auf deinem Computer.",
+    stowLead: "StowGUI braucht GNU Stow 2.4 oder neuer auf deinem Computer.",
   },
   success: {
     title: "Danke!",
     lead: "Dein Lizenzschlüssel ist auf dem Weg in dein E-Mail-Postfach. Er kommt meist innerhalb einer Minute an.",
-    next: "Lade StowGUI herunter, öffne Einstellungen → Lizenz und füge deinen Schlüssel ein.",
+    next: "Lade StowGUI herunter, öffne Einstellungen → Lizenz und aktiviere deinen Schlüssel online.",
     noMail: "Nach ein paar Minuten keine E-Mail? Schau in den Spam-Ordner oder fordere sie erneut an.",
     resend: "Schlüssel erneut senden",
   },
@@ -164,13 +168,15 @@ const de: Dictionary = {
         paragraphs: [
           "Zahlungen wickelt Stripe Payments Europe Ltd., Irland, ab. Stripe verarbeitet Name, E-Mail-Adresse, Rechnungsadresse und Zahlungsdaten zur Zahlungsabwicklung und Betrugsvermeidung (Art. 6 Abs. 1 lit. b und c DSGVO).",
           "Um deine Lizenz auszuliefern und zu verwalten, speichern wir deine E-Mail-Adresse, die Kaufreferenz und deinen Lizenzschlüssel. Das läuft bei Cloudflare, Inc. (USA, EU-US Data Privacy Framework). Die E-Mail mit dem Schlüssel versenden wir über Brevo (Sendinblue SAS, Frankreich).",
-          "Kaufbelege bewahren wir so lange auf, wie es das Steuerrecht verlangt (bis zu 10 Jahre).",
+          "Kauf- und Buchungsbelege bewahren wir für die jeweils geltenden gesetzlichen Fristen auf (Art. 6 Abs. 1 lit. c DSGVO). Lizenz- und aktuelle Aktivierungsdaten behalten wir, solange sie für die Bereitstellung deiner Lizenz, Support oder Rechtsansprüche benötigt werden. Danach werden sie gelöscht, soweit keine gesetzliche Aufbewahrungspflicht besteht.",
         ],
       },
       {
         heading: "Nutzung der App",
         paragraphs: [
-          "Die App prüft gelegentlich deine Lizenz und sendet dabei eine anonyme Geräte-ID, damit dein Schlüssel auf mehreren Computern funktioniert. Außerdem sucht sie nach Updates. Deine Dotfiles verlassen nie deinen Computer.",
+          "Bei der Aktivierung oder Lizenzprüfung sendet die App deinen Lizenzschlüssel, eine zufällig erzeugte Installations-ID und bei einer Verlängerung die Aktivierungs-ID an unseren Cloudflare-Dienst. Wir speichern die Zuordnung zur Lizenz, den Aktivierungszeitpunkt und die letzte erfolgreiche Prüfung, um die Grenze von drei Computern einzuhalten und die Offline-Frist zu verlängern (Art. 6 Abs. 1 lit. b DSGVO). Diese IDs sind pseudonym, nicht anonym, weil die Lizenz deinem Kauf zugeordnet ist. Wir verwenden keinen Hardware-Fingerabdruck.",
+          "Cloudflare verarbeitet außerdem deine IP-Adresse und technische Anfragedaten, um den Aktivierungsdienst bereitzustellen und zu schützen. Lizenzprüfungen im Hintergrund erfolgen höchstens einmal täglich; auch manuelle Aktivierungen und Prüfungen kontaktieren den Dienst. Jede erfolgreiche Prüfung ermöglicht bis zu 30 Tage Offline-Nutzung.",
+          "Bei eingeschalteter Update-Prüfung ruft die App Versionsinformationen und Downloads von GitHub ab. GitHub erhält dabei deine IP-Adresse und technische Anfragedaten. Automatische Update-Prüfungen kannst du in den Einstellungen ausschalten. StowGUI lädt bei Lizenz- oder Update-Prüfungen keine verwalteten Konfigurationsdateien hoch.",
         ],
       },
       {
@@ -187,46 +193,66 @@ const de: Dictionary = {
       {
         heading: "1. Anbieter",
         paragraphs: [
-          "StowGUI wird verkauft von Trainvent, Inhaber Leon Marquardt, Ravensbergerstraße 75, 33602 Bielefeld (\"wir\").",
+          "StowGUI wird von Trainvent, Inhaber Leon Marquardt, Ravensbergerstraße 75, 33602 Bielefeld, verkauft. Kontakt: support@trainvent.com.",
         ],
       },
       {
-        heading: "2. Kauf",
+        heading: "2. Kauf und Lieferung",
         paragraphs: [
-          `StowGUI kostet einmalig ${PRICE}. Der Vertrag kommt mit Abschluss der Zahlung zustande. Wir senden deinen Lizenzschlüssel direkt danach an die angegebene E-Mail-Adresse.`,
+          `StowGUI kostet einmalig ${PRICE}, ohne Abonnement. Der Vertrag kommt mit Abschluss der Zahlung zustande. Nach erfolgreicher Zahlung senden wir den Lizenzschlüssel an die angegebene E-Mail-Adresse.`,
+          "StowGUI ist eine Desktop-App für Linux und macOS und benötigt das separat installierte GNU Stow ab Version 2.4. Prüfe vor dem Kauf auf der Downloadseite, welche Builds verfügbar sind und welche Systemvoraussetzungen gelten. Mit dem kostenlosen Download kannst du Pakete und Vorschauen ansehen.",
         ],
       },
       {
-        heading: "3. Lizenz",
+        heading: "3. Nutzungsrecht",
         paragraphs: [
-          `Du darfst StowGUI gleichzeitig auf bis zu ${MAX_COMPUTERS} Computern nutzen. Die Lizenz gilt für alle 1.x-Versionen. Du darfst deinen Schlüssel nicht weiterverkaufen, weitergeben oder veröffentlichen und die App nicht über das gesetzlich Erlaubte hinaus zurückentwickeln.`,
+          `Du erhältst ein einfaches, zeitlich unbefristetes Nutzungsrecht für private und gewerbliche Zwecke auf bis zu ${MAX_COMPUTERS} aktiven Computern für einen Lizenzinhaber. Bei einer Organisation gilt die Lizenz für eine benannte Person. Alle 1.x-Versionen sind enthalten; spätere Hauptversionen sind nur enthalten, wenn dies ausdrücklich angegeben wird.`,
+          "Du darfst deinen Schlüssel nicht veröffentlichen oder zur gemeinsamen Nutzung durch mehrere Lizenzinhaber weitergeben. Die vollständige Lizenz darfst du nach den folgenden Regeln übertragen. Zwingende gesetzliche Rechte, insbesondere zu zulässigen Sicherungskopien, zur Untersuchung und zur Interoperabilität, bleiben unberührt. Für Komponenten Dritter gelten deren eigene Lizenzbedingungen.",
         ],
       },
       {
-        heading: "4. Widerrufsbelehrung",
+        heading: "4. Aktivierung und Offline-Nutzung",
         paragraphs: [
-          "Verbraucher haben ein Widerrufsrecht. Du hast das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses.",
-          "Um dein Widerrufsrecht auszuüben, musst du uns (Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, support@trainvent.com, +49 160 3455942) mittels einer eindeutigen Erklärung, zum Beispiel per E-Mail, über deinen Entschluss informieren. Du kannst dafür das untenstehende Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist. Zur Wahrung der Frist reicht es aus, dass du die Mitteilung vor Ablauf der Frist absendest.",
-          "Wenn du widerrufst, erstatten wir dir alle Zahlungen unverzüglich und spätestens binnen vierzehn Tagen über dasselbe Zahlungsmittel. Dein Lizenzschlüssel wird deaktiviert.",
-          "Vorzeitiges Erlöschen: Das Widerrufsrecht erlischt, sobald wir mit der Lieferung der digitalen Inhalte (Versand des Lizenzschlüssels) begonnen haben, nachdem du beim Kauf ausdrücklich zugestimmt hast, dass wir vor Ablauf der Widerrufsfrist beginnen, und bestätigt hast, dass du dadurch dein Widerrufsrecht verlierst.",
+          "Für die erste Aktivierung ist eine Internetverbindung erforderlich. Anschließend prüft die App die Lizenz im Hintergrund höchstens einmal täglich; du kannst sie auch manuell prüfen. Jede erfolgreiche Prüfung ermöglicht bis zu 30 Tage Offline-Nutzung. Nach Ablauf dieser Frist ist eine Online-Prüfung nötig, bevor du weitere kostenpflichtige Änderungen anwenden kannst.",
+          `Sind bereits ${MAX_COMPUTERS} Computer aktiv, gibt eine weitere Aktivierung die Installation mit der am längsten zurückliegenden erfolgreichen Prüfung frei. Dort werden kostenpflichtige Änderungen bei der nächsten erfolgreichen Online-Prüfung oder nach Ablauf der bestehenden Offline-Frist gesperrt. Eine erneute Freischaltung erfordert eine ausdrückliche Aktivierung.`,
+          "Ein wirksamer Widerruf oder eine vollständige Erstattung des Kaufpreises beendet das zugehörige Nutzungsrecht an den kostenpflichtigen Funktionen. Die Aktivierungsprüfung setzt dies bei der nächsten Online-Prüfung um. Pakete und Vorschauen ansehen, Verknüpfungen lösen und Kopien am bisherigen Ort behalten bleibt auch ohne aktive Lizenz möglich. Deine Dateien bleiben deine Dateien.",
+          "Wenn wir den Aktivierungsdienst dauerhaft einstellen, stellen wir bestehenden Lizenzinhabern kostenlos ein Update oder eine andere Möglichkeit bereit, ihre lizenzierte Version ohne regelmäßige Online-Prüfung weiter zu nutzen. Damit versprechen wir keine neuen Funktionen oder Kompatibilität mit jedem zukünftigen Betriebssystem.",
+        ],
+      },
+      {
+        heading: "5. Lizenz übertragen oder weiterverkaufen",
+        paragraphs: [
+          "Du darfst die vollständige Lizenz an eine andere Person oder Organisation verkaufen oder verschenken. Die Übertragung umfasst sämtliche Rechte und enthaltenen Updates; Lizenz und Computerplätze dürfen nicht zwischen mehreren Inhabern aufgeteilt werden.",
+          "Vor Abschluss der Übertragung muss der bisherige Inhaber die Nutzung der kostenpflichtigen Funktionen einstellen, seine lizenzierten Kopien entfernen und alle gespeicherten Lizenzschlüssel und Aktivierungstoken aus seinen Installationen und den von ihm kontrollierten Sicherungen löschen. Gesetzlich aufzubewahrende Kaufbelege darf er behalten, darin enthaltene Schlüssel oder Token aber nicht mehr nutzen. Offline-Token dürfen nach der Übertragung nicht mehr verwendet werden.",
+          "Schreib an support@trainvent.com, um die Übergabe und die Zuordnung der Lizenz sowie der E-Mail-Adresse für die Schlüsselwiederherstellung zum neuen Inhaber zu veranlassen. Wir berechnen dafür keine Gebühr. Das bloße Weiterleiten eines Schlüssels ändert die Kaufadresse nicht und gibt bestehende Aktivierungen nicht frei. Der neue Inhaber erhält denselben Versionsumfang; durch die Übertragung beginnt die Widerrufsfrist des ursprünglichen Kaufs nicht neu. Zwingende gesetzliche Übertragungsrechte bleiben unberührt.",
+        ],
+      },
+      {
+        heading: "6. Widerrufsbelehrung",
+        paragraphs: [
+          "Verbraucher haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses.",
+          "Um dein Widerrufsrecht auszuüben, informiere Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, support@trainvent.com, +49 160 3455942, mittels einer eindeutigen Erklärung, zum Beispiel per E-Mail, über deinen Entschluss. Du kannst das untenstehende Muster-Widerrufsformular verwenden, musst es aber nicht. Zur Wahrung der Frist reicht es aus, die Mitteilung vor Ablauf der Frist abzusenden.",
+          "Wenn du widerrufst, erstatten wir dir alle im Rahmen des Vertrags erhaltenen Zahlungen unverzüglich und spätestens binnen vierzehn Tagen ab Eingang deines Widerrufs. Wir verwenden dasselbe Zahlungsmittel, sofern nicht ausdrücklich etwas anderes vereinbart wurde. Dir entstehen keine Erstattungsgebühren. Die zugehörige Lizenz wird deaktiviert.",
+          "Bei kostenpflichtigen digitalen Inhalten ohne körperlichen Datenträger erlischt das Widerrufsrecht vorzeitig nur, wenn die Lieferung begonnen hat, nachdem du ausdrücklich dem Beginn vor Ablauf der Widerrufsfrist zugestimmt und deine Kenntnis bestätigt hast, dass du dadurch mit Beginn der Lieferung dein Widerrufsrecht verlierst, und wir die gesetzlich erforderliche Vertragsbestätigung bereitgestellt haben. Diese hält Zustimmung und Kenntnisbestätigung fest. Sind diese Voraussetzungen nicht erfüllt, beendet der sofortige Versand des Schlüssels allein das Widerrufsrecht nicht.",
         ],
       },
       {
         heading: "Muster-Widerrufsformular",
         paragraphs: [
-          "An Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, support@trainvent.com: Hiermit widerrufe ich den von mir abgeschlossenen Vertrag über den Kauf der folgenden digitalen Inhalte: StowGUI-Lizenz. Bestellt am: … Name: … Anschrift: … Datum: …",
+          "An Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, support@trainvent.com: Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden digitalen Inhalte: StowGUI-Lizenz. Bestellt am/erhalten am (*): … Name des/der Verbraucher(s): … Anschrift des/der Verbraucher(s): … Unterschrift des/der Verbraucher(s), nur bei Mitteilung auf Papier: … Datum: … (*) Unzutreffendes streichen.",
         ],
       },
       {
-        heading: "5. Gewährleistung und Haftung",
+        heading: "7. Updates, Mängelrechte und Haftung",
         paragraphs: [
-          "Es gelten die gesetzlichen Gewährleistungsrechte. Wir haften unbeschränkt bei Vorsatz, grober Fahrlässigkeit und bei Verletzung von Leben, Körper oder Gesundheit. Bei leichter Fahrlässigkeit haften wir nur bei Verletzung wesentlicher Vertragspflichten und begrenzt auf den vorhersehbaren, typischen Schaden. Bitte sichere deine Konfigurationsdateien regelmäßig.",
+          "Gesetzliche Mängelrechte und Aktualisierungspflichten bleiben unberührt. Die Zusage aller 1.x-Versionen beschränkt keine zwingende Pflicht, erforderliche Aktualisierungen zur Aufrechterhaltung der Vertragsmäßigkeit einschließlich Sicherheitsupdates bereitzustellen. Schreib an support@trainvent.com, wenn StowGUI nicht wie vereinbart funktioniert.",
+          "Wir haften unbeschränkt bei Vorsatz, grober Fahrlässigkeit, Verletzung von Leben, Körper oder Gesundheit und soweit zwingendes Recht dies verlangt. Bei leichter Fahrlässigkeit ist die Haftung im Übrigen auf die Verletzung wesentlicher Vertragspflichten und den vorhersehbaren, vertragstypischen Schaden begrenzt. Gesetzliche Produkthaftung und ausdrücklich übernommene Garantien bleiben unberührt. Erstelle vor Dateiänderungen unabhängige Sicherungen; dieser Hinweis beschränkt deine gesetzlichen Rechte nicht.",
         ],
       },
       {
-        heading: "6. Schlussbestimmungen",
+        heading: "8. Anwendbares Recht",
         paragraphs: [
-          "Es gilt deutsches Recht unter Ausschluss des UN-Kaufrechts. Für Verbraucher in der EU bleiben die zwingenden Verbraucherschutzvorschriften ihres Wohnsitzlandes unberührt.",
+          "Es gilt deutsches Recht unter Ausschluss des UN-Kaufrechts. Verbraucher behalten den zwingenden Schutz des Rechts ihres gewöhnlichen Aufenthaltsstaates, soweit anwendbar. Zwingende Verbraucherrechte werden durch diese Bedingungen nicht eingeschränkt.",
         ],
       },
     ],

@@ -13,12 +13,12 @@ const MESSAGES = {
   en: {
     subject: "Your StowGUI license key",
     body: (keys: string, download: string) =>
-      `Thank you for buying StowGUI!\n\nYour license key:\n\n${keys}\n\nDownload StowGUI: ${download}\nThen open Settings → License and paste the key.\n\nYou can use it on up to 3 computers. Keep this email to find your key later.\n\nQuestions? Just reply to this email.`,
+      `Thank you for buying StowGUI!\n\nYour license key:\n\n${keys}\n\nDownload StowGUI: ${download}\nThen open Settings → License and activate the key online.\n\nYou can use it on up to 3 computers for personal or commercial use. All 1.x versions are included. Each successful online license check gives you up to 30 days offline. Keep this email to find your key later.\n\nQuestions? Just reply to this email.`,
   },
   de: {
     subject: "Dein StowGUI-Lizenzschlüssel",
     body: (keys: string, download: string) =>
-      `Danke für deinen Kauf von StowGUI!\n\nDein Lizenzschlüssel:\n\n${keys}\n\nStowGUI herunterladen: ${download}\nÖffne dann Einstellungen → Lizenz und füge den Schlüssel ein.\n\nDu kannst ihn auf bis zu 3 Computern nutzen. Heb diese E-Mail auf, um den Schlüssel später wiederzufinden.\n\nFragen? Antworte einfach auf diese E-Mail.`,
+      `Danke für deinen Kauf von StowGUI!\n\nDein Lizenzschlüssel:\n\n${keys}\n\nStowGUI herunterladen: ${download}\nÖffne dann Einstellungen → Lizenz und aktiviere den Schlüssel online.\n\nDu kannst ihn privat oder gewerblich auf bis zu 3 Computern nutzen. Alle 1.x-Versionen sind enthalten. Jede erfolgreiche Online-Lizenzprüfung ermöglicht bis zu 30 Tage Offline-Nutzung. Heb diese E-Mail auf, um den Schlüssel später wiederzufinden.\n\nFragen? Antworte einfach auf diese E-Mail.`,
   },
 } as const;
 
