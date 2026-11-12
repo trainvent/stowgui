@@ -19,7 +19,6 @@ export default function SiteHeader({ locale, dict, currentPath = "/" }: Props) {
         <Link href={`${home}#pricing`} className="nav-section">{dict.nav.pricing}</Link>
         <Link href={`${home}#faq`} className="nav-section">{dict.nav.faq}</Link>
         {RELEASED && <Link href={localePath(locale, "/download")}>{dict.nav.download}</Link>}
-        {RELEASED && <Link href={localePath(locale, "/install")}>{dict.nav.install}</Link>}
         <Link href={localePath(otherLocale, currentPath)} hrefLang={otherLocale} lang={otherLocale}>
           {dict.nav.otherLanguage}
         </Link>

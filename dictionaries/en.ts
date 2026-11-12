@@ -13,7 +13,6 @@ const en = {
     pricing: "Pricing",
     faq: "FAQ",
     download: "Download",
-    install: "Install",
     otherLanguage: "Deutsch",
     lightMode: "Switch to light mode",
     darkMode: "Switch to dark mode",

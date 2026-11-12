@@ -12,7 +12,6 @@ const de: Dictionary = {
     pricing: "Preis",
     faq: "FAQ",
     download: "Download",
-    install: "Installieren",
     otherLanguage: "English",
     lightMode: "Zum hellen Modus wechseln",
     darkMode: "Zum dunklen Modus wechseln",
