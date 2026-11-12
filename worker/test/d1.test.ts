@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { Miniflare } from "miniflare";
 import { readFile } from "node:fs/promises";
 import { URL as NodeURL } from "node:url";
