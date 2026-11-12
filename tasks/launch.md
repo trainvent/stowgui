@@ -12,7 +12,7 @@ Things only you can do, roughly in order.
 - [x] Apply `worker/migrations/0002_activations.sql` to the remote database (2026-11-11).
 - [x] Deploy the activation/check-in API with its `ACTIVATION_LIMIT` binding (2026-11-11). Resolved the D1 upload error with the current `database_id` field; deploy through `npm run deploy`.
 - [x] Verify deployed activation/renewal through the production Rust license code, offline signature/expiry checks, fourth-device eviction, explicit reclaim and the three-seat limit (2026-11-11).
-- [ ] Enter the key in the desktop GUI against the deployed service; the automated live check used an isolated profile and the production Rust license code.
+- [x] Enter the key in the desktop GUI against the deployed service (2026-11-12); the automated live check used an isolated profile and the production Rust license code.
 - [x] Update German and English purchase copy, terms and privacy notice for 30-day offline use, whole-license transfers and service shutdown.
 - [ ] Provide a durable contract confirmation and verify explicit digital-delivery consent/acknowledgment in the real checkout; the current key email is not the complete confirmation.
 - [ ] Implement and test the support transfer procedure: authenticate the holder, revoke/reissue credentials, release old seats and move recovery to the new holder while preserving accounting records. See `docs/dev/selling.md`.
@@ -65,8 +65,9 @@ The corrected key email reached the Gmail inbox and contains `multipart/alternat
   bookmark `00000008-00000000-00005121-523245c9b08383234f714da85cc1c7b4`.
 - [x] Deploy the device-list, rename and deactivate endpoints (2026-11-12, version
   `757d056b`). All license endpoints answer `403 invalid` for a forged key.
-- [ ] Test the built desktop app against the live service with a Stripe test purchase:
-  activate, rename, deactivate, then refund and confirm paid actions lock.
+- [x] Test the built desktop app against the live service with a Stripe test purchase:
+  activate, rename, deactivate, then refund and confirm paid actions lock (2026-11-12,
+  confirmed by the user).
 
 
 ## Hosted license sandbox
