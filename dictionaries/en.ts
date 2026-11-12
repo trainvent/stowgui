@@ -126,7 +126,7 @@ const en = {
       },
       store: {
         title: "Give it a permanent home",
-        text: "Move it to an Applications folder in your home folder and give it a short name. Updates replace this file, so your menu entry keeps working.",
+        text: "Move it to an Applications folder in your home folder and rename it to StowGUI.AppImage. The menu entry looks for exactly this name, and updates replace this file so the entry keeps working.",
       },
       executable: {
         title: "Allow it to run",

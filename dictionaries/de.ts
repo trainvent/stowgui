@@ -125,7 +125,7 @@ const de: Dictionary = {
       },
       store: {
         title: "Einen festen Platz geben",
-        text: "Verschiebe sie in einen Ordner Applications in deinem Home-Ordner und gib ihr einen kurzen Namen. Updates ersetzen genau diese Datei, dein Menüeintrag funktioniert also weiter.",
+        text: "Verschiebe sie in einen Ordner Applications in deinem Home-Ordner und benenne sie in StowGUI.AppImage um. Der Menüeintrag sucht genau diesen Namen, und Updates ersetzen diese Datei, damit der Eintrag weiter funktioniert.",
       },
       executable: {
         title: "Ausführen erlauben",
