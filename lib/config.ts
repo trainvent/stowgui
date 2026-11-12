@@ -4,6 +4,8 @@ export const RELEASED = true;
 export const RELEASED_PLATFORMS: readonly ("linux" | "macos")[] = ["linux"];
 
 export const SITE_URL = "https://stowgui.com";
+export const ICON_URL = `${SITE_URL}/icon.png`;
+export const APP_ID = "com.trainvent.StowGUI";
 export const PRICE = "5 €";
 export const MAX_COMPUTERS = 3;
 export const SUPPORT_EMAIL = "support@trainvent.com";

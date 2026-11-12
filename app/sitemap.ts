@@ -4,7 +4,7 @@ import { locales, localePath } from "@/lib/i18n";
 
 export const dynamic = "force-static";
 
-const PATHS = ["/", "/download", "/license", "/terms", "/privacy", "/imprint"];
+const PATHS = ["/", "/download", "/install", "/license", "/terms", "/privacy", "/imprint"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return PATHS.flatMap((path) =>

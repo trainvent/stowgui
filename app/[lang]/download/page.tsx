@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { Button, Card, CodeBlock } from "@trainvent/arcubic";
 import SiteHeader from "../../components/SiteHeader";
 import ReleaseAction from "../../components/ReleaseAction";
 import { RELEASED, RELEASED_PLATFORMS, RELEASES_URL } from "@/lib/config";
+import { localePath } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/metadata";
 import { resolveLang, type LangParams } from "@/lib/params";
 
@@ -30,9 +32,12 @@ export default async function DownloadPage(props: LangParams) {
             <Card key={os} className="download">
               <h3>{text[os]}</h3>
               {RELEASED_PLATFORMS.includes(os) ? (
-                <Button size="3" asChild>
-                  <a href={RELEASES_URL}>{text.getRelease}</a>
-                </Button>
+                <>
+                  <Button size="3" asChild>
+                    <a href={RELEASES_URL}>{text.getRelease}</a>
+                  </Button>
+                  {os === "linux" && <Link href={localePath(locale, "/install")}>{text.installGuide}</Link>}
+                </>
               ) : (
                 <Button size="3" disabled>{dict.comingSoon}</Button>
               )}

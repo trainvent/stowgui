@@ -65,7 +65,8 @@ section[id] { scroll-margin-top: 24px; }
 
 .steps { list-style: none; counter-reset: step; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 0; margin: 0; }
 .steps li { counter-increment: step; display: grid; grid-template-columns: 40px 1fr; column-gap: 14px; }
-.steps li::before { content: counter(step); grid-row: span 2; width: 36px; height: 36px; padding: 3px 0 0 6px; background: var(--teal-9); color: var(--teal-contrast); font: 400 15px var(--font-ui); clip-path: polygon(0 0, 100% 0, 0 100%); }
+.steps li::before { grid-row: span 2; }
+.steps li::before, .install-steps li::before { content: counter(step); width: 36px; height: 36px; padding: 3px 0 0 6px; background: var(--teal-9); color: var(--teal-contrast); font: 400 15px var(--font-ui); clip-path: polygon(0 0, 100% 0, 0 100%); }
 .steps p { margin: 0; color: var(--gray-11); font-size: 15px; }
 
 .pricing { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 28px; }
@@ -87,6 +88,11 @@ section[id] { scroll-margin-top: 24px; }
 
 /* Download */
 .download { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px; }
+
+.install-steps { list-style: none; counter-reset: step; padding: 0; margin: 0; display: grid; gap: 40px; }
+.install-steps li { counter-increment: step; position: relative; padding-left: 52px; min-width: 0; }
+.install-steps li::before { position: absolute; left: 0; top: 0; }
+.install-steps p { margin: 0 0 14px; color: var(--gray-11); }
 
 /* Key form */
 .license-form label { display: block; font: 400 14px var(--font-ui); color: var(--gray-11); margin-bottom: 8px; }

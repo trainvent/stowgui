@@ -112,6 +112,30 @@ const de: Dictionary = {
     getRelease: "Neueste Version laden",
     stowTitle: "Zuerst GNU Stow installieren",
     stowLead: "StowGUI braucht GNU Stow 2.4 oder neuer auf deinem Computer.",
+    installGuide: "Installationsanleitung",
+  },
+  install: {
+    title: "StowGUI installieren",
+    lead: "Richte StowGUI so ein, dass es wie jede andere App im App-Menü startet.",
+    ubuntu: "Ubuntu",
+    steps: {
+      download: {
+        title: "App herunterladen",
+        text: "Lade die Datei mit der Endung .AppImage. Sie enthält die ganze App, du musst nichts weiter installieren.",
+      },
+      store: {
+        title: "Einen festen Platz geben",
+        text: "Verschiebe sie in einen Ordner Applications in deinem Home-Ordner und gib ihr einen kurzen Namen. Updates ersetzen genau diese Datei, dein Menüeintrag funktioniert also weiter.",
+      },
+      executable: {
+        title: "Ausführen erlauben",
+        text: "Markiere die Datei als Programm.",
+      },
+      menu: {
+        title: "Zum App-Menü hinzufügen",
+        text: "Speichere das Symbol und lege einen Menüeintrag an. Danach findest du StowGUI in der App-Suche und kannst es im Dock anheften.",
+      },
+    },
   },
   success: {
     title: "Danke!",

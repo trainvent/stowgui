@@ -113,6 +113,30 @@ const en = {
     getRelease: "Get the latest version",
     stowTitle: "Install GNU Stow first",
     stowLead: "StowGUI needs GNU Stow 2.4 or newer on your computer.",
+    installGuide: "Installation guide",
+  },
+  install: {
+    title: "Install StowGUI",
+    lead: "Set up StowGUI so it opens from your app menu like any other app.",
+    ubuntu: "Ubuntu",
+    steps: {
+      download: {
+        title: "Download the app",
+        text: "Get the file ending in .AppImage. It contains the whole app, so there is nothing else to install.",
+      },
+      store: {
+        title: "Give it a permanent home",
+        text: "Move it to an Applications folder in your home folder and give it a short name. Updates replace this file, so your menu entry keeps working.",
+      },
+      executable: {
+        title: "Allow it to run",
+        text: "Mark the file as a program.",
+      },
+      menu: {
+        title: "Add it to the app menu",
+        text: "Save the icon and create a menu entry. StowGUI then appears when you search your apps and can be pinned to the dock.",
+      },
+    },
   },
   success: {
     title: "Thank you!",
