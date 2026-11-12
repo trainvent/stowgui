@@ -20,7 +20,10 @@ Things only you can do, roughly in order.
 - [ ] Authenticate stowgui.com in Brevo and add the sender `license@stowgui.com` (`docs/dev/selling.md`).
 - [x] Stripe test mode: product `prod_Vb8fRfea3E5K6M`, Payment Link `plink_1UZwOj3SIDKPozJgKEF9GUO7`, webhook `we_1UZwOq3SIDKPozJgy4z0m2DW`.
 - [x] Run a test purchase end to end (2026-11-09: key issued, emailed via Brevo, signature valid, refund revoked it).
-- [ ] Repeat the Stripe setup in live mode (`stripe … --live`), then swap `STRIPE_WEBHOOK_SECRET` and `STRIPE_PAYMENT_LINK_ID` to the live values.
+- [ ] Repeat the Stripe setup in live mode, then swap `STRIPE_WEBHOOK_SECRET` and `STRIPE_PAYMENT_LINK_ID` to the live values.
+  - [x] Live product `prod_Vc8ztUlgOqupQk` and price `price_1Uauhs3SIDKPozJgG76NVzVE` (5 € inclusive) created 2026-11-12.
+  - [ ] Payment Link and webhook: the Stripe CLI's live key lacks `payment_links_write` and `webhook_write`. Grant them on the CLI key (Dashboard → API keys) or create both in the Dashboard with the test link's settings (billing address required, terms consent with the withdrawal text, invoice with the § 19 UStG footer, redirect to `/buy/success/`; webhook with the four events above).
+  - [ ] Order: store the live webhook secret, deploy the Worker with the live `STRIPE_PAYMENT_LINK_ID`, and only then set `PAYMENT_LINK`. Otherwise a sale could go through without a key being issued.
 - [ ] Set the GitHub variable `PAYMENT_LINK` (`LICENSE_API_URL` is set).
 - [x] Publish app builds as GitHub releases in trainvent/stowgui: Linux 0.1.0 on 2026-11-12. macOS follows (`stowgui_source/tasks/macos-release.md`); then add `"macos"` to `RELEASED_PLATFORMS` in `lib/config.ts`.
 - [x] Set `RELEASED = true` (2026-11-12). Buy stays disabled until the live-mode `PAYMENT_LINK` variable is set.
