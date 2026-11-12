@@ -54,7 +54,8 @@ export function brevoMailer(apiKey: string, sender: Sender, downloadUrl: string,
       headers: { "api-key": apiKey, "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
         sender,
-        to: [{ email: to }],
+        // No open or click tracking: anonymise it, and drop the pixel where the plan allows.
+        to: [{ email: to, contactPixelTrackingConsent: false, removeTrackingPixel: true }],
         replyTo: { email: replyTo },
         subject: message.subject,
         textContent: text,

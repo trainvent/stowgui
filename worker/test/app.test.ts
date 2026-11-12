@@ -111,7 +111,7 @@ describe("Brevo mailer", () => {
     const body = JSON.parse(calls[0].init.body as string);
     expect(body).toMatchObject({
       sender: { name: "StowGUI", email: "license@stowgui.com" },
-      to: [{ email: "buyer@example.com" }],
+      to: [{ email: "buyer@example.com", contactPixelTrackingConsent: false, removeTrackingPixel: true }],
       replyTo: { email: "support@trainvent.com" },
       subject: "Dein StowGUI-Lizenzschlüssel",
     });

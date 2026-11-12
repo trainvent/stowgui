@@ -17,7 +17,7 @@ Things only you can do, roughly in order.
 - [ ] Provide a durable contract confirmation and verify explicit digital-delivery consent/acknowledgment in the real checkout; the current key email is not the complete confirmation.
 - [ ] Implement and test the support transfer procedure: authenticate the holder, revoke/reissue credentials, release old seats and move recovery to the new holder while preserving accounting records. See `docs/dev/selling.md`.
 - [ ] Verify privacy notice details against processor agreements and actual retention/deletion practices.
-- [ ] Authenticate stowgui.com in Brevo and add the sender `license@stowgui.com` (`docs/dev/selling.md`).
+- [ ] Authenticate stowgui.com in Brevo and add the sender `license@stowgui.com` (`docs/dev/selling.md`). DNS is in place (checked 2026-11-12): Brevo code TXT, DKIM `brevo1`/`brevo2` CNAMEs and DMARC `p=none`. Confirm the domain shows as authenticated in Brevo, then tick this.
 - [x] Stripe test mode: product `prod_Vb8fRfea3E5K6M`, Payment Link `plink_1UZwOj3SIDKPozJgKEF9GUO7`, webhook `we_1UZwOq3SIDKPozJgy4z0m2DW`.
 - [x] Run a test purchase end to end (2026-11-09: key issued, emailed via Brevo, signature valid, refund revoked it).
 - [ ] Repeat the Stripe setup in live mode, then swap `STRIPE_WEBHOOK_SECRET` and `STRIPE_PAYMENT_LINK_ID` to the live values.
@@ -49,7 +49,9 @@ The received test message was inspected through Gmail's MIME representation. It 
 - [x] Verify the request format, full footer, key preservation and escaping in regression tests; all 21 Worker tests and type checking pass.
 - [x] Deploy and resend to `dummy@trainvent.com`; Gmail confirms receipt of both plain-text and wrapping HTML parts with the full footer (2026-11-11).
 - [x] Verify key selection, width and footer visibility in Nextcloud Mail; the user confirmed the corrected message displays properly (2026-11-11).
-- [ ] Review Brevo's injected open tracking and the website's no-tracking statements before launch. Do not assume the provider leaves authored HTML or requested plain-text parts unchanged. No tracking configuration or privacy copy was changed by this formatting fix.
+- [ ] Review Brevo's injected open tracking and the website's no-tracking statements before launch. Do not assume the provider leaves authored HTML or requested plain-text parts unchanged.
+  - [x] The key email requests `contactPixelTrackingConsent: false` (anonymised opens/clicks) and `removeTrackingPixel: true` (honoured on Enterprise plans only) (2026-11-12; needs a Worker deploy).
+  - [ ] In Brevo, check that per-contact tracking consent is active, so the anonymisation applies, and turn on anonymous tracking for transactional email (reported under Settings → Automations → Transactional emails → Tracking; path unverified). Then check a received key email: if a pixel remains, the privacy policy should say that Brevo counts opens anonymously.
 
 ## Deployment resolution and completed live checks — 2026-11-11
 
