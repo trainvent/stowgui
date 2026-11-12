@@ -22,8 +22,8 @@ Things only you can do, roughly in order.
 - [x] Run a test purchase end to end (2026-11-09: key issued, emailed via Brevo, signature valid, refund revoked it).
 - [ ] Repeat the Stripe setup in live mode (`stripe … --live`), then swap `STRIPE_WEBHOOK_SECRET` and `STRIPE_PAYMENT_LINK_ID` to the live values.
 - [ ] Set the GitHub variable `PAYMENT_LINK` (`LICENSE_API_URL` is set).
-- [ ] Publish app builds as GitHub releases in trainvent/stowgui (the download page links to the latest release). Publishing the release also emails everyone watching the repo for releases.
-- [ ] Set `RELEASED = true` in `lib/config.ts` to replace "Coming soon" with Buy and Download.
+- [x] Publish app builds as GitHub releases in trainvent/stowgui: Linux 0.1.0 on 2026-11-12. macOS follows (`stowgui_source/tasks/macos-release.md`); then add `"macos"` to `RELEASED_PLATFORMS` in `lib/config.ts`.
+- [x] Set `RELEASED = true` (2026-11-12). Buy stays disabled until the live-mode `PAYMENT_LINK` variable is set.
 - [ ] Replace the placeholder favicon (`app/icon.svg`) once there is a StowGUI logo.
 
 ## Test purchase — 2026-11-11

@@ -1,7 +1,7 @@
 import { Button, Card, CodeBlock } from "@trainvent/arcubic";
 import SiteHeader from "../../components/SiteHeader";
 import ReleaseAction from "../../components/ReleaseAction";
-import { RELEASED, RELEASES_URL } from "@/lib/config";
+import { RELEASED, RELEASED_PLATFORMS, RELEASES_URL } from "@/lib/config";
 import { pageMetadata } from "@/lib/metadata";
 import { resolveLang, type LangParams } from "@/lib/params";
 
@@ -29,9 +29,13 @@ export default async function DownloadPage(props: LangParams) {
           {(["linux", "macos"] as const).map((os) => (
             <Card key={os} className="download">
               <h3>{text[os]}</h3>
-              <Button size="3" asChild>
-                <a href={RELEASES_URL}>{text.getRelease}</a>
-              </Button>
+              {RELEASED_PLATFORMS.includes(os) ? (
+                <Button size="3" asChild>
+                  <a href={RELEASES_URL}>{text.getRelease}</a>
+                </Button>
+              ) : (
+                <Button size="3" disabled>{dict.comingSoon}</Button>
+              )}
             </Card>
           ))}
         </div>}
