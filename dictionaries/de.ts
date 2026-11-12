@@ -87,7 +87,7 @@ const de: Dictionary = {
       },
       {
         q: "Was passiert auf einem neuen Computer?",
-        a: `Aktiviere dort deinen Schlüssel. Sind schon ${MAX_COMPUTERS} Computer aktiv, wird der Computer mit der am längsten zurückliegenden Prüfung freigegeben. Dort werden kostenpflichtige Änderungen bei der nächsten Online-Prüfung oder nach Ablauf der Offline-Frist gesperrt. Unter Einstellungen → Lizenz kannst du ihn erneut aktivieren.`,
+        a: `Aktiviere dort deinen Schlüssel. Sind schon ${MAX_COMPUTERS} Computer aktiv, wird der Computer mit der am längsten zurückliegenden Prüfung freigegeben. Dort werden kostenpflichtige Änderungen bei der nächsten Online-Prüfung oder nach Ablauf der Offline-Frist gesperrt. Um selbst zu wählen, welcher Computer frei wird, deaktiviere ihn vorher unter Einstellungen → Lizenz auf einem deiner Computer.`,
       },
       {
         q: "Ich habe meinen Schlüssel verloren.",

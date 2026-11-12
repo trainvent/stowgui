@@ -59,9 +59,14 @@ The corrected key email reached the Gmail inbox and contains `multipart/alternat
 
 ## Computer management rollout
 
-- [ ] Apply Worker migration `0003_device_names.sql` and deploy the device-list,
-  rename and deactivate endpoints before distributing the updated desktop app.
-  Local Worker tests and app sandbox checks pass; live rollout is not performed.
+- [x] Apply migrations `0003_device_names.sql` and `0004_unique_device_names.sql`
+  to the live database (2026-11-12). Backup before migrating:
+  `~/Dokumente/Agents/stowgui/stowgui-licenses-backup-2026-11-12.sql`; Time Travel
+  bookmark `00000008-00000000-00005121-523245c9b08383234f714da85cc1c7b4`.
+- [x] Deploy the device-list, rename and deactivate endpoints (2026-11-12, version
+  `757d056b`). All license endpoints answer `403 invalid` for a forged key.
+- [ ] Test the built desktop app against the live service with a Stripe test purchase:
+  activate, rename, deactivate, then refund and confirm paid actions lock.
 
 
 ## Hosted license sandbox

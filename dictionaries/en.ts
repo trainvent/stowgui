@@ -88,7 +88,7 @@ const en = {
       },
       {
         q: "What happens on a new computer?",
-        a: `Activate your key there. If you already have ${MAX_COMPUTERS} active computers, the least recently checked one is released. It locks paid changes at its next online check or when its offline allowance expires. You can activate it again in Settings → License.`,
+        a: `Activate your key there. If you already have ${MAX_COMPUTERS} active computers, the least recently checked one is released. It locks paid changes at its next online check or when its offline allowance expires. To choose which computer to free instead, deactivate it in Settings → License on any of your computers.`,
       },
       {
         q: "I lost my key.",
