@@ -33,3 +33,34 @@ it("escapes dynamic HTML and keeps multiple keys in separate wrapping blocks", a
   expect(payload.htmlContent.match(/word-break:break-all/g)).toHaveLength(2);
   expect(payload.textContent).toContain("KEY<ONE>.SIG\n\nKEY&TWO.SIG");
 });
+
+it.each(["de", "en"] as const)("attaches readable PDF documents in %s", async (locale) => {
+  let payload: { attachment: { name: string; content: string }[] } | undefined;
+  vi.stubGlobal("fetch", async (_url: string, init: RequestInit) => {
+    payload = JSON.parse(init.body as string);
+    return new Response("{}", { status: 201 });
+  });
+  await brevoMailer("test-key", { name: "StowGUI", email: "license@stowgui.com" }, "https://stowgui.com/en/download/")("test@example.com", locale, ["KEY.SIG"]);
+  expect(payload?.attachment.map(a => a.name)).toEqual([`StowGUI-terms-${locale}.pdf`, `StowGUI-privacy-${locale}.pdf`]);
+  for (const attachment of payload!.attachment) {
+    const pdf = Buffer.from(attachment.content, "base64");
+    expect(pdf.subarray(0, 5).toString()).toBe("%PDF-");
+    expect(pdf.toString()).toContain("%%EOF");
+    expect(pdf.length).toBeLessThan(1_000_000);
+  }
+});
+
+it("records purchase details and only the consent actually supplied by checkout", async () => {
+  let payload: { textContent: string } | undefined;
+  vi.stubGlobal("fetch", async (_url: string, init: RequestInit) => {
+    payload = JSON.parse(init.body as string);
+    return new Response("{}", { status: 201 });
+  });
+  const mail = brevoMailer("test-key", { name: "StowGUI", email: "license@stowgui.com" }, "https://stowgui.com/en/download/");
+  await mail("test@example.com", "en", ["KEY.SIG"], { reference: "cs_test", amount: 500, currency: "eur", acceptedText: "I agree to immediate delivery." });
+  expect(payload?.textContent).toContain("Purchase reference: cs_test");
+  expect(payload?.textContent).toContain("€5.00");
+  expect(payload?.textContent).toContain("Agreement accepted at checkout: I agree to immediate delivery.");
+  await mail("test@example.com", "en", ["KEY.SIG"], { reference: "cs_test", amount: 500, currency: "eur" });
+  expect(payload?.textContent).not.toContain("Agreement accepted at checkout:");
+});

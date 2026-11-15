@@ -110,6 +110,7 @@ const en = {
     lead: "Free to download. Buy a key to apply changes.",
     linux: "Linux",
     macos: "macOS",
+    macosRequirements: "macOS 11 or newer. One Universal app for Apple silicon and Intel Macs. Unzip the download and move StowGUI.app to Applications.",
     getRelease: "Get the latest version",
     stowTitle: "Install GNU Stow first",
     stowLead: "StowGUI needs GNU Stow 2.4 or newer on your computer.",

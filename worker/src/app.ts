@@ -1,5 +1,5 @@
 import { handleActivation, type ActivationStore } from "./activation";
-import { pickLocale, type Locale, type Mailer } from "./email";
+import { pickLocale, type Locale, type Mailer, type PurchaseConfirmation } from "./email";
 import { newLicensePayload, signLicense } from "./license";
 import type { LicenseRecord, LicenseStore } from "./store";
 import { verifyStripeEvent } from "./stripe";
@@ -24,8 +24,8 @@ type Obj = Record<string, unknown>;
 const str = (value: unknown) => (typeof value === "string" ? value : null);
 
 export function createApp(deps: Deps) {
-  async function sendKeys(email: string, locale: Locale, records: LicenseRecord[]) {
-    await deps.mail(email, locale, records.map((r) => r.license_key));
+  async function sendKeys(email: string, locale: Locale, records: LicenseRecord[], purchase?: PurchaseConfirmation) {
+    await deps.mail(email, locale, records.map((r) => r.license_key), purchase);
     for (const record of records) await deps.store.markEmailed(record.id, deps.now());
   }
 
@@ -38,9 +38,16 @@ export function createApp(deps: Deps) {
     const email = str(details.email)?.toLowerCase();
     if (!sessionId || !email) return new Response("missing session or email", { status: 400 });
 
+    const consent = session.consent as Obj | undefined;
+    const customText = session.custom_text as Obj | undefined;
+    const termsAcceptance = customText?.terms_of_service_acceptance as Obj | undefined;
+    const purchase: PurchaseConfirmation | undefined = typeof session.amount_total === "number" && typeof session.currency === "string"
+      ? { reference: sessionId, amount: session.amount_total, currency: session.currency,
+          acceptedText: consent?.terms_of_service === "accepted" ? str(termsAcceptance?.message) ?? undefined : undefined }
+      : undefined;
     const existing = await deps.store.findBySession(sessionId);
     if (existing) {
-      if (existing.last_email_at === null) await sendKeys(existing.email, existing.locale as Locale, [existing]);
+      if (existing.last_email_at === null) await sendKeys(existing.email, existing.locale as Locale, [existing], purchase);
       return new Response("already issued");
     }
 
@@ -58,7 +65,7 @@ export function createApp(deps: Deps) {
       last_email_at: null,
     };
     await deps.store.insert(record);
-    await sendKeys(email, record.locale as Locale, [record]);
+    await sendKeys(email, record.locale as Locale, [record], purchase);
     return new Response("issued");
   }
 

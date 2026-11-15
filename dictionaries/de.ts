@@ -109,6 +109,7 @@ const de: Dictionary = {
     lead: "Kostenlos herunterladen. Mit einem Schlüssel kannst du Änderungen anwenden.",
     linux: "Linux",
     macos: "macOS",
+    macosRequirements: "macOS 11 oder neuer. Eine Universal-App für Apple Silicon und Intel-Macs. Entpacke den Download und verschiebe StowGUI.app in den Programme-Ordner.",
     getRelease: "Neueste Version laden",
     stowTitle: "Zuerst GNU Stow installieren",
     stowLead: "StowGUI braucht GNU Stow 2.4 oder neuer auf deinem Computer.",

@@ -5,6 +5,7 @@ Things only you can do, roughly in order.
 - [ ] Have the terms, withdrawal notice and privacy policy reviewed (`dictionaries/en.ts`, `de.ts`). The German texts are the legally relevant ones.
 - [x] Enable GitHub Pages and set the custom domain and DNS (`docs/dev/deploy.md`).
 - [x] Create the Cloudflare D1 database, key pair and signing secret; deploy the Worker.
+- [x] Secure backups of the license and update signing keys confirmed by the user on 2026-11-15.
 - [ ] Move the private key from `~/Dokumente/Agents/stowgui/license-signing-key.txt` into your password manager, then delete the file.
 - [x] Add the Worker secret `STRIPE_WEBHOOK_SECRET` (test mode).
 - [ ] Add the Worker secret `BREVO_API_KEY` (`cd worker && npx wrangler secret put BREVO_API_KEY`).
@@ -81,3 +82,18 @@ The corrected key email reached the Gmail inbox and contains `multipart/alternat
 - [x] Deployment configuration and private credential/seed preparation; production deployment unchanged.
 - [x] Local tests and dry run; hosted route isolation, forged-key rejection, seat eviction and reclaim checks.
 - [ ] Separate staging coverage for purchase delivery/email and signed app updates; license sandbox routes intentionally exclude these.
+
+## Launch preparation — 2026-11-15
+
+- [x] Generate German/English legal PDFs from the existing dictionary texts and attach them to license mail. Worker bundles base64 bytes; CI checks freshness. See `docs/dev/legal-documents.md`.
+- [x] Include order reference/amount and accepted checkbox wording when present in the signed Stripe event; never infer consent from payment.
+- [x] Implement operator transfer preview/apply command and local D1 integration coverage. Production handover acceptance remains separate.
+- [x] Prepare macOS download availability and minimum requirements in the website source. Not deployed by these local changes.
+- [ ] Deploy and inspect a received attachment email; review German checkout and confirmation together.
+- [ ] Live preparation remains blocked by the CLI key's Payment Links Write permission (request tested 2026-11-15); user is enabling permissions. No live StowGUI link/webhook was created by the failed requests.
+- [ ] macOS downloaded-app GUI/activation smoke test remains pending, confirmed by the user. Intel physical testing remains deferred.
+
+The earlier checkbox about `BREVO_API_KEY` is stale: Wrangler secret listing on
+2026-11-15 confirms it is installed. This does not verify sender authentication
+or provider tracking. The existing Stripe test link has required terms consent
+and explicit delivery/withdrawal wording; live checkout still needs verification.

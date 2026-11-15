@@ -130,3 +130,14 @@ describe("Brevo mailer", () => {
     }
   });
 });
+
+it("passes only recorded checkout acceptance into the purchase confirmation", async () => {
+  const { deps } = await testDeps();
+  const purchases: unknown[] = [];
+  const app = createApp({ ...deps, mail: async (_to, _locale, _keys, purchase) => { purchases.push(purchase); } });
+  const checkout = { amount_total: 500, currency: "eur", custom_text: { terms_of_service_acceptance: { message: "I request immediate delivery." } } };
+  await app(await webhookRequest(checkoutCompleted({ ...checkout, consent: { terms_of_service: "accepted" } })));
+  await app(await webhookRequest(checkoutCompleted({ ...checkout, id: "cs_without_acceptance", consent: null })));
+  expect(purchases[0]).toEqual({ reference: "cs_test_1", amount: 500, currency: "eur", acceptedText: "I request immediate delivery." });
+  expect(purchases[1]).toMatchObject({ reference: "cs_without_acceptance", acceptedText: undefined });
+});

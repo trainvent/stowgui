@@ -1,3 +1,5 @@
+import legalAttachments from "./legal/attachments.json";
+
 const BREVO_URL = "https://api.brevo.com/v3/smtp/email";
 const GERMAN_COUNTRIES = new Set(["DE", "AT", "CH", "LI"]);
 
@@ -13,12 +15,12 @@ const MESSAGES = {
   en: {
     subject: "Your StowGUI license key",
     body: (keys: string, download: string) =>
-      `Thank you for buying StowGUI!\n\nYour license key:\n\n${keys}\n\nDownload StowGUI: ${download}\nThen open Settings → License and activate the key online.\n\nYou can use it on up to 3 computers for personal or commercial use. All 1.x versions are included. Each successful online license check gives you up to 30 days offline. Keep this email to find your key later.\n\nQuestions? Just reply to this email.`,
+      `Thank you for buying StowGUI!\n\nYour license key:\n\n${keys}\n\nDownload StowGUI: ${download}\nThen open Settings → License and activate the key online.\n\nYou can use it on up to 3 computers for personal or commercial use. All 1.x versions are included. Each successful online license check gives you up to 30 days offline. Keep this email to find your key later.\n\nThe attached PDFs contain the terms of sale, withdrawal notice and model form, and privacy notice. Keep them with this email.\n\nQuestions? Just reply to this email.`,
   },
   de: {
     subject: "Dein StowGUI-Lizenzschlüssel",
     body: (keys: string, download: string) =>
-      `Danke für deinen Kauf von StowGUI!\n\nDein Lizenzschlüssel:\n\n${keys}\n\nStowGUI herunterladen: ${download}\nÖffne dann Einstellungen → Lizenz und aktiviere den Schlüssel online.\n\nDu kannst ihn privat oder gewerblich auf bis zu 3 Computern nutzen. Alle 1.x-Versionen sind enthalten. Jede erfolgreiche Online-Lizenzprüfung ermöglicht bis zu 30 Tage Offline-Nutzung. Heb diese E-Mail auf, um den Schlüssel später wiederzufinden.\n\nFragen? Antworte einfach auf diese E-Mail.`,
+      `Danke für deinen Kauf von StowGUI!\n\nDein Lizenzschlüssel:\n\n${keys}\n\nStowGUI herunterladen: ${download}\nÖffne dann Einstellungen → Lizenz und aktiviere den Schlüssel online.\n\nDu kannst ihn privat oder gewerblich auf bis zu 3 Computern nutzen. Alle 1.x-Versionen sind enthalten. Jede erfolgreiche Online-Lizenzprüfung ermöglicht bis zu 30 Tage Offline-Nutzung. Heb diese E-Mail auf, um den Schlüssel später wiederzufinden.\n\nDie angehängten PDFs enthalten die AGB, die Widerrufsbelehrung mit Musterformular und die Datenschutzerklärung. Heb sie zusammen mit dieser E-Mail auf.\n\nFragen? Antworte einfach auf diese E-Mail.`,
   },
 } as const;
 
@@ -40,15 +42,31 @@ function htmlBody(text: string, keys: string[], locale: Locale): string {
   return `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="${BODY_STYLE}"><div style="${CONTENT_STYLE}">${paragraphs}</div></body></html>`;
 }
 
-export type Mailer = (to: string, locale: Locale, licenseKeys: string[]) => Promise<void>;
+export type PurchaseConfirmation = {
+  reference: string;
+  amount: number;
+  currency: string;
+  acceptedText?: string;
+};
+
+export type Mailer = (to: string, locale: Locale, licenseKeys: string[], purchase?: PurchaseConfirmation) => Promise<void>;
+
+function purchaseDetails(purchase: PurchaseConfirmation, locale: Locale): string {
+  const amount = new Intl.NumberFormat(locale, { style: "currency", currency: purchase.currency }).format(purchase.amount / 100);
+  const lines = locale === "de"
+    ? [`Kaufreferenz: ${purchase.reference}`, `Gesamtbetrag: ${amount}`]
+    : [`Purchase reference: ${purchase.reference}`, `Total paid: ${amount}`];
+  if (purchase.acceptedText) lines.push(locale === "de" ? `Im Checkout bestätigte Erklärung: ${purchase.acceptedText}` : `Agreement accepted at checkout: ${purchase.acceptedText}`);
+  return lines.join("\n\n");
+}
 
 export type Sender = { name: string; email: string };
 
 export function brevoMailer(apiKey: string, sender: Sender, downloadUrl: string, replyTo = "support@trainvent.com"): Mailer {
-  return async (to, locale, licenseKeys) => {
+  return async (to, locale, licenseKeys, purchase) => {
     const message = MESSAGES[locale];
     const download = locale === "de" ? downloadUrl.replace("/en/", "/de/") : downloadUrl;
-    const text = message.body(licenseKeys.join("\n\n"), download);
+    const text = [message.body(licenseKeys.join("\n\n"), download), purchase ? purchaseDetails(purchase, locale) : ""].filter(Boolean).join("\n\n");
     const response = await fetch(BREVO_URL, {
       method: "POST",
       headers: { "api-key": apiKey, "Content-Type": "application/json", Accept: "application/json" },
@@ -58,6 +76,7 @@ export function brevoMailer(apiKey: string, sender: Sender, downloadUrl: string,
         to: [{ email: to, contactPixelTrackingConsent: false, removeTrackingPixel: true }],
         replyTo: { email: replyTo },
         subject: message.subject,
+        attachment: legalAttachments[locale],
         textContent: text,
         htmlContent: htmlBody(text, licenseKeys, locale),
       }),

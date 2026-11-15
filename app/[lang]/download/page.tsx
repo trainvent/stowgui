@@ -31,6 +31,7 @@ export default async function DownloadPage(props: LangParams) {
           {(["linux", "macos"] as const).map((os) => (
             <Card key={os} className="download">
               <h3>{text[os]}</h3>
+              {os === "macos" && <p>{text.macosRequirements}</p>}
               {RELEASED_PLATFORMS.includes(os) ? (
                 <>
                   <Button size="3" asChild>

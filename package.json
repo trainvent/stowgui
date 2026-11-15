@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "legal:check": "node scripts/legal-documents.mjs --check",
+    "legal:generate": "node scripts/legal-documents.mjs"
   },
   "engines": {
     "node": ">=24"
