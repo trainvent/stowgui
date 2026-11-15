@@ -10,7 +10,7 @@ const CONSENT = 'I agree to the [terms](https://stowgui.com/en/terms/) and that 
 const EVENTS = ['checkout.session.completed', 'checkout.session.async_payment_succeeded', 'charge.refunded', 'charge.dispute.created'];
 const manifest = JSON.parse(readFileSync(new URL('../worker/src/legal/manifest.json', import.meta.url)));
 const params = {
-  'line_items[0][price]': PRICE_ID, 'line_items[0][quantity]': '1', active: 'false',
+  'line_items[0][price]': PRICE_ID, 'line_items[0][quantity]': '1',
   billing_address_collection: 'required', 'consent_collection[terms_of_service]': 'required',
   'custom_text[terms_of_service_acceptance][message]': CONSENT,
   'after_completion[type]': 'redirect', 'after_completion[redirect][url]': SUCCESS_URL,
@@ -30,11 +30,17 @@ function stripe(method, path, fields = {}) {
 }
 
 if (!process.argv.includes('--apply')) {
-  console.log(JSON.stringify({ paymentLink: params, webhook: { url: WEBHOOK_URL, events: EVENTS }, note: 'Preview only. --apply creates an inactive live Payment Link. It does not deploy, install secrets or enable sales.' }, null, 2));
+  console.log(JSON.stringify({ paymentLink: params, webhook: { url: WEBHOOK_URL, events: EVENTS }, note: 'Preview only. --apply creates a live Payment Link, immediately deactivates it, and prepares the webhook secret. It does not deploy application code or publish a checkout URL.' }, null, 2));
 } else {
+  const account = stripe('get', '/v1/account');
+  if (account.id !== 'acct_1TBaml3SIDKPozJg') throw new Error('Select the verified Trainvent live account before provisioning StowGUI.');
   const links = stripe('get', '/v1/payment_links', { limit: '100' });
   let link = links.data.find(item => item.metadata?.app === 'stowgui' && item.metadata?.legal_source_sha256 === manifest.source);
-  if (!link) link = stripe('post', '/v1/payment_links', params);
+  if (!link) {
+    link = stripe('post', '/v1/payment_links', params);
+    // Stripe supports active only on update, not on link creation.
+    link = stripe('post', `/v1/payment_links/${link.id}`, { active: 'false' });
+  }
   console.log(JSON.stringify({ paymentLinkId: link.id, url: link.url, active: link.active }));
   const endpoints = stripe('get', '/v1/webhook_endpoints', { limit: '100' });
   let endpoint = endpoints.data.find(item => item.url === WEBHOOK_URL);

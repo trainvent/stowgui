@@ -9,7 +9,7 @@ EMAIL_FROM_NAME = "StowGUI"
 EMAIL_FROM_ADDRESS = "license@stowgui.com"
 DOWNLOAD_URL = "https://stowgui.com/en/download/"
 # Optional: only handle purchases from this Payment Link (plink_...)
-STRIPE_PAYMENT_LINK_ID = "plink_1UZwOj3SIDKPozJgKEF9GUO7"
+STRIPE_PAYMENT_LINK_ID = "plink_1Uc3U43SIDKPozJgQnOSxZjY"
 
 [[d1_databases]]
 binding = "DB"

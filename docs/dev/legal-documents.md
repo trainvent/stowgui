@@ -34,7 +34,7 @@ review of the German checkout and confirmation together.
 ## Live checkout preparation
 
 `node scripts/prepare-live-checkout.mjs` previews the intended Stripe settings.
-With `--apply`, it creates an **inactive** live Payment Link with explicit
+With `--apply`, it creates a live Payment Link and immediately deactivates it before sharing the URL with explicit
 immediate-delivery/withdrawal wording, billing address, invoice and document
 hashes. It reuses a matching existing link and webhook, creates the four-event
 StowGUI webhook when absent, and installs a newly created webhook secret via
@@ -42,7 +42,7 @@ Wrangler without printing it. On installation failure, the secret remains in
 `worker/.wrangler/live-webhook-secret.txt` with mode 0600; install it before
 continuing. Do not recreate an endpoint blindly after a failure.
 
-The CLI key needs Payment Links Write and Webhook Endpoints Write. Existing
+The CLI authorization needs Payment Links Write and Webhook Endpoints Write. The script verifies the intended account ID before provisioning. Stripe only accepts `active` on link update, so creation and deactivation are separate calls. Existing
 endpoints' secrets cannot be read back; verify a reused endpoint's secret and
 subscribed events before continuing. Set the Worker payment-link ID and deploy
 before activating the link. Complete a purchase/email/activation/refund check,

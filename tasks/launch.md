@@ -8,7 +8,7 @@ Things only you can do, roughly in order.
 - [x] Secure backups of the license and update signing keys confirmed by the user on 2026-11-15.
 - [ ] Move the private key from `~/Dokumente/Agents/stowgui/license-signing-key.txt` into your password manager, then delete the file.
 - [x] Add the Worker secret `STRIPE_WEBHOOK_SECRET` (test mode).
-- [ ] Add the Worker secret `BREVO_API_KEY` (`cd worker && npx wrangler secret put BREVO_API_KEY`).
+- [x] Add the Worker secret `BREVO_API_KEY` (`cd worker && npx wrangler secret put BREVO_API_KEY`).
 - [x] Embed the existing public key in the app repo (`stowgui_source`) for signature verification.
 - [x] Apply `worker/migrations/0002_activations.sql` to the remote database (2026-11-11).
 - [x] Deploy the activation/check-in API with its `ACTIVATION_LIMIT` binding (2026-11-11). Resolved the D1 upload error with the current `database_id` field; deploy through `npm run deploy`.
@@ -16,15 +16,16 @@ Things only you can do, roughly in order.
 - [x] Enter the key in the desktop GUI against the deployed service (2026-11-12); the automated live check used an isolated profile and the production Rust license code.
 - [x] Update German and English purchase copy, terms and privacy notice for 30-day offline use, whole-license transfers and service shutdown.
 - [ ] Provide a durable contract confirmation and verify explicit digital-delivery consent/acknowledgment in the real checkout; the current key email is not the complete confirmation.
-- [ ] Implement and test the support transfer procedure: authenticate the holder, revoke/reissue credentials, release old seats and move recovery to the new holder while preserving accounting records. See `docs/dev/selling.md`.
+- [x] Implement and test the support transfer procedure locally: authenticate the holder, revoke/reissue credentials, release old seats and move recovery to the new holder while preserving accounting records. See `docs/dev/selling.md`.
 - [ ] Verify privacy notice details against processor agreements and actual retention/deletion practices.
-- [ ] Authenticate stowgui.com in Brevo and add the sender `license@stowgui.com` (`docs/dev/selling.md`). DNS is in place (checked 2026-11-12): Brevo code TXT, DKIM `brevo1`/`brevo2` CNAMEs and DMARC `p=none`. Confirm the domain shows as authenticated in Brevo, then tick this.
+- [x] Authenticate stowgui.com in Brevo and add the sender `license@stowgui.com` (`docs/dev/selling.md`). DNS is in place (checked 2026-11-12): Brevo code TXT, DKIM `brevo1`/`brevo2` CNAMEs and DMARC `p=none`. A received license email on 2026-11-15 passed SPF, aligned stowgui.com DKIM and DMARC; sender delivery is verified.
 - [x] Stripe test mode: product `prod_Vb8fRfea3E5K6M`, Payment Link `plink_1UZwOj3SIDKPozJgKEF9GUO7`, webhook `we_1UZwOq3SIDKPozJgy4z0m2DW`.
 - [x] Run a test purchase end to end (2026-11-09: key issued, emailed via Brevo, signature valid, refund revoked it).
-- [ ] Repeat the Stripe setup in live mode, then swap `STRIPE_WEBHOOK_SECRET` and `STRIPE_PAYMENT_LINK_ID` to the live values.
+- [x] Repeat the Stripe infrastructure setup in live mode, then swap `STRIPE_WEBHOOK_SECRET` and `STRIPE_PAYMENT_LINK_ID` to the live values.
   - [x] Live product `prod_Vc8ztUlgOqupQk` and price `price_1Uauhs3SIDKPozJgG76NVzVE` (5 € inclusive) created 2026-11-12.
-  - [ ] Payment Link and webhook: the Stripe CLI's live key lacks `payment_links_write` and `webhook_write`. Grant them on the CLI key (Dashboard → API keys) or create both in the Dashboard with the test link's settings (billing address required, terms consent with the withdrawal text, invoice with the § 19 UStG footer, redirect to `/buy/success/`; webhook with the four events above).
-  - [ ] Order: store the live webhook secret, deploy the Worker with the live `STRIPE_PAYMENT_LINK_ID`, and only then set `PAYMENT_LINK`. Otherwise a sale could go through without a key being issued.
+  - [x] Live Payment Link `plink_1Uc3U43SIDKPozJgQnOSxZjY` and webhook `we_1Uc3U63SIDKPozJgYJaCYa0m` created 2026-11-15 through the authorized CLI. Link is **inactive**. Required consent, billing address, post-payment invoice/footer, redirect and all four webhook events verified. Legal PDF/source hashes are recorded in link metadata.
+  - [x] Store the live webhook secret and deploy the Worker with the live `STRIPE_PAYMENT_LINK_ID` (2026-11-15). `PAYMENT_LINK` remains unset and sales disabled.
+  - [ ] Verify an actual live purchase → contract/key email → activation → refund/revocation before opening sales.
 - [ ] Set the GitHub variable `PAYMENT_LINK` (`LICENSE_API_URL` is set).
 - [x] Publish app builds as GitHub releases in trainvent/stowgui: Linux 0.1.0 on 2026-11-12. macOS follows (`stowgui_source/tasks/macos-release.md`); then add `"macos"` to `RELEASED_PLATFORMS` in `lib/config.ts`.
 - [x] Set `RELEASED = true` (2026-11-12). Buy stays disabled until the live-mode `PAYMENT_LINK` variable is set.
@@ -89,11 +90,24 @@ The corrected key email reached the Gmail inbox and contains `multipart/alternat
 - [x] Include order reference/amount and accepted checkbox wording when present in the signed Stripe event; never infer consent from payment.
 - [x] Implement operator transfer preview/apply command and local D1 integration coverage. Production handover acceptance remains separate.
 - [x] Prepare macOS download availability and minimum requirements in the website source. Not deployed by these local changes.
-- [ ] Deploy and inspect a received attachment email; review German checkout and confirmation together.
-- [ ] Live preparation remains blocked by the CLI key's Payment Links Write permission (request tested 2026-11-15); user is enabling permissions. No live StowGUI link/webhook was created by the failed requests.
+- [x] Deploy and inspect a received attachment email (2026-11-15).
+- [ ] Review German checkout and purchase confirmation together.
+- [x] Resolve the original CLI permission block through account-specific OAuth authorization. Live StowGUI link/webhook created and configured; see the received-attachments record below.
 - [ ] macOS downloaded-app GUI/activation smoke test remains pending, confirmed by the user. Intel physical testing remains deferred.
 
 The earlier checkbox about `BREVO_API_KEY` is stale: Wrangler secret listing on
 2026-11-15 confirms it is installed. This does not verify sender authentication
 or provider tracking. The existing Stripe test link has required terms consent
 and explicit delivery/withdrawal wording; live checkout still needs verification.
+
+## Live Stripe infrastructure and received attachments — 2026-11-15
+
+- Account: `acct_1TBaml3SIDKPozJg` (Trainvent live; existing StowGUI and Aperiodos account).
+- Worker deployed with the live link ID and bundled PDF attachments: version `fedab066-18a8-4fbe-9057-9bf07aae8f2f`. Secret installed without printing or committing it. No signing key or database schema changed.
+- The preparation script initially sent `active` on Payment Link creation, which Stripe rejects. Corrected to create then immediately deactivate before sharing the URL; the script now verifies the account ID first.
+- Checkout settings and all four PDF checksums/source hash verified by reading the live Payment Link; live webhook enabled for completed/async-success purchases, full refunds and disputes.
+- Deployed `/license/resend` accepted the explicitly authorized German attachment test to `dummy@trainvent.com` (HTTP 202). Gmail confirms inbox delivery at 13:30:05 UTC; both PDF attachments have byte-for-byte matching SHA-256 values. Terms include the withdrawal notice/model form. Text/HTML alternatives and footer are present. SPF, aligned stowgui.com DKIM and DMARC all pass.
+- This was recovery of existing test licenses, **not a paid checkout test**. No charge or refund was initiated.
+- Received HTML still includes two Brevo-hosted tracking images. Presence is confirmed; whether provider settings anonymize tracking is not verified. Privacy/provider settings review remains open.
+- Unsigned webhook payload rejected with HTTP 400.
+- Payment Link remains inactive, GitHub `PAYMENT_LINK` is still unset, and Buy remains disabled. Website/source changes from the previous preparation have not been pushed or deployed here.
