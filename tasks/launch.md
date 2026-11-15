@@ -129,7 +129,8 @@ Source: https://support.stripe.com/questions/how-do-i-test-my-integration-when-t
 - [x] Real Stripe CLI webhook forwarding into the production handlers with a separate local database/signing key. Local Brevo payload capture provides an inbox and attached PDFs without additional email sends.
 - [x] Separate desktop test profile and launcher, reusing the existing app sandbox example.
 - [x] Isolated local smoke check covers signed purchase events, recorded consent, email/PDF checksums, activation and refund revocation. This uses synthetic events, not a completed hosted checkout.
-- [ ] Finish current Stripe reauthorization and verify a completed hosted test checkout through the running local environment.
+- [x] Finish Stripe reauthorization and start the local website/listener/service. Buy opens Stripe Sandbox with StowGUI at €5 and the current consent text; redirect verified to the local success page.
+- [ ] Complete a hosted test checkout through the running local environment, inspect its local confirmation, activate and refund it.
 
 Instructions: `docs/dev/local-checkout.md`. The live service and inactive live
 Payment Link are unchanged by this setup.
