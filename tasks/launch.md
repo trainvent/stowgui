@@ -25,7 +25,7 @@ Things only you can do, roughly in order.
   - [x] Live product `prod_Vc8ztUlgOqupQk` and price `price_1Uauhs3SIDKPozJgG76NVzVE` (5 € inclusive) created 2026-11-12.
   - [x] Live Payment Link `plink_1Uc3U43SIDKPozJgQnOSxZjY` and webhook `we_1Uc3U63SIDKPozJgYJaCYa0m` created 2026-11-15 through the authorized CLI. Link is **inactive**. Required consent, billing address, post-payment invoice/footer, redirect and all four webhook events verified. Legal PDF/source hashes are recorded in link metadata.
   - [x] Store the live webhook secret and deploy the Worker with the live `STRIPE_PAYMENT_LINK_ID` (2026-11-15). `PAYMENT_LINK` remains unset and sales disabled.
-  - [ ] Repeat purchase → contract/key email with current consent and PDFs → activation → refund/revocation in Stripe Test-Modus using the same Worker code and isolated test payment settings; separately verify the live configuration. A live self-purchase is not a launch requirement.
+  - [x] Repeat purchase → contract/key email with current consent and PDFs → activation → refund/revocation in Stripe Test-Modus using the same Worker code and isolated test payment settings; separately verify the live configuration. A live self-purchase is not a launch requirement.
 - [ ] Set the GitHub variable `PAYMENT_LINK` (`LICENSE_API_URL` is set).
 - [x] Publish app builds as GitHub releases in trainvent/stowgui: Linux 0.1.0 on 2026-11-12. macOS follows (`stowgui_source/tasks/macos-release.md`); then add `"macos"` to `RELEASED_PLATFORMS` in `lib/config.ts`.
 - [x] Set `RELEASED = true` (2026-11-12). Buy stays disabled until the live-mode `PAYMENT_LINK` variable is set.
@@ -130,7 +130,27 @@ Source: https://support.stripe.com/questions/how-do-i-test-my-integration-when-t
 - [x] Separate desktop test profile and launcher, reusing the existing app sandbox example.
 - [x] Isolated local smoke check covers signed purchase events, recorded consent, email/PDF checksums, activation and refund revocation. This uses synthetic events, not a completed hosted checkout.
 - [x] Finish Stripe reauthorization and start the local website/listener/service. Buy opens Stripe Sandbox with StowGUI at €5 and the current consent text; redirect verified to the local success page.
-- [ ] Complete a hosted test checkout through the running local environment, inspect its local confirmation, activate and refund it.
+- [x] Complete a hosted test checkout through the running local environment, inspect its local confirmation, activate and refund it (2026-11-15; activation and deactivation confirmed by the user).
 
 Instructions: `docs/dev/local-checkout.md`. The live service and inactive live
 Payment Link are unchanged by this setup.
+
+## Hosted test checkout acceptance — 2026-11-15
+
+The user completed the dedicated local-website Stripe Test-Modus checkout.
+`checkout.session.completed` event `evt_1Uc3tK3SIDKPozJgAohkQEbR` reached the
+local production handler and returned 200. The captured German confirmation
+contains the purchase reference and current PDF attachments; the user confirmed
+that its key activated in the separate desktop test profile.
+
+The user issued the full test refund. `charge.refunded` event
+`evt_3Uc3tG3SIDKPozJg1csuMkju` arrived at 14:02:36 UTC and returned 200. A
+read-only local database check confirms the purchased license is revoked; the
+user then confirmed deactivation in the app. This completes the current
+test-mode purchase/confirmation/activation/refund/revocation acceptance flow.
+
+The local confirmation is a captured Brevo payload rather than a real email;
+actual provider delivery and identical PDF attachment bytes were separately
+verified through the hosted service earlier that day. No live charge or refund
+was performed. Legal review, Brevo tracking/privacy and remaining platform
+acceptance checks remain separate launch items.
