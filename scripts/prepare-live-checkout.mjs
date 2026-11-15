@@ -1,23 +1,9 @@
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
+import { writeFileSync, unlinkSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-const PRICE_ID = 'price_1Uauhs3SIDKPozJgG76NVzVE';
-const WEBHOOK_URL = 'https://stowgui-license.trainvent.workers.dev/stripe/webhook';
-const SUCCESS_URL = 'https://stowgui.com/buy/success/';
-const INVOICE_FOOTER = 'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.';
-const CONSENT = 'I agree to the [terms](https://stowgui.com/en/terms/) and that delivery of the license key begins immediately. I know that I lose my right of withdrawal once delivery has begun. / Ich stimme den [AGB](https://stowgui.com/de/terms/) zu und dass die Lieferung des Lizenzschlüssels sofort beginnt. Mir ist bekannt, dass ich dadurch mit Beginn der Lieferung mein Widerrufsrecht verliere.';
-const EVENTS = ['checkout.session.completed', 'checkout.session.async_payment_succeeded', 'charge.refunded', 'charge.dispute.created'];
-const manifest = JSON.parse(readFileSync(new URL('../worker/src/legal/manifest.json', import.meta.url)));
-const params = {
-  'line_items[0][price]': PRICE_ID, 'line_items[0][quantity]': '1',
-  billing_address_collection: 'required', 'consent_collection[terms_of_service]': 'required',
-  'custom_text[terms_of_service_acceptance][message]': CONSENT,
-  'after_completion[type]': 'redirect', 'after_completion[redirect][url]': SUCCESS_URL,
-  'invoice_creation[enabled]': 'true', 'invoice_creation[invoice_data][footer]': INVOICE_FOOTER,
-  'metadata[app]': 'stowgui', 'metadata[legal_source_sha256]': manifest.source,
-};
-for (const [name, hash] of Object.entries(manifest.pdfs)) params[`metadata[${name.replaceAll('.', '_')}]`] = hash;
+import { LIVE_PRICE_ID, STRIPE_ACCOUNT_ID, WEBHOOK_URL, EVENTS, checkoutSettings } from './stripe-checkout-settings.mjs';
+const { params, manifest } = checkoutSettings(LIVE_PRICE_ID);
 
 function stripe(method, path, fields = {}) {
   const args = [method, path, '--live'];
@@ -33,7 +19,7 @@ if (!process.argv.includes('--apply')) {
   console.log(JSON.stringify({ paymentLink: params, webhook: { url: WEBHOOK_URL, events: EVENTS }, note: 'Preview only. --apply creates a live Payment Link, immediately deactivates it, and prepares the webhook secret. It does not deploy application code or publish a checkout URL.' }, null, 2));
 } else {
   const account = stripe('get', '/v1/account');
-  if (account.id !== 'acct_1TBaml3SIDKPozJg') throw new Error('Select the verified Trainvent live account before provisioning StowGUI.');
+  if (account.id !== STRIPE_ACCOUNT_ID) throw new Error('Select the verified Trainvent live account before provisioning StowGUI.');
   const links = stripe('get', '/v1/payment_links', { limit: '100' });
   let link = links.data.find(item => item.metadata?.app === 'stowgui' && item.metadata?.legal_source_sha256 === manifest.source);
   if (!link) {

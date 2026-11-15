@@ -8,7 +8,10 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "legal:check": "node scripts/legal-documents.mjs --check",
-    "legal:generate": "node scripts/legal-documents.mjs"
+    "legal:generate": "node scripts/legal-documents.mjs",
+    "dev:checkout": "node scripts/dev-checkout.mjs",
+    "dev:checkout:check": "node scripts/dev-checkout.mjs --check",
+    "dev:checkout:app": "node scripts/dev-checkout.mjs --app"
   },
   "engines": {
     "node": ">=24"

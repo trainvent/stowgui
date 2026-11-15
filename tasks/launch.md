@@ -122,3 +122,14 @@ coverage. Live settings are verified separately. Do not point test purchases
 at a Worker that currently accepts only the live Payment Link and signing secret.
 
 Source: https://support.stripe.com/questions/how-do-i-test-my-integration-when-test-mode-isnt-available
+
+## Local checkout test environment — 2026-11-15
+
+- [x] Local website launcher with a dedicated Stripe Test-Modus link, shared live/test consent and invoice settings, and a local success redirect.
+- [x] Real Stripe CLI webhook forwarding into the production handlers with a separate local database/signing key. Local Brevo payload capture provides an inbox and attached PDFs without additional email sends.
+- [x] Separate desktop test profile and launcher, reusing the existing app sandbox example.
+- [x] Isolated local smoke check covers signed purchase events, recorded consent, email/PDF checksums, activation and refund revocation. This uses synthetic events, not a completed hosted checkout.
+- [ ] Finish current Stripe reauthorization and verify a completed hosted test checkout through the running local environment.
+
+Instructions: `docs/dev/local-checkout.md`. The live service and inactive live
+Payment Link are unchanged by this setup.

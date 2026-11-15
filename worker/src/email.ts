@@ -62,12 +62,12 @@ function purchaseDetails(purchase: PurchaseConfirmation, locale: Locale): string
 
 export type Sender = { name: string; email: string };
 
-export function brevoMailer(apiKey: string, sender: Sender, downloadUrl: string, replyTo = "support@trainvent.com"): Mailer {
+export function brevoMailer(apiKey: string, sender: Sender, downloadUrl: string, replyTo = "support@trainvent.com", transport: typeof fetch = fetch): Mailer {
   return async (to, locale, licenseKeys, purchase) => {
     const message = MESSAGES[locale];
     const download = locale === "de" ? downloadUrl.replace("/en/", "/de/") : downloadUrl;
     const text = [message.body(licenseKeys.join("\n\n"), download), purchase ? purchaseDetails(purchase, locale) : ""].filter(Boolean).join("\n\n");
-    const response = await fetch(BREVO_URL, {
+    const response = await transport(BREVO_URL, {
       method: "POST",
       headers: { "api-key": apiKey, "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({

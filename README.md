@@ -15,7 +15,12 @@ npm run dev        # http://localhost:3000
 npm run build      # static site in out/
 ```
 
-Copy `.env.example` to `.env.local` to try the Buy button and key form locally.
+For the complete local purchase test, run `npm run dev:checkout`. It starts the
+website, Stripe test-checkout forwarding, a separate local license database and
+an email/PDF preview. See [local checkout testing](docs/dev/local-checkout.md)
+for test cards, activation and refunds. No real charge or email is sent.
+
+Use `.env.example` only when configuring the website separately.
 
 Worker:
 
