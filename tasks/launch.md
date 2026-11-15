@@ -25,7 +25,7 @@ Things only you can do, roughly in order.
   - [x] Live product `prod_Vc8ztUlgOqupQk` and price `price_1Uauhs3SIDKPozJgG76NVzVE` (5 € inclusive) created 2026-11-12.
   - [x] Live Payment Link `plink_1Uc3U43SIDKPozJgQnOSxZjY` and webhook `we_1Uc3U63SIDKPozJgYJaCYa0m` created 2026-11-15 through the authorized CLI. Link is **inactive**. Required consent, billing address, post-payment invoice/footer, redirect and all four webhook events verified. Legal PDF/source hashes are recorded in link metadata.
   - [x] Store the live webhook secret and deploy the Worker with the live `STRIPE_PAYMENT_LINK_ID` (2026-11-15). `PAYMENT_LINK` remains unset and sales disabled.
-  - [ ] Verify an actual live purchase → contract/key email → activation → refund/revocation before opening sales.
+  - [ ] Repeat purchase → contract/key email with current consent and PDFs → activation → refund/revocation in Stripe Test-Modus using the same Worker code and isolated test payment settings; separately verify the live configuration. A live self-purchase is not a launch requirement.
 - [ ] Set the GitHub variable `PAYMENT_LINK` (`LICENSE_API_URL` is set).
 - [x] Publish app builds as GitHub releases in trainvent/stowgui: Linux 0.1.0 on 2026-11-12. macOS follows (`stowgui_source/tasks/macos-release.md`); then add `"macos"` to `RELEASED_PLATFORMS` in `lib/config.ts`.
 - [x] Set `RELEASED = true` (2026-11-12). Buy stays disabled until the live-mode `PAYMENT_LINK` variable is set.
@@ -111,3 +111,14 @@ and explicit delivery/withdrawal wording; live checkout still needs verification
 - Received HTML still includes two Brevo-hosted tracking images. Presence is confirmed; whether provider settings anonymize tracking is not verified. Privacy/provider settings review remains open.
 - Unsigned webhook payload rejected with HTTP 400.
 - Payment Link remains inactive, GitHub `PAYMENT_LINK` is still unset, and Buy remains disabled. Website/source changes from the previous preparation have not been pushed or deployed here.
+
+## Test-payment clarification — 2026-11-15
+
+The earlier advice to require a live self-purchase was incorrect. Use Stripe
+Test-Modus and test payment methods for the purchase/refund acceptance check;
+no real money is needed. Earlier test-mode purchase/refund checks passed, but
+the current consent/contract-confirmation changes need renewed end-to-end
+coverage. Live settings are verified separately. Do not point test purchases
+at a Worker that currently accepts only the live Payment Link and signing secret.
+
+Source: https://support.stripe.com/questions/how-do-i-test-my-integration-when-test-mode-isnt-available

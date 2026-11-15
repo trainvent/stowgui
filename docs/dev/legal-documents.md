@@ -45,5 +45,7 @@ continuing. Do not recreate an endpoint blindly after a failure.
 The CLI authorization needs Payment Links Write and Webhook Endpoints Write. The script verifies the intended account ID before provisioning. Stripe only accepts `active` on link update, so creation and deactivation are separate calls. Existing
 endpoints' secrets cannot be read back; verify a reused endpoint's secret and
 subscribed events before continuing. Set the Worker payment-link ID and deploy
-before activating the link. Complete a purchase/email/activation/refund check,
+before activating the link. Complete a purchase/email/activation/refund check in Stripe Test-Modus using
+the same Worker code with isolated test settings, separately verify the live
+configuration,
 review the actual checkout, and only then enable the website Buy button.
