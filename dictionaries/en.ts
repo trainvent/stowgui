@@ -194,6 +194,7 @@ const en = {
         paragraphs: [
           "Payments are handled by Stripe Payments Europe Ltd., Ireland. Stripe processes your name, email address, billing address and payment details to process the payment and prevent fraud (Art. 6 (1) (b) and (c) GDPR).",
           "To deliver and manage your license we store your email address, the purchase reference and your license key. This runs on Cloudflare, Inc. (USA, EU-US Data Privacy Framework). We send the key email through Brevo (Sendinblue SAS, France).",
+          "Brevo uses tracking pixels and tracked links to collect anonymous statistics about email opens and link clicks. Anonymous tracking is enabled for our transactional emails. According to Brevo, these events are not linked to individual recipients, and identifying information such as email and IP addresses is anonymized. We do not use these statistics to create individual engagement profiles.",
           "We retain purchase and accounting records for the applicable statutory periods (Art. 6 (1) (c) GDPR). We retain license and current activation records while needed to provide your license and handle support or legal claims; they are deleted when no longer needed unless a legal retention obligation applies.",
         ],
       },

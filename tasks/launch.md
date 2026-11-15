@@ -53,7 +53,9 @@ The received test message was inspected through Gmail's MIME representation. It 
 - [x] Verify key selection, width and footer visibility in Nextcloud Mail; the user confirmed the corrected message displays properly (2026-11-11).
 - [ ] Review Brevo's injected open tracking and the website's no-tracking statements before launch. Do not assume the provider leaves authored HTML or requested plain-text parts unchanged.
   - [x] The key email requests `contactPixelTrackingConsent: false` (anonymised opens/clicks) and `removeTrackingPixel: true` (honoured on Enterprise plans only) (2026-11-12; needs a Worker deploy).
-  - [ ] In Brevo, check that per-contact tracking consent is active, so the anonymisation applies, and turn on anonymous tracking for transactional email (reported under Settings → Automations → Transactional emails → Tracking; path unverified). Then check a received key email: if a pixel remains, the privacy policy should say that Brevo counts opens anonymously.
+  - [x] User reports enabling anonymous email tracking and agrees to retain Brevo on that basis (2026-11-15). German and English privacy notices now describe anonymous open/click statistics; individual profiling is not used. This records the user's settings change, not an independent account audit or legal conclusion.
+  - [ ] Verify the transactional-email setting and anonymised events in Brevo after a fresh key email. Campaign and transactional anonymisation settings are separate. A received pixel alone cannot establish whether event records are anonymised.
+  - [ ] Publish the updated privacy notice, deploy the regenerated privacy attachments and refresh checkout document-hash metadata before live sales. Local legal freshness, type checking and lint pass; both updated privacy PDFs were visually reviewed (2026-11-15).
 
 ## Deployment resolution and completed live checks — 2026-11-11
 

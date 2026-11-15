@@ -193,6 +193,7 @@ const de: Dictionary = {
         paragraphs: [
           "Zahlungen wickelt Stripe Payments Europe Ltd., Irland, ab. Stripe verarbeitet Name, E-Mail-Adresse, Rechnungsadresse und Zahlungsdaten zur Zahlungsabwicklung und Betrugsvermeidung (Art. 6 Abs. 1 lit. b und c DSGVO).",
           "Um deine Lizenz auszuliefern und zu verwalten, speichern wir deine E-Mail-Adresse, die Kaufreferenz und deinen Lizenzschlüssel. Das läuft bei Cloudflare, Inc. (USA, EU-US Data Privacy Framework). Die E-Mail mit dem Schlüssel versenden wir über Brevo (Sendinblue SAS, Frankreich).",
+          "Brevo verwendet Zählpixel und nachverfolgte Links, um anonyme Statistiken zu E-Mail-Öffnungen und Link-Klicks zu erfassen. Für unsere Transaktions-E-Mails ist die anonyme Erfassung aktiviert. Laut Brevo werden diese Ereignisse keinen einzelnen Empfängern zugeordnet; identifizierende Angaben wie E-Mail- und IP-Adressen werden anonymisiert. Wir verwenden diese Statistiken nicht, um individuelle Nutzungsprofile zu erstellen.",
           "Kauf- und Buchungsbelege bewahren wir für die jeweils geltenden gesetzlichen Fristen auf (Art. 6 Abs. 1 lit. c DSGVO). Lizenz- und aktuelle Aktivierungsdaten behalten wir, solange sie für die Bereitstellung deiner Lizenz, Support oder Rechtsansprüche benötigt werden. Danach werden sie gelöscht, soweit keine gesetzliche Aufbewahrungspflicht besteht.",
         ],
       },
