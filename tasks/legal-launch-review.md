@@ -5,15 +5,15 @@ Status: in progress, 2026-11-16. Keep sales disabled until the launch gates belo
 ## Confirmed decisions
 
 - Worldwide sales through a merchant of record (MoR), selected by the user on 2026-11-16. Provider selection and commercial terms remain open. Stripe Projects provisions infrastructure; it does not make the existing Stripe Payment Link a MoR checkout.
-- Replace Brevo with Resend, provisioned through Stripe Projects on the existing Trainvent account. Do not switch accounts or provision directly without a new user decision.
+- Replace Brevo with Resend. After Stripe rejected project creation for the existing Trainvent account, the user authorized direct Resend setup on 2026-11-16. The Stripe support request remains unsent.
 
 ## 1. Transactional email: first priority
 
 - [x] Retest the deployed Brevo sender. User authorized recovery of existing test keys to their own `dummy@trainvent.com` inbox. HTTP 202; received 2026-11-16 at 08:07 CET. [Received message](https://mail.google.com/mail/u/?authuser=leon%40trainvent.com#all/1a1e32e402f2d5a3).
 - [x] Inspect received MIME HTML without loading images. Two injected image tags share one Brevo `/tr/op/` URL: one Outlook conditional image and one hidden image. The download URL remains unchanged; there are no rewritten download links in this sample. Pixel presence does not establish event anonymity. SPF, DKIM and DMARC pass.
 - [x] Prepare the Resend mailer, Worker secret binding and local checkout capture. Preserve language selection, exact key bytes, reply-to, HTML/text alternatives, PDFs and recorded consent. Provider failures must still trigger webhook retries.
-- [ ] Resolve Stripe Projects access. Catalog contains `resend/email`; no resource was provisioned. Latest Projects plugin is 0.52.0. `stripe whoami` confirms Trainvent Super Administrator access. Explicit live-account initialization returns `PROJECTS_ACCOUNT_CONTEXT_UNSUPPORTED`, reason `projects_ineligible`, `retryable: false`. Project list is empty. The signed-in Projects dashboard shows only product information and documentation, with no activation control. Preflight reports ready but does not catch this server rejection.
-- [ ] Provision the free Resend plan and email service after eligibility is resolved; inspect the catalog's actual requirements first. Keep API-key values out of output and git.
+- [x] Investigate Stripe Projects access; user chose direct setup after this blocker. Catalog contains `resend/email`; no resource was provisioned. Latest Projects plugin is 0.52.0. `stripe whoami` confirms Trainvent Super Administrator access. Explicit live-account initialization returns `PROJECTS_ACCOUNT_CONTEXT_UNSUPPORTED`, reason `projects_ineligible`, `retryable: false`. Project list is empty. The signed-in Projects dashboard shows only product information and documentation, with no activation control. Preflight reports ready but does not catch this server rejection.
+- [ ] Complete direct Resend signup/login using the free transactional plan. The user must perform new-password entry and accept account terms. Keep API-key values out of output and git.
 - [ ] Verify `stowgui.com` sender domain; add only required DNS records, preserving existing website and inbound mail. Disable both open and click tracking at domain level and read the settings back. Install a domain-restricted sending key as `RESEND_API_KEY` with Wrangler.
 - [ ] Check Resend's DPA, international transfers, retention and support-email provider; update the privacy notice to actual practices. Current copy still describes the deployed Brevo sender intentionally.
 - [ ] Deploy only after domain and secret readiness; resend to the authorized test inbox and inspect received MIME HTML for zero tracking images/rewritten URLs and correct PDF hashes. Verify the purchase path in Test-Modus. Remove the obsolete Brevo secret only after successful cutover and confirmation that nothing else uses it.
@@ -61,7 +61,7 @@ Digital-content early expiry requires performance start, express consent, acknow
 - [ ] All published document revisions archived; site, email attachments and checkout metadata match.
 - [ ] Website/Worker checks pass; request launch authorization. No push, release or checkout activation is authorized by this plan.
 
-## Stripe support request (prepared, not sent)
+## Stripe support request (not sent; superseded by direct setup)
 
 Please check Stripe Projects eligibility for my existing Trainvent account,
 `acct_1TBaml3SIDKPozJg`. I want to provision Resend through Projects on this

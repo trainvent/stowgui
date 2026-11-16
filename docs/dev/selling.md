@@ -28,8 +28,8 @@ secret and received-message checks. Do not deploy before that gate passes.
 
 ## Resend setup
 
-Provision through Stripe Projects on the existing Trainvent account after its
-eligibility issue is resolved. Verify the `stowgui.com` sending domain using
+Provision directly through the user-owned Resend account; the user approved
+this path after Stripe Projects rejected account eligibility. Verify the `stowgui.com` sending domain using
 Resend's required DNS records, keeping existing website and inbound-mail
 records. Disable open and click tracking at domain level and read back both
 settings. Store a domain-restricted sending key as `RESEND_API_KEY` with

@@ -10,10 +10,10 @@ PDF names to Resend's `attachments[].filename`, preserving their base64 bytes.
 HTTP failures propagate to the webhook handler so Stripe retries delivery.
 The local checkout captures the same Resend request without sending mail.
 
-Provision Resend through Stripe Projects on Trainvent. Current provisioning is
-blocked by account eligibility, not missing service availability. After access
-is resolved, use the CLI-installed Projects instructions for service creation
-and credential retrieval. Never print or commit API-key values.
+Provision Resend directly. Stripe Projects rejected creation for the existing
+Trainvent account with `projects_ineligible`; the user authorized direct setup
+on 2026-11-16. The user creates or signs in to the Resend account and accepts
+its terms. Never print or commit API-key values.
 
 Verify `stowgui.com` for sending and read back `open_tracking: false` and
 `click_tracking: false` on the domain. These are domain settings, not email
