@@ -59,7 +59,8 @@ Digital-content early expiry requires performance start, express consent, acknow
 ## Launch gates
 
 - [x] Resend delivery received and verified without tracking; updated privacy source and email PDFs describe the verified configuration.
-- [ ] Publish the updated privacy website and refresh the selected checkout's document references before sales. Current website publication is still pending.
+- [x] Publish and verify the German/English privacy pages after a fresh received-message test on 2026-11-16. Publication commit `e890cdd01e2530e32f7db44f72e6586b3e9caf6c` contains only the two privacy dictionary properties, based on the previously published website. Unrelated local release and terms changes were preserved without publication. [Successful Pages run](https://github.com/trainvent/stowgui/actions/runs/43826573504).
+- [ ] Refresh the selected checkout's document references before sales.
 - [ ] MoR approved/onboarded, tax/invoicing responsibilities confirmed and sandbox acceptance passed.
 - [ ] Withdrawal function/notice, consent, dispute policy and German/English terms reviewed together by counsel.
 - [ ] All published document revisions archived; site, email attachments and checkout metadata match.
@@ -85,5 +86,21 @@ be enabled for this existing account?
 - Website production build, type checking, lint and legal-attachment freshness pass.
 - Local checkout smoke passes through the Resend request capture: signed purchase event, exact consent, PDF checksums, activation and full-refund revocation. No real email/payment is sent by this check.
 - All nine rendered pages of the four updated PDFs were inspected. Copies are in `~/Dokumente/Agents/stowgui/legal/`.
-- Resend domain verified, restricted key installed, provider delivery and received attachment hashes passed. Worker code version `8c48b0aa-d749-4ac9-a13f-28ef3f92b5a0`; removing the obsolete Brevo binding produced active version `474b668b-70f8-472e-9c60-7fce47b17466`. Website not pushed and sales not enabled.
+- Resend domain verified, restricted key installed, provider delivery and received attachment hashes passed. Worker code version `8c48b0aa-d749-4ac9-a13f-28ef3f92b5a0`; removing the obsolete Brevo binding produced active version `474b668b-70f8-472e-9c60-7fce47b17466`. The original cutover did not push the website or enable sales. The privacy-only website publication was subsequently authorized and verified as recorded above; sales remain disabled.
 - The first recovery request 16 seconds after deployment still produced a Brevo message with old PDFs. Cloudflare reported the new version and its downloaded script contained Resend and no Brevo sender. The repeat after the normal five-minute resend cooldown reached Resend correctly. Rollout propagation is the likely explanation; no source workaround was applied.
+
+
+## Fresh test and policy publication - 2026-11-16
+
+At the user's request, a fresh recovery email reached `dummy@trainvent.com` at
+08:48:06 CET: [received message](https://mail.google.com/mail/u/?authuser=leon%40trainvent.com#all/1a1e353e02e78b97).
+The received HTML has no image tags or tracking URLs; SPF, aligned Resend DKIM
+and DMARC pass. Both current PDFs and the existing keys are present. The prior
+08:43 test established the exact attachment hashes and unchanged key bytes.
+
+After this passed, the privacy-only publication was type-checked, linted and
+built locally, pushed directly to remote main and deployed successfully by
+GitHub Actions. Live `/de/privacy/` and `/en/privacy/` return the updated Resend
+notice, disabled tracking and US storage/SCC disclosure without Brevo. The
+publication was merged into local main, preserving all unpushed work. Checkout
+activation and publication of other pending local changes remain separate.

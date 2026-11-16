@@ -175,9 +175,12 @@ acceptance checks remain separate launch items.
 - [x] Revoke temporary full-access CLI authorization, remove its local profile,
   temporary key copy and obsolete Brevo Worker secret. Existing Brevo DNS and
   account remain intact.
-- [ ] Publish updated privacy website and refresh checkout document references
-  before enabling sales. MoR selection, withdrawal flow and legal review remain
+- [x] Publish updated German/English privacy website after the fresh received-email
+  test (2026-11-16, policy-only commit e890cdd; live pages verified).
+- [ ] Refresh checkout document references before enabling sales. MoR selection,
+  withdrawal flow and legal review remain
   open in [the remediation plan](legal-launch-review.md).
 
-This supersedes the earlier Brevo tracking launch items. No website push or
-checkout activation was performed.
+This supersedes the earlier Brevo tracking launch items. The later privacy-only
+website publication was separately authorized; other pending local changes were
+not published and checkout remains disabled.

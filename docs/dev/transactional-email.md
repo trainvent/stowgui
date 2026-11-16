@@ -28,8 +28,10 @@ temporary full-access CLI grant was revoked and its local profile removed.
 
 The German/English privacy source and bundled PDFs describe Resend, disabled
 tracking and US message storage under its DPA/SCCs. Ireland is the sending
-region, not a storage-location guarantee. Publish the updated website source
-and refresh checkout document references before enabling sales. After deployment, inspect an authorized received email's
+region, not a storage-location guarantee. The German/English privacy pages
+were published separately on 2026-11-16 (commit e890cdd), with live-page
+verification. Other pending local terms and release changes remain unpushed.
+Refresh checkout document references before enabling sales. After deployment, inspect an authorized received email's
 MIME HTML for injected images and rewritten links; local request tests cannot
 prove what the provider delivers. Verify both PDFs, language, key bytes,
 reply-to and sender authentication.
