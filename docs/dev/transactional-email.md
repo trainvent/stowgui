@@ -1,8 +1,9 @@
 # Transactional email
 
-The source uses Resend's HTTP email API. The deployed Worker still uses Brevo
-until the migration checklist in `tasks/legal-launch-review.md` is completed.
-Do not deploy this source without the Resend domain and secret being ready.
+The source and deployed Worker use Resend's HTTP email API. The switch was
+deployed on 2026-11-16; received-message acceptance is recorded in
+`tasks/legal-launch-review.md`. Sales remain disabled pending the other
+legal-launch gates.
 
 `worker/src/email.ts` retains the existing license body, language selection,
 plain-text/HTML alternatives and purchase confirmation. It maps the bundled
@@ -15,15 +16,20 @@ Trainvent account with `projects_ineligible`; the user authorized direct setup
 on 2026-11-16. The user creates or signs in to the Resend account and accepts
 its terms. Never print or commit API-key values.
 
-Verify `stowgui.com` for sending and read back `open_tracking: false` and
+The `stowgui.com` domain is verified in Ireland (`eu-west-1`), using the
+`resend-mail` return path so the existing Brevo `send` record is preserved.
+The Resend domain ID is `2717361d-acd7-477f-8509-697b6046e658`. Verify and read back `open_tracking: false` and
 `click_tracking: false` on the domain. These are domain settings, not email
 payload switches. Keep inbound-mail DNS and website records intact. Prefer a
 domain-restricted sending key for the Worker, stored as `RESEND_API_KEY` through
-Wrangler. Retire the old Brevo secret only after successful cutover.
+Wrangler. The old Brevo Worker secret was removed after successful received-email
+acceptance; the Brevo account and existing DNS records were left intact. The
+temporary full-access CLI grant was revoked and its local profile removed.
 
-Before deployment, update the privacy notice from Brevo to the verified Resend
-arrangement, regenerate and visually inspect the PDFs, and refresh checkout
-document references. After deployment, inspect an authorized received email's
+The German/English privacy source and bundled PDFs describe Resend, disabled
+tracking and US message storage under its DPA/SCCs. Ireland is the sending
+region, not a storage-location guarantee. Publish the updated website source
+and refresh checkout document references before enabling sales. After deployment, inspect an authorized received email's
 MIME HTML for injected images and rewritten links; local request tests cannot
 prove what the provider delivers. Verify both PDFs, language, key bytes,
 reply-to and sender authentication.

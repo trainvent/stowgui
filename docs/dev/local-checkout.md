@@ -44,5 +44,7 @@ activation and refund revocation. This verifies the local harness, not completio
 of an actual hosted checkout. `STOWGUI_SITE_PORT`, `STOWGUI_CHECKOUT_PORT` and
 `STOWGUI_APP_DIR` override the default ports and neighboring app checkout.
 
-The Brevo delivery/attachment test remains separate; it was verified through the
+The provider delivery/attachment test remains separate; Resend recovery delivery
+and received PDF hashes were verified on 2026-11-16 (see
+`tasks/legal-launch-review.md`). Historical Brevo delivery was verified through the
 hosted service on 2026-11-15. A local preview cannot verify provider delivery or tracking.

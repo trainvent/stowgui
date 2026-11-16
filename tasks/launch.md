@@ -162,3 +162,22 @@ actual provider delivery and identical PDF attachment bytes were separately
 verified through the hosted service earlier that day. No live charge or refund
 was performed. Legal review, Brevo tracking/privacy and remaining platform
 acceptance checks remain separate launch items.
+
+
+## Resend cutover - 2026-11-16
+
+- [x] Direct Resend setup after Stripe Projects rejected the existing account.
+- [x] stowgui.com verified in Ireland, open/click tracking disabled, Worker
+  send-only key restricted to the domain and installed as RESEND_API_KEY.
+- [x] Deploy current mailer and updated legal attachments. The received recovery
+  email at 08:43:04 CET has no image tags or tracking URLs; SPF, DKIM and DMARC
+  pass. Both received PDF hashes match the bundle.
+- [x] Revoke temporary full-access CLI authorization, remove its local profile,
+  temporary key copy and obsolete Brevo Worker secret. Existing Brevo DNS and
+  account remain intact.
+- [ ] Publish updated privacy website and refresh checkout document references
+  before enabling sales. MoR selection, withdrawal flow and legal review remain
+  open in [the remediation plan](legal-launch-review.md).
+
+This supersedes the earlier Brevo tracking launch items. No website push or
+checkout activation was performed.

@@ -1,8 +1,8 @@
 # Selling StowGUI
 
-The source is prepared for Resend. Production remains on Brevo until the
-[transactional-email migration](transactional-email.md) passes its domain,
-secret and received-message checks. Do not deploy before that gate passes.
+The source and production Worker use Resend. Configuration and cutover checks
+are recorded in [transactional email](transactional-email.md) and the
+[legal-launch task](../../tasks/legal-launch-review.md).
 
 ## Flow
 

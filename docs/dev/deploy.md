@@ -18,9 +18,9 @@
 
 ## License Worker (Cloudflare)
 
-The source requires Resend. Complete the domain, tracking and secret setup in
-[transactional email](transactional-email.md) before deploying; the current
-production Worker still uses Brevo.
+The Worker uses Resend. The domain is verified and `RESEND_API_KEY` is
+installed; see [transactional email](transactional-email.md) before changing
+the sender configuration.
 
 The Worker runs at `https://stowgui-license.trainvent.workers.dev` (Cloudflare account of leon@trainvent.com, D1 database `stowgui-licenses` in WEUR). stowgui.com's DNS is at the registrar (Above.com), so a `license.stowgui.com` custom domain would need the zone moved to Cloudflare first.
 

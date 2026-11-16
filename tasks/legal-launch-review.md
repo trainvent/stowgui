@@ -13,10 +13,13 @@ Status: in progress, 2026-11-16. Keep sales disabled until the launch gates belo
 - [x] Inspect received MIME HTML without loading images. Two injected image tags share one Brevo `/tr/op/` URL: one Outlook conditional image and one hidden image. The download URL remains unchanged; there are no rewritten download links in this sample. Pixel presence does not establish event anonymity. SPF, DKIM and DMARC pass.
 - [x] Prepare the Resend mailer, Worker secret binding and local checkout capture. Preserve language selection, exact key bytes, reply-to, HTML/text alternatives, PDFs and recorded consent. Provider failures must still trigger webhook retries.
 - [x] Investigate Stripe Projects access; user chose direct setup after this blocker. Catalog contains `resend/email`; no resource was provisioned. Latest Projects plugin is 0.52.0. `stripe whoami` confirms Trainvent Super Administrator access. Explicit live-account initialization returns `PROJECTS_ACCOUNT_CONTEXT_UNSUPPORTED`, reason `projects_ineligible`, `retryable: false`. Project list is empty. The signed-in Projects dashboard shows only product information and documentation, with no activation control. Preflight reports ready but does not catch this server rejection.
-- [ ] Complete direct Resend signup/login using the free transactional plan. The user must perform new-password entry and accept account terms. Keep API-key values out of output and git.
-- [ ] Verify `stowgui.com` sender domain; add only required DNS records, preserving existing website and inbound mail. Disable both open and click tracking at domain level and read the settings back. Install a domain-restricted sending key as `RESEND_API_KEY` with Wrangler.
-- [ ] Check Resend's DPA, international transfers, retention and support-email provider; update the privacy notice to actual practices. Current copy still describes the deployed Brevo sender intentionally.
-- [ ] Deploy only after domain and secret readiness; resend to the authorized test inbox and inspect received MIME HTML for zero tracking images/rewritten URLs and correct PDF hashes. Verify the purchase path in Test-Modus. Remove the obsolete Brevo secret only after successful cutover and confirmation that nothing else uses it.
+- [x] User completed direct Resend signup/login in the `trainvent` team. Keep API-key values out of output and git.
+- [x] Add the Resend domain in Ireland with tracking disabled. With explicit user approval, replace the initial unverified entry to use `resend-mail` rather than Brevo's existing `send` name. Current Resend domain ID: `2717361d-acd7-477f-8509-697b6046e658`. User chose to add DNS records themselves: TXT `resend._domainkey` (public signing key shown in Resend), CNAME `rresend-mail` → `rsend-euw1.forge.rmta.net`, CNAME `resend-mail` → `send.forge.rmta.net`. Existing Brevo DNS is unchanged.
+- [x] Verify `stowgui.com` sender domain; add only required DNS records, preserving existing website and inbound mail. Disable both open and click tracking at domain level and read the settings back. Install a domain-restricted sending key as `RESEND_API_KEY` with Wrangler.
+- [x] Check Resend's DPA, transfers and retention and update German/English privacy source and PDFs. Resend's DPA applies on account signup and includes SCCs. Ireland controls sending; stored message/log data is in the US. The verified Free plan has standard 30-day email/log retention. [Resend GDPR documentation](https://resend.com/security/gdpr), [DPA](https://resend.com/legal/dpa). The separate support-email provider remains part of the general privacy-practices review.
+- [x] Deploy the Resend Worker and updated attachments after domain verification. Received recovery test at 08:43:04 CET in the authorized inbox: [message](https://mail.google.com/mail/u/?authuser=leon%40trainvent.com#all/1a1e34f44f379fa6). HTML contains zero image tags and no tracking URLs; download URL is unchanged. SPF, aligned stowgui.com DKIM and DMARC pass. Both received PDF SHA-256 values match the bundle. Two existing keys are present; none were issued, changed or revoked by this test.
+- [x] Confirm the Worker key is send-only and restricted to stowgui.com. Revoke the temporary full-access Resend CLI grant, verify HTTP 401 “Grant has been revoked,” and remove its local profile. Remove the temporary local API-key file and this Worker's unused `BREVO_API_KEY` binding. The Brevo account and DNS records remain unchanged.
+- [x] Verify the local purchase/consent/PDF/activation/refund flow with Resend-format capture. Actual provider delivery is covered separately by the received recovery test; no new hosted Stripe purchase was made.
 
 Resend supports [domain-level tracking controls](https://resend.com/docs/api-reference/domains/update-domain) and [base64 email attachments](https://resend.com/docs/api-reference/emails/send-email). The EDPB puts email pixels within the scope of ePrivacy Article 5(3), but its scope guidance does not decide every consent exemption. Do not equate anonymisation with exemption under German law. [EDPB final guidance](https://www.edpb.europa.eu/documents/guideline/guidelines-22023-on-technical-scope-of-art-53-of-eprivacy-directive_en), [§25 TDDDG](https://www.gesetze-im-internet.de/tdddg/__25.html).
 
@@ -55,11 +58,12 @@ Digital-content early expiry requires performance start, express consent, acknow
 
 ## Launch gates
 
-- [ ] Resend delivery received and verified without tracking; processor disclosures match configuration.
+- [x] Resend delivery received and verified without tracking; updated privacy source and email PDFs describe the verified configuration.
+- [ ] Publish the updated privacy website and refresh the selected checkout's document references before sales. Current website publication is still pending.
 - [ ] MoR approved/onboarded, tax/invoicing responsibilities confirmed and sandbox acceptance passed.
 - [ ] Withdrawal function/notice, consent, dispute policy and German/English terms reviewed together by counsel.
 - [ ] All published document revisions archived; site, email attachments and checkout metadata match.
-- [ ] Website/Worker checks pass; request launch authorization. No push, release or checkout activation is authorized by this plan.
+- [ ] Website/Worker checks pass; request launch authorization. The user separately authorized the Worker email cutover; website push and checkout activation remain separate steps.
 
 ## Stripe support request (not sent; superseded by direct setup)
 
@@ -81,4 +85,5 @@ be enabled for this existing account?
 - Website production build, type checking, lint and legal-attachment freshness pass.
 - Local checkout smoke passes through the Resend request capture: signed purchase event, exact consent, PDF checksums, activation and full-refund revocation. No real email/payment is sent by this check.
 - All nine rendered pages of the four updated PDFs were inspected. Copies are in `~/Dokumente/Agents/stowgui/legal/`.
-- Resend provisioning, domain verification and received-email acceptance remain unverified; there has been no deployment or launch.
+- Resend domain verified, restricted key installed, provider delivery and received attachment hashes passed. Worker code version `8c48b0aa-d749-4ac9-a13f-28ef3f92b5a0`; removing the obsolete Brevo binding produced active version `474b668b-70f8-472e-9c60-7fce47b17466`. Website not pushed and sales not enabled.
+- The first recovery request 16 seconds after deployment still produced a Brevo message with old PDFs. Cloudflare reported the new version and its downloaded script contained Resend and no Brevo sender. The repeat after the normal five-minute resend cooldown reached Resend correctly. Rollout propagation is the likely explanation; no source workaround was applied.
