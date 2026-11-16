@@ -18,6 +18,10 @@
 
 ## License Worker (Cloudflare)
 
+The source requires Resend. Complete the domain, tracking and secret setup in
+[transactional email](transactional-email.md) before deploying; the current
+production Worker still uses Brevo.
+
 The Worker runs at `https://stowgui-license.trainvent.workers.dev` (Cloudflare account of leon@trainvent.com, D1 database `stowgui-licenses` in WEUR). stowgui.com's DNS is at the registrar (Above.com), so a `license.stowgui.com` custom domain would need the zone moved to Cloudflare first.
 
 ```sh
@@ -27,7 +31,7 @@ npm run db:migrate
 npm run keypair                              # keep the output safe
 npx wrangler secret put LICENSE_SIGNING_KEY
 npx wrangler secret put STRIPE_WEBHOOK_SECRET
-npx wrangler secret put BREVO_API_KEY
+npx wrangler secret put RESEND_API_KEY
 npm run deploy
 ```
 

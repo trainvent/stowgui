@@ -10,7 +10,7 @@ EMAIL_FROM_ADDRESS = "sandbox@example.invalid"
 DOWNLOAD_URL = "https://example.invalid/"
 STRIPE_PAYMENT_LINK_ID = ""
 STRIPE_WEBHOOK_SECRET = ""
-BREVO_API_KEY = ""
+RESEND_API_KEY = ""
 
 [[d1_databases]]
 binding = "DB"

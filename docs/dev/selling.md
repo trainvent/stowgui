@@ -1,10 +1,14 @@
 # Selling StowGUI
 
+The source is prepared for Resend. Production remains on Brevo until the
+[transactional-email migration](transactional-email.md) passes its domain,
+secret and received-message checks. Do not deploy before that gate passes.
+
 ## Flow
 
 1. Buy button → Stripe Payment Link (hosted checkout).
 2. After payment Stripe redirects to `https://stowgui.com/buy/success/`, which forwards to the visitor's language.
-3. Stripe sends `checkout.session.completed` to the Worker (`POST /stripe/webhook`). The Worker signs a license key, stores it in D1 and emails it via Brevo. If the email fails, the Worker returns an error and Stripe's retry sends it.
+3. Stripe sends `checkout.session.completed` to the Worker (`POST /stripe/webhook`). The Worker signs a license key, stores it in D1 and emails it via Resend. If the email fails, the Worker returns an error and Stripe's retry sends it.
 4. `charge.refunded` (full refund) and `charge.dispute.created` revoke the key. The app sees this at its next activation/check-in. An offline installation can use its existing token until its signed 30-day expiry.
 5. `/license/` on the site lets buyers request their key again (`POST /license/resend`, 5-minute cooldown, same answer for unknown addresses).
 
@@ -22,11 +26,14 @@
    - Put the link URL into the GitHub variable `PAYMENT_LINK` and its id (`plink_…`) into `STRIPE_PAYMENT_LINK_ID` in `worker/wrangler.toml`.
 5. **Webhook endpoint**: `https://stowgui-license.trainvent.workers.dev/stripe/webhook` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`, `charge.dispute.created`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
 
-## Brevo setup
+## Resend setup
 
-1. **Senders, domains & dedicated IPs → Domains**: add `stowgui.com` and put the records Brevo shows (Brevo code TXT, DKIM, DMARC) into the DNS at the registrar (Above.com). They don't touch the GitHub Pages records.
-2. **Senders**: add `license@stowgui.com` (name "StowGUI").
-3. **SMTP & API → API keys**: create a key for the Worker and store it with `npx wrangler secret put BREVO_API_KEY` in `worker/`.
+Provision through Stripe Projects on the existing Trainvent account after its
+eligibility issue is resolved. Verify the `stowgui.com` sending domain using
+Resend's required DNS records, keeping existing website and inbound-mail
+records. Disable open and click tracking at domain level and read back both
+settings. Store a domain-restricted sending key as `RESEND_API_KEY` with
+Wrangler. See [transactional email](transactional-email.md) for cutover checks.
 
 Key emails come from `license@stowgui.com` with replies to support@trainvent.com.
 
@@ -35,7 +42,7 @@ Key emails come from `license@stowgui.com` with replies to support@trainvent.com
 ```sh
 cd worker
 npx wrangler d1 migrations apply stowgui-licenses --local
-printf 'STRIPE_WEBHOOK_SECRET=whsec_...\nLICENSE_SIGNING_KEY=...\nBREVO_API_KEY=xkeysib-...\n' > .dev.vars
+printf 'STRIPE_WEBHOOK_SECRET=whsec_...\nLICENSE_SIGNING_KEY=...\nRESEND_API_KEY=re_...\n' > .dev.vars
 npm run dev
 stripe listen --forward-to localhost:8787/stripe/webhook   # prints the whsec_ secret
 stripe trigger checkout.session.completed

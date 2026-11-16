@@ -12,7 +12,7 @@ The launcher starts:
 - Stripe CLI forwarding the four fulfillment/refund/dispute events to the local service.
 - The current production webhook/license handlers against a separate persistent local D1 database,
   with a separate Ed25519 key. The live Worker, its secrets, D1 and Payment Link are unchanged.
-- A local inbox at `http://127.0.0.1:18766/mail`. The exact Brevo request payload is
+- A local inbox at `http://127.0.0.1:18766/mail`. The exact Resend request payload is
   captured rather than transmitted, including the recorded checkout agreement and
   the real bundled legal PDFs. The preview lets you open those attachments.
 

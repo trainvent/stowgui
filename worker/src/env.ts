@@ -8,5 +8,5 @@ export interface Env {
   STRIPE_PAYMENT_LINK_ID: string;
   STRIPE_WEBHOOK_SECRET: string;
   LICENSE_SIGNING_KEY: string;
-  BREVO_API_KEY: string;
+  RESEND_API_KEY: string;
 }

@@ -1,6 +1,6 @@
 import { d1Activations } from "./activation";
 import { createApp } from "./app";
-import { brevoMailer } from "./email";
+import { resendMailer } from "./email";
 import type { Env } from "./env";
 import { importSigningKey } from "./license";
 import { d1Store } from "./store";
@@ -11,7 +11,7 @@ export default {
       store: d1Store(env.DB),
       activations: d1Activations(env.DB),
       allowActivation: async (id) => (await env.ACTIVATION_LIMIT.limit({ key: id })).success,
-      mail: brevoMailer(env.BREVO_API_KEY, { name: env.EMAIL_FROM_NAME, email: env.EMAIL_FROM_ADDRESS }, env.DOWNLOAD_URL),
+      mail: resendMailer(env.RESEND_API_KEY, { name: env.EMAIL_FROM_NAME, email: env.EMAIL_FROM_ADDRESS }, env.DOWNLOAD_URL),
       signingKey: () => importSigningKey(env.LICENSE_SIGNING_KEY),
       webhookSecret: env.STRIPE_WEBHOOK_SECRET,
       paymentLinkId: env.STRIPE_PAYMENT_LINK_ID,

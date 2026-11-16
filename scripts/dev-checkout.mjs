@@ -137,9 +137,9 @@ async function main() {
   const capture = async (_url, init) => {
     latestMail = JSON.parse(init.body);
     await writeFile(join(state, 'email.json'), JSON.stringify(latestMail), { mode: 0o600 });
-    await writeFile(join(state, 'email.html'), latestMail.htmlContent, { mode: 0o600 });
-    for (const attachment of latestMail.attachment) await writeFile(join(state, attachment.name), Buffer.from(attachment.content, 'base64'), { mode: 0o600 });
-    const key = latestMail.textContent.match(/[A-Za-z0-9_-]{30,}\.[A-Za-z0-9_-]{60,}/)?.[0];
+    await writeFile(join(state, 'email.html'), latestMail.html, { mode: 0o600 });
+    for (const attachment of latestMail.attachments) await writeFile(join(state, attachment.filename), Buffer.from(attachment.content, 'base64'), { mode: 0o600 });
+    const key = latestMail.text.match(/[A-Za-z0-9_-]{30,}\.[A-Za-z0-9_-]{60,}/)?.[0];
     if (key) await writeFile(join(profile, 'test-key.txt'), `${key}\n`, { mode: 0o600 });
     console.log(`Test email captured. Open http://127.0.0.1:${API_PORT}/mail`);
     return new Response('{}', { status: 201 });
@@ -154,13 +154,13 @@ async function main() {
       if (incoming.method === 'GET' && url.pathname === '/mail') {
         let html = `<h1>${EMAIL_TITLE}</h1><p>${EMPTY_MAIL}</p>`;
         if (latestMail) {
-          const links = latestMail.attachment.map(a => `<a href="/mail/attachments/${encodeURIComponent(a.name)}">${a.name}</a>`).join(' · ');
-          html = latestMail.htmlContent.replace(/(<body[^>]*>)/, `$1<header style="padding:16px"><h1>${EMAIL_TITLE}</h1>${links}<hr></header>`);
+          const links = latestMail.attachments.map(a => `<a href="/mail/attachments/${encodeURIComponent(a.filename)}">${a.filename}</a>`).join(' · ');
+          html = latestMail.html.replace(/(<body[^>]*>)/, `$1<header style="padding:16px"><h1>${EMAIL_TITLE}</h1>${links}<hr></header>`);
         }
         response = new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
       } else if (incoming.method === 'GET' && url.pathname.startsWith('/mail/attachments/')) {
         const name = decodeURIComponent(url.pathname.slice('/mail/attachments/'.length));
-        const attachment = latestMail?.attachment.find(a => a.name === name);
+        const attachment = latestMail?.attachments.find(a => a.filename === name);
         response = attachment ? new Response(Buffer.from(attachment.content, 'base64'), { headers: { 'Content-Type': 'application/pdf', 'Cache-Control': 'no-store' } }) : new Response('not found', { status: 404 });
       } else {
         const chunks = []; let size = 0;
@@ -182,9 +182,9 @@ async function main() {
       return fetch(`${address}/stripe/webhook`, { method: 'POST', body: payload, headers: { 'Stripe-Signature': `t=${timestamp},v1=${signature}` } });
     };
     assert.equal((await event('checkout.session.completed', { id: 'cs_test_smoke', payment_link: link.id, payment_status: 'paid', amount_total: 500, currency: 'eur', payment_intent: 'pi_test_smoke', customer_details: { email: 'dummy@trainvent.com', address: { country: 'DE' } }, consent: { terms_of_service: 'accepted' }, custom_text: { terms_of_service_acceptance: { message: CONSENT } } })).status, 200);
-    assert.ok(latestMail.textContent.includes(CONSENT));
+    assert.ok(latestMail.text.includes(CONSENT));
     const manifest = checkoutSettings('unused').manifest;
-    for (const attachment of latestMail.attachment) assert.equal(createHash('sha256').update(Buffer.from(attachment.content, 'base64')).digest('hex'), manifest.pdfs[attachment.name]);
+    for (const attachment of latestMail.attachments) assert.equal(createHash('sha256').update(Buffer.from(attachment.content, 'base64')).digest('hex'), manifest.pdfs[attachment.filename]);
     const key = (await readFile(join(profile, 'test-key.txt'), 'utf8')).trim();
     const activate = () => fetch(`${address}/license/activate`, { method: 'POST', body: JSON.stringify({ key, device_id: crypto.randomUUID() }) });
     assert.equal((await activate()).status, 200);
