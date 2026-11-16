@@ -175,6 +175,7 @@ const de: Dictionary = {
   privacy: {
     title: "Datenschutzerklärung",
     sections: [
+      { heading: "Stand", paragraphs: ["16. November 2026"] },
       {
         heading: "Verantwortlicher",
         paragraphs: [
@@ -191,8 +192,8 @@ const de: Dictionary = {
       {
         heading: "Kauf von StowGUI",
         paragraphs: [
-          "Zahlungen wickelt Stripe Payments Europe Ltd., Irland, ab. Stripe verarbeitet Name, E-Mail-Adresse, Rechnungsadresse und Zahlungsdaten zur Zahlungsabwicklung und Betrugsvermeidung (Art. 6 Abs. 1 lit. b und c DSGVO).",
-          "Um deine Lizenz auszuliefern und zu verwalten, speichern wir deine E-Mail-Adresse, die Kaufreferenz und deinen Lizenzschlüssel. Das läuft bei Cloudflare, Inc. (USA, EU-US Data Privacy Framework). Die E-Mail mit dem Schlüssel versenden wir über Brevo (Sendinblue SAS, Frankreich).",
+          "Zahlungen wickelt Stripe Payments Europe Ltd., Irland, ab. Stripe verarbeitet Name, E-Mail-Adresse, Rechnungsadresse und Zahlungsdaten zur Zahlungsabwicklung (Art. 6 Abs. 1 lit. b DSGVO). Die Betrugsvermeidung dient dem berechtigten Interesse, unbefugte Zahlungen und finanzielle Verluste zu verhindern (Art. 6 Abs. 1 lit. f DSGVO). Eine Verarbeitung zur Erfüllung gesetzlicher Pflichten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. c DSGVO.",
+          "Um deine Lizenz auszuliefern und zu verwalten, speichern wir deine E-Mail-Adresse, die Kaufreferenz und deinen Lizenzschlüssel. Das läuft bei Cloudflare, Inc. (USA, EU-US Data Privacy Framework). Die E-Mail mit dem Schlüssel versenden wir über Brevo (Sendinblue SAS, Frankreich). Auslieferung, Lizenzverwaltung und Schlüsselwiederherstellung sind zur Vertragserfüllung erforderlich (Art. 6 Abs. 1 lit. b DSGVO). Wenn du deinen Schlüssel erneut anforderst, verwenden wir deine E-Mail-Adresse, um deine aktiven Lizenzen zu finden und sie an diese Adresse zu senden.",
           "Brevo verwendet Zählpixel und nachverfolgte Links, um anonyme Statistiken zu E-Mail-Öffnungen und Link-Klicks zu erfassen. Für unsere Transaktions-E-Mails ist die anonyme Erfassung aktiviert. Laut Brevo werden diese Ereignisse keinen einzelnen Empfängern zugeordnet; identifizierende Angaben wie E-Mail- und IP-Adressen werden anonymisiert. Wir verwenden diese Statistiken nicht, um individuelle Nutzungsprofile zu erstellen.",
           "Kauf- und Buchungsbelege bewahren wir für die jeweils geltenden gesetzlichen Fristen auf (Art. 6 Abs. 1 lit. c DSGVO). Lizenz- und aktuelle Aktivierungsdaten behalten wir, solange sie für die Bereitstellung deiner Lizenz, Support oder Rechtsansprüche benötigt werden. Danach werden sie gelöscht, soweit keine gesetzliche Aufbewahrungspflicht besteht.",
         ],
@@ -201,8 +202,15 @@ const de: Dictionary = {
         heading: "Nutzung der App",
         paragraphs: [
           "Bei der Aktivierung oder Lizenzprüfung sendet die App deinen Lizenzschlüssel, eine zufällig erzeugte Installations-ID, deinen Computernamen und bei einer Verlängerung die Aktivierungs-ID an unseren Cloudflare-Dienst. Wir speichern die Zuordnung zur Lizenz, den in der App umbenennbaren Computernamen, den Aktivierungszeitpunkt und die letzte erfolgreiche Prüfung, um die Grenze von drei Computern einzuhalten und die Offline-Frist zu verlängern (Art. 6 Abs. 1 lit. b DSGVO). Diese IDs sind pseudonym, nicht anonym, weil die Lizenz deinem Kauf zugeordnet ist. Wir verwenden keinen Hardware-Fingerabdruck.",
-          "Cloudflare verarbeitet außerdem deine IP-Adresse und technische Anfragedaten, um den Aktivierungsdienst bereitzustellen und zu schützen. Lizenzprüfungen im Hintergrund erfolgen höchstens einmal täglich; auch manuelle Aktivierungen und Prüfungen kontaktieren den Dienst. Jede erfolgreiche Prüfung ermöglicht bis zu 30 Tage Offline-Nutzung.",
-          "Bei eingeschalteter Update-Prüfung ruft die App Versionsinformationen und Downloads von GitHub ab. GitHub erhält dabei deine IP-Adresse und technische Anfragedaten. Automatische Update-Prüfungen kannst du in den Einstellungen ausschalten. StowGUI lädt bei Lizenz- oder Update-Prüfungen keine verwalteten Konfigurationsdateien hoch.",
+          "Cloudflare verarbeitet außerdem deine IP-Adresse und technische Anfragedaten, um den Aktivierungsdienst bereitzustellen und zu schützen. Grundlage ist unser berechtigtes Interesse an einem zuverlässigen Betrieb und am Schutz vor Missbrauch (Art. 6 Abs. 1 lit. f DSGVO). Lizenzprüfungen im Hintergrund erfolgen höchstens einmal täglich; auch manuelle Aktivierungen und Prüfungen kontaktieren den Dienst. Jede erfolgreiche Prüfung ermöglicht bis zu 30 Tage Offline-Nutzung.",
+          "Bei eingeschalteter Update-Prüfung ruft die App Versionsinformationen und Downloads von GitHub ab. GitHub erhält dabei deine IP-Adresse und technische Anfragedaten. Diese Verarbeitung dient unserem berechtigten Interesse an der Bereitstellung von Updates und sicheren Downloads (Art. 6 Abs. 1 lit. f DSGVO). Automatische Update-Prüfungen kannst du in den Einstellungen ausschalten. StowGUI lädt bei Lizenz- oder Update-Prüfungen keine verwalteten Konfigurationsdateien hoch.",
+        ],
+      },
+      {
+        heading: "Schlüsselwiederherstellung und Support",
+        paragraphs: [
+          "Wenn du uns per E-Mail kontaktierst, verarbeiten wir deine E-Mail-Adresse, deine Nachricht und die von dir mitgeteilten Angaben, um deine Anfrage zu beantworten. Kaufbezogener Support erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO; sonstige Anfragen auf Grundlage unseres berechtigten Interesses an der Beantwortung von Anfragen (Art. 6 Abs. 1 lit. f DSGVO). Wir bewahren die Korrespondenz auf, solange sie für die Bearbeitung oder Rechtsansprüche benötigt wird; gesetzliche Aufbewahrungspflichten bleiben unberührt.",
+          "Die oben beschriebenen Kauf-, Zahlungs- und Aktivierungsdaten sind für den Vertragsabschluss und die Vertragserfüllung erforderlich. Ohne sie können wir deinen Kauf nicht abwickeln oder die lizenzierten kostenpflichtigen Funktionen bereitstellen. Für Support musst du keine Angaben machen, die mit deiner Anfrage nichts zu tun haben.",
         ],
       },
       {
@@ -216,6 +224,7 @@ const de: Dictionary = {
   terms: {
     title: "AGB und Lizenzbedingungen",
     sections: [
+      { heading: "Stand", paragraphs: ["16. November 2026"] },
       {
         heading: "1. Anbieter",
         paragraphs: [
@@ -227,6 +236,7 @@ const de: Dictionary = {
         paragraphs: [
           `StowGUI kostet einmalig ${PRICE}, ohne Abonnement. Der Vertrag kommt mit Abschluss der Zahlung zustande. Nach erfolgreicher Zahlung senden wir den Lizenzschlüssel an die angegebene E-Mail-Adresse.`,
           "StowGUI ist eine Desktop-App für Linux und macOS und benötigt das separat installierte GNU Stow ab Version 2.4. Prüfe vor dem Kauf auf der Downloadseite, welche Builds verfügbar sind und welche Systemvoraussetzungen gelten. Mit dem kostenlosen Download kannst du Pakete und Vorschauen ansehen.",
+          "Vertragssprachen sind Deutsch und Englisch. Prüfe und korrigiere deine Angaben vor der Zahlung im Checkout; du kannst den Checkout vor Abschluss der Zahlung abbrechen. Wir speichern Kaufbelege und senden dir die Vertragsbestätigung mit den geltenden Bedingungen per E-Mail. Ein Kundenkonto zum Online-Abruf des Vertragstextes gibt es nicht; bewahre die Bestätigungs-E-Mail mit ihren Anhängen auf.",
         ],
       },
       {
@@ -272,7 +282,7 @@ const de: Dictionary = {
         heading: "7. Updates, Mängelrechte und Haftung",
         paragraphs: [
           "Gesetzliche Mängelrechte und Aktualisierungspflichten bleiben unberührt. Die Zusage aller 1.x-Versionen beschränkt keine zwingende Pflicht, erforderliche Aktualisierungen zur Aufrechterhaltung der Vertragsmäßigkeit einschließlich Sicherheitsupdates bereitzustellen. Schreib an support@trainvent.com, wenn StowGUI nicht wie vereinbart funktioniert.",
-          "Wir haften unbeschränkt bei Vorsatz, grober Fahrlässigkeit, Verletzung von Leben, Körper oder Gesundheit und soweit zwingendes Recht dies verlangt. Bei leichter Fahrlässigkeit ist die Haftung im Übrigen auf die Verletzung wesentlicher Vertragspflichten und den vorhersehbaren, vertragstypischen Schaden begrenzt. Gesetzliche Produkthaftung und ausdrücklich übernommene Garantien bleiben unberührt. Erstelle vor Dateiänderungen unabhängige Sicherungen; dieser Hinweis beschränkt deine gesetzlichen Rechte nicht.",
+          "Wir haften unbeschränkt bei Vorsatz, grober Fahrlässigkeit, Verletzung von Leben, Körper oder Gesundheit und soweit zwingendes Recht dies verlangt. Wesentliche Vertragspflichten sind Pflichten, deren Erfüllung die ordnungsgemäße Durchführung des Vertrags überhaupt erst ermöglicht und auf deren Erfüllung du regelmäßig vertrauen darfst. Bei leichter Fahrlässigkeit ist die Haftung im Übrigen auf die Verletzung wesentlicher Vertragspflichten und den vorhersehbaren, vertragstypischen Schaden begrenzt. Gesetzliche Produkthaftung und ausdrücklich übernommene Garantien bleiben unberührt. Erstelle vor Dateiänderungen unabhängige Sicherungen; dieser Hinweis beschränkt deine gesetzlichen Rechte nicht.",
         ],
       },
       {

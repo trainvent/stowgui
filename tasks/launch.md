@@ -2,6 +2,12 @@
 
 Things only you can do, roughly in order.
 
+Current legal-review work and decisions are tracked in
+[legal launch remediation](legal-launch-review.md). The user selected worldwide
+sales through a merchant of record and a Brevo-to-Resend migration on 2026-11-16.
+Earlier Stripe/Brevo acceptance records below are historical evidence; they do
+not close these new launch gates.
+
 - [ ] Have the terms, withdrawal notice and privacy policy reviewed (`dictionaries/en.ts`, `de.ts`). The German texts are the legally relevant ones.
 - [x] Enable GitHub Pages and set the custom domain and DNS (`docs/dev/deploy.md`).
 - [x] Create the Cloudflare D1 database, key pair and signing secret; deploy the Worker.

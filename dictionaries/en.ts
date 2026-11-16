@@ -176,6 +176,7 @@ const en = {
   privacy: {
     title: "Privacy policy",
     sections: [
+      { heading: "Revision", paragraphs: ["16 November 2026"] },
       {
         heading: "Who is responsible",
         paragraphs: [
@@ -192,8 +193,8 @@ const en = {
       {
         heading: "Buying StowGUI",
         paragraphs: [
-          "Payments are handled by Stripe Payments Europe Ltd., Ireland. Stripe processes your name, email address, billing address and payment details to process the payment and prevent fraud (Art. 6 (1) (b) and (c) GDPR).",
-          "To deliver and manage your license we store your email address, the purchase reference and your license key. This runs on Cloudflare, Inc. (USA, EU-US Data Privacy Framework). We send the key email through Brevo (Sendinblue SAS, France).",
+          "Payments are handled by Stripe Payments Europe Ltd., Ireland. Stripe processes your name, email address, billing address and payment details to process the payment (Art. 6 (1) (b) GDPR). Fraud prevention serves the legitimate interest in preventing unauthorized payments and financial loss (Art. 6 (1) (f) GDPR). Processing required by legal obligations is based on Art. 6 (1) (c) GDPR.",
+          "To deliver and manage your license we store your email address, the purchase reference and your license key. This runs on Cloudflare, Inc. (USA, EU-US Data Privacy Framework). We send the key email through Brevo (Sendinblue SAS, France). Delivery, license management and recovery are necessary to perform the contract (Art. 6 (1) (b) GDPR). If you request your key again, we use your email address to find your active licenses and resend them to that address.",
           "Brevo uses tracking pixels and tracked links to collect anonymous statistics about email opens and link clicks. Anonymous tracking is enabled for our transactional emails. According to Brevo, these events are not linked to individual recipients, and identifying information such as email and IP addresses is anonymized. We do not use these statistics to create individual engagement profiles.",
           "We retain purchase and accounting records for the applicable statutory periods (Art. 6 (1) (c) GDPR). We retain license and current activation records while needed to provide your license and handle support or legal claims; they are deleted when no longer needed unless a legal retention obligation applies.",
         ],
@@ -202,8 +203,15 @@ const en = {
         heading: "Using the app",
         paragraphs: [
           "When you activate or check your license, the app sends your license key, a randomly generated installation ID, your computer name and, for renewal, the activation ID to our Cloudflare service. We store the link to your license, the computer name (which you can rename in the app), activation time and last successful check to manage the three-computer limit and renew your offline allowance (Art. 6 (1) (b) GDPR). These IDs are pseudonymous, not anonymous, because the license is linked to your purchase. We do not use a hardware fingerprint.",
-          "Cloudflare also processes your IP address and technical request data to deliver and protect the activation service. Background license checks occur at most once a day; manual activation and checks also contact the service. Each successful check grants up to 30 days offline.",
-          "If update checks are enabled, the app requests release information and downloads from GitHub. GitHub receives your IP address and technical request data. You can turn automatic update checks off in Settings. StowGUI does not upload your managed configuration files as part of license or update checks.",
+          "Cloudflare also processes your IP address and technical request data to deliver and protect the activation service, based on our legitimate interest in reliable operation and protection against misuse (Art. 6 (1) (f) GDPR). Background license checks occur at most once a day; manual activation and checks also contact the service. Each successful check grants up to 30 days offline.",
+          "If update checks are enabled, the app requests release information and downloads from GitHub. GitHub receives your IP address and technical request data. This processing serves our legitimate interest in providing updates and secure downloads (Art. 6 (1) (f) GDPR). You can turn automatic update checks off in Settings. StowGUI does not upload your managed configuration files as part of license or update checks.",
+        ],
+      },
+      {
+        heading: "Recovery and support",
+        paragraphs: [
+          "If you contact us by email, we process your email address, message and any information you provide to answer your request. Purchase-related support is based on Art. 6 (1) (b) GDPR; other inquiries are based on our legitimate interest in answering inquiries (Art. 6 (1) (f) GDPR). We retain correspondence while needed to handle your request or legal claims, subject to statutory retention obligations.",
+          "The purchase, payment and activation data described above is needed to conclude and perform the contract. Without it, we cannot process your purchase or provide the licensed paid features. You do not have to provide information unrelated to your request when contacting support.",
         ],
       },
       {
@@ -217,6 +225,7 @@ const en = {
   terms: {
     title: "Terms of sale and license",
     sections: [
+      { heading: "Revision", paragraphs: ["16 November 2026"] },
       {
         heading: "1. Seller",
         paragraphs: [
@@ -228,6 +237,7 @@ const en = {
         paragraphs: [
           `StowGUI costs ${PRICE} once, with no subscription. The contract is concluded when you complete the payment. We send your license key to the email address you entered after successful payment.`,
           "StowGUI is a desktop application for Linux and macOS and requires GNU Stow 2.4 or newer, installed separately. Check the download page for available builds and system requirements before buying. The free download lets you explore packages and previews.",
+          "The contract languages are German and English. Before paying, review and correct your details in checkout; you can cancel checkout before completing payment. We retain purchase records and send the contract confirmation and applicable terms by email. There is no customer account for retrieving the contract text online; keep the confirmation email and its attachments.",
         ],
       },
       {
@@ -273,7 +283,7 @@ const en = {
         heading: "7. Updates, defects and liability",
         paragraphs: [
           "Statutory rights concerning defects and required updates remain unaffected. The inclusion of 1.x versions does not restrict any mandatory obligation to provide updates needed to maintain conformity, including security updates. Contact support@trainvent.com if StowGUI does not work as agreed.",
-          "We are liable without limitation for intent, gross negligence and injury to life, body or health, and where mandatory law requires. For slight negligence, liability is otherwise limited to breaches of essential contractual obligations and the foreseeable damage typical of the contract. Statutory product liability and any expressly assumed guarantees remain unaffected. Keep independent backups before changing files; this advice does not limit your statutory rights.",
+          "We are liable without limitation for intent, gross negligence and injury to life, body or health, and where mandatory law requires. Essential contractual obligations are obligations whose fulfillment makes proper performance of the contract possible in the first place and on whose fulfillment you may normally rely. For slight negligence, liability is otherwise limited to breaches of essential contractual obligations and the foreseeable damage typical of the contract. Statutory product liability and any expressly assumed guarantees remain unaffected. Keep independent backups before changing files; this advice does not limit your statutory rights.",
         ],
       },
       {
