@@ -72,7 +72,7 @@ const de: Dictionary = {
       "Der Schlüssel kommt direkt nach der Zahlung per E-Mail",
     ],
     free: "Pakete und Vorschauen kannst du kostenlos ansehen. Eine Lizenz schaltet Verknüpfen, Importieren und weitere Dateiänderungen frei. Verknüpfungen lösen kannst du auch ohne Lizenz.",
-    vat: "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.",
+    vat: "Einschließlich anfallender Steuern. Zahlung über Link.",
   },
   faq: {
     title: "FAQ",
@@ -145,6 +145,25 @@ const de: Dictionary = {
     noMail: "Nach ein paar Minuten keine E-Mail? Schau in den Spam-Ordner oder fordere sie erneut an.",
     resend: "Schlüssel erneut senden",
   },
+  withdrawal: {
+    title: "Vertrag widerrufen",
+    lead: "Übermittle uns deine Widerrufserklärung. Du brauchst weder ein Konto noch einen Lizenzschlüssel.",
+    details: "Deine Angaben",
+    name: "Name",
+    contract_reference: "Vertrag oder Bestellreferenz",
+    email: "E-Mail für die Eingangsbestätigung",
+    referenceHelp: "Nutze die Referenz aus deiner Kauf-E-Mail oder beschreibe den Kauf, den du widerrufen möchtest.",
+    review: "Erklärung prüfen",
+    declaration: "Hiermit widerrufe ich den unten bezeichneten Vertrag.",
+    edit: "Angaben ändern",
+    confirm: "Widerruf bestätigen",
+    received: "Widerruf eingegangen",
+    sent: "Deine Erklärung wurde gespeichert. Die Eingangsbestätigung erhältst du per E-Mail. Das bestätigt den Eingang; eine Erstattung ist damit noch nicht bewilligt.",
+    receipt: "Eingangsnummer",
+    receivedAt: "Eingegangen am",
+    error: "Wir konnten den Eingang nicht bestätigen. Versuche es mit denselben Angaben erneut. Du kannst deinen Widerruf auch an support@trainvent.com senden.",
+    unavailable: "Bitte sende deine Widerrufserklärung an support@trainvent.com.",
+  },
   license: {
     title: "Schlüssel verloren?",
     lead: "Gib die E-Mail-Adresse ein, mit der du bezahlt hast. Wir schicken deinen Schlüssel dorthin.",
@@ -192,6 +211,7 @@ const de: Dictionary = {
       {
         heading: "Kauf von StowGUI",
         paragraphs: [
+          "Bei Käufen mit dem Hinweis „Verkauft über Link“ ist die Stripe-Konzerngesellschaft Sold through Link, LLC (USA) Merchant of Record und übernimmt Zahlung, anfallende indirekte Steuern, Rechnungen und Transaktionssupport. Stripe und Link verarbeiten dafür Kontakt-, Rechnungs-, Zahlungs- und Transaktionsdaten sowie gegebenenfalls angegebene Steuer-IDs. Stripe und Trainvent handeln für ihre jeweilige Verarbeitung als eigenständige Verantwortliche. Die Datenschutzerklärung von Stripe unter https://link.com/privacy erläutert Verarbeitung, Aufbewahrung und Schutzmaßnahmen für internationale Übermittlungen, einschließlich Übermittlungen in die USA.",
           "Zahlungen wickelt Stripe Payments Europe Ltd., Irland, ab. Stripe verarbeitet Name, E-Mail-Adresse, Rechnungsadresse und Zahlungsdaten zur Zahlungsabwicklung (Art. 6 Abs. 1 lit. b DSGVO). Die Betrugsvermeidung dient dem berechtigten Interesse, unbefugte Zahlungen und finanzielle Verluste zu verhindern (Art. 6 Abs. 1 lit. f DSGVO). Eine Verarbeitung zur Erfüllung gesetzlicher Pflichten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. c DSGVO.",
           "Um deine Lizenz auszuliefern und zu verwalten, speichern wir deine E-Mail-Adresse, die Kaufreferenz und deinen Lizenzschlüssel. Das läuft bei Cloudflare, Inc. (USA, EU-US Data Privacy Framework). Die E-Mail mit dem Schlüssel versenden wir über Resend (Plus Five Five, Inc., USA). Resend erhält deine E-Mail-Adresse, den Nachrichteninhalt einschließlich Lizenzschlüssel und angehängter Dokumente sowie technische Zustelldaten. Auslieferung, Lizenzverwaltung und Schlüsselwiederherstellung sind zur Vertragserfüllung erforderlich (Art. 6 Abs. 1 lit. b DSGVO). Wenn du deinen Schlüssel erneut anforderst, verwenden wir deine E-Mail-Adresse, um deine aktiven Lizenzen zu finden und sie an diese Adresse zu senden.",
           "Die Erfassung von E-Mail-Öffnungen und Link-Klicks ist für unsere Transaktions-E-Mails deaktiviert. Resend versendet diese E-Mails aus Irland, speichert Nachrichteninhalte und Zustelldaten aber in den USA. Unser Auftragsverarbeitungsvertrag enthält die EU-Standardvertragsklauseln für Übermittlungen in die USA.",
@@ -214,6 +234,13 @@ const de: Dictionary = {
         ],
       },
       {
+        heading: "Widerrufserklärungen",
+        paragraphs: [
+          "Wenn du die Online-Widerrufsfunktion nutzt, verarbeiten wir den angegebenen Namen, die Vertragsbeschreibung oder Bestellreferenz und die E-Mail-Adresse, deine Erklärung, ihren Eingangszeitpunkt und den Versandstatus der Eingangsbestätigung. Cloudflare speichert die Erklärung; Resend versendet die Eingangsbestätigung wie oben beschrieben. Diese Verarbeitung erfüllt unsere gesetzlichen Pflichten zum Empfang und zur Bestätigung von Online-Widerrufen (Art. 6 Abs. 1 Buchst. c DSGVO, § 356a BGB). Zur Vertragsabwicklung und Bearbeitung einer Erstattung verarbeiten wir die Erklärung außerdem nach Art. 6 Abs. 1 Buchst. b DSGVO.",
+          "Wir bewahren die Erklärung auf, solange sie zur Bearbeitung und zum Nachweis unserer Pflichterfüllung benötigt wird, sowie gegebenenfalls zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen aufgrund unseres berechtigten Interesses an rechtlicher Absicherung (Art. 6 Abs. 1 Buchst. f DSGVO). Danach löschen wir sie, soweit keine gesetzlichen Aufbewahrungspflichten entgegenstehen. Die gekennzeichneten Felder sind für die Online-Erklärung und ihre Eingangsbestätigung erforderlich. Wenn du keine Bestellreferenz findest, kannst du den Vertrag beschreiben; ein Konto oder Lizenzschlüssel ist nicht erforderlich. Du kannst den Widerruf auch per E-Mail oder Post erklären.",
+        ],
+      },
+      {
         heading: "Deine Rechte",
         paragraphs: [
           "Du kannst Auskunft, Berichtigung, Löschung, Einschränkung oder eine Kopie deiner Daten verlangen und der Verarbeitung widersprechen. Schreib dazu an support@trainvent.com. Du kannst dich außerdem bei einer Datenschutzaufsichtsbehörde beschweren, zum Beispiel bei der LDI NRW.",
@@ -229,6 +256,7 @@ const de: Dictionary = {
         heading: "1. Anbieter",
         paragraphs: [
           "StowGUI wird von Trainvent, Inhaber Leon Marquardt, Ravensbergerstraße 75, 33602 Bielefeld, verkauft. Kontakt: support@trainvent.com.",
+          "Bei Bestellungen mit dem Hinweis „Verkauft über Link“ handelt die Stripe-Konzerngesellschaft Sold through Link, LLC als Merchant of Record. Link übernimmt Zahlung, anfallende indirekte Steuern, Rechnungen und Transaktionssupport nach den im Checkout dargestellten Bedingungen (https://link.com/terms). Trainvent stellt StowGUI, die Lizenz und den Produktsupport bereit. Zwingende Verbraucherrechte bleiben unberührt.",
         ],
       },
       {
@@ -251,7 +279,7 @@ const de: Dictionary = {
         paragraphs: [
           "Für die erste Aktivierung ist eine Internetverbindung erforderlich. Anschließend prüft die App die Lizenz im Hintergrund höchstens einmal täglich; du kannst sie auch manuell prüfen. Jede erfolgreiche Prüfung ermöglicht bis zu 30 Tage Offline-Nutzung. Nach Ablauf dieser Frist ist eine Online-Prüfung nötig, bevor du weitere kostenpflichtige Änderungen anwenden kannst.",
           `Sind bereits ${MAX_COMPUTERS} Computer aktiv, gibt eine weitere Aktivierung die Installation mit der am längsten zurückliegenden erfolgreichen Prüfung frei. Dort werden kostenpflichtige Änderungen bei der nächsten erfolgreichen Online-Prüfung oder nach Ablauf der bestehenden Offline-Frist gesperrt. Eine erneute Freischaltung erfordert eine ausdrückliche Aktivierung.`,
-          "Ein wirksamer Widerruf oder eine vollständige Erstattung des Kaufpreises beendet das zugehörige Nutzungsrecht an den kostenpflichtigen Funktionen. Die Aktivierungsprüfung setzt dies bei der nächsten Online-Prüfung um. Pakete und Vorschauen ansehen, Verknüpfungen lösen und Kopien am bisherigen Ort behalten bleibt auch ohne aktive Lizenz möglich. Deine Dateien bleiben deine Dateien.",
+          "Ein wirksamer Widerruf oder eine vollständige Erstattung des Kaufpreises beendet das zugehörige Nutzungsrecht an den kostenpflichtigen Funktionen. Die Eröffnung einer Zahlungsanfechtung deaktiviert die Lizenz nicht. Wird die Anfechtung zu unseren Lasten abgeschlossen und die Zahlung zurückgebucht, deaktivieren wir die zugehörige Lizenz. Wird dieses Ergebnis später aufgehoben, wende dich an support@trainvent.com, damit wir den Fall prüfen und den Zugang wiederherstellen können, soweit die Zahlung und das Nutzungsrecht wieder bestehen. Deine zwingenden gesetzlichen Rechte bleiben unberührt. Die Aktivierungsprüfung setzt die Deaktivierung bei der nächsten Online-Prüfung um. Pakete und Vorschauen ansehen, Verknüpfungen lösen und Kopien am bisherigen Ort behalten bleibt auch ohne aktive Lizenz möglich. Deine Dateien bleiben deine Dateien.",
           "Wenn wir den Aktivierungsdienst dauerhaft einstellen, stellen wir bestehenden Lizenzinhabern kostenlos ein Update oder eine andere Möglichkeit bereit, ihre lizenzierte Version ohne regelmäßige Online-Prüfung weiter zu nutzen. Damit versprechen wir keine neuen Funktionen oder Kompatibilität mit jedem zukünftigen Betriebssystem.",
         ],
       },
@@ -266,16 +294,36 @@ const de: Dictionary = {
       {
         heading: "6. Widerrufsbelehrung",
         paragraphs: [
-          "Verbraucher haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses.",
-          "Um dein Widerrufsrecht auszuüben, informiere Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, support@trainvent.com, +49 160 3455942, mittels einer eindeutigen Erklärung, zum Beispiel per E-Mail, über deinen Entschluss. Du kannst das untenstehende Muster-Widerrufsformular verwenden, musst es aber nicht. Zur Wahrung der Frist reicht es aus, die Mitteilung vor Ablauf der Frist abzusenden.",
-          "Wenn du widerrufst, erstatten wir dir alle im Rahmen des Vertrags erhaltenen Zahlungen unverzüglich und spätestens binnen vierzehn Tagen ab Eingang deines Widerrufs. Wir verwenden dasselbe Zahlungsmittel, sofern nicht ausdrücklich etwas anderes vereinbart wurde. Dir entstehen keine Erstattungsgebühren. Die zugehörige Lizenz wird deaktiviert.",
+          "Widerrufsrecht",
+          "Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.",
+          "Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses.",
+          "Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Trainvent, Inhaber Leon Marquardt, Ravensbergerstraße 75, 33602 Bielefeld, Telefonnummer: +49 160 3455942, E-Mail-Adresse: support@trainvent.com) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist.",
+          "Sie können Ihr Widerrufsrecht auch online unter https://stowgui.com/de/withdrawal/ ausüben. Wenn Sie diese Online-Funktion nutzen, übermitteln wir Ihnen auf einem dauerhaften Datenträger (z. B. durch eine E-Mail) unverzüglich eine Eingangsbestätigung mit Informationen zum Inhalt der Widerrufserklärung sowie dem Datum und der Uhrzeit ihres Eingangs.",
+          "Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.",
+          "Folgen des Widerrufs",
+          "Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, einschließlich der Lieferkosten (mit Ausnahme der zusätzlichen Kosten, die sich daraus ergeben, dass Sie eine andere Art der Lieferung als die von uns angebotene, günstigste Standardlieferung gewählt haben), unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist.",
+          "Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.",
+        ],
+      },
+      {
+        heading: "Vorzeitiges Erlöschen bei digitalen Inhalten",
+        paragraphs: [
+          "Bei Käufen mit dem Hinweis „Verkauft über Link“ berufen wir uns nicht allein wegen der Schlüssellieferung auf ein vorzeitiges Erlöschen. Weitergehende Rechte aus den Bedingungen von Link bleiben bestehen, einschließlich der dort beschriebenen Widerrufsfrist für EU-Verbraucher von 14 Tagen ab Zugang zum oder Lieferung des Produkts.",
           "Bei kostenpflichtigen digitalen Inhalten ohne körperlichen Datenträger erlischt das Widerrufsrecht vorzeitig nur, wenn die Lieferung begonnen hat, nachdem du ausdrücklich dem Beginn vor Ablauf der Widerrufsfrist zugestimmt und deine Kenntnis bestätigt hast, dass du dadurch mit Beginn der Lieferung dein Widerrufsrecht verlierst, und wir die gesetzlich erforderliche Vertragsbestätigung bereitgestellt haben. Diese hält Zustimmung und Kenntnisbestätigung fest. Sind diese Voraussetzungen nicht erfüllt, beendet der sofortige Versand des Schlüssels allein das Widerrufsrecht nicht.",
         ],
       },
       {
         heading: "Muster-Widerrufsformular",
         paragraphs: [
-          "An Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, support@trainvent.com: Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden digitalen Inhalte: StowGUI-Lizenz. Bestellt am/erhalten am (*): … Name des/der Verbraucher(s): … Anschrift des/der Verbraucher(s): … Unterschrift des/der Verbraucher(s), nur bei Mitteilung auf Papier: … Datum: … (*) Unzutreffendes streichen.",
+          "(Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und senden Sie es zurück.)",
+          "An Trainvent, Inhaber Leon Marquardt, Ravensbergerstraße 75, 33602 Bielefeld, E-Mail-Adresse: support@trainvent.com:",
+          "Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*)/die Erbringung der folgenden Dienstleistung (*)",
+          "Bestellt am (*)/erhalten am (*)",
+          "Name des/der Verbraucher(s)",
+          "Anschrift des/der Verbraucher(s)",
+          "Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier)",
+          "Datum",
+          "(*) Unzutreffendes streichen.",
         ],
       },
       {

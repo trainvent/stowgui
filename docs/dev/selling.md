@@ -9,10 +9,19 @@ are recorded in [transactional email](transactional-email.md) and the
 1. Buy button → Stripe Payment Link (hosted checkout).
 2. After payment Stripe redirects to `https://stowgui.com/buy/success/`, which forwards to the visitor's language.
 3. Stripe sends `checkout.session.completed` to the Worker (`POST /stripe/webhook`). The Worker signs a license key, stores it in D1 and emails it via Resend. If the email fails, the Worker returns an error and Stripe's retry sends it.
-4. `charge.refunded` (full refund) and `charge.dispute.created` revoke the key. The app sees this at its next activation/check-in. An offline installation can use its existing token until its signed 30-day expiry.
+4. `charge.refunded` (full refund) and `charge.dispute.closed` with status `lost` revoke the key. Open disputes, wins and closed inquiries keep access. The app sees revocation at its next activation/check-in. An offline installation can use its existing token until its signed 30-day expiry. If a loss is later overturned, support must check payment and any independent refund/termination before restoring access; never clear revocation solely on a won-dispute or funds-reinstated event. Existing historical revocations are not automatically changed.
 5. `/license/` on the site lets buyers request their key again (`POST /license/resend`, 5-minute cooldown, same answer for unknown addresses).
 
-## Stripe setup (do it in test mode first)
+## Legacy direct Stripe setup (do not reuse for new worldwide sales)
+
+The following records the old direct-payment setup. New sales are being prepared
+with Managed Payments; see the [migration task](../../tasks/legal-launch-review.md)
+and `managedCheckoutSettings` in `scripts/stripe-checkout-settings.mjs`.
+That helper omits the blanket §19 invoice footer and custom consent text:
+Managed Payments controls tax handling and does not support `custom_text`.
+It must use a new, correctly categorized product/price/link and pass sandbox
+acceptance before publication. Do not treat the old combined checkbox as proof
+of early expiry for the new checkout.
 
 1. **Product**: "StowGUI license", one-time price 5,00 EUR.
 2. **Settings → Public details**: business name Trainvent, support email, terms URL `https://stowgui.com/en/terms/`, privacy URL `https://stowgui.com/en/privacy/`.
@@ -20,11 +29,11 @@ are recorded in [transactional email](transactional-email.md) and the
 4. **Payment Link**:
    - Quantity fixed at 1, collect billing address (needed for invoices).
    - Require agreement to the terms of service.
-   - For immediate delivery, obtain express consent to delivery before the withdrawal period ends and acknowledgment of losing the right when delivery begins (§ 356 (5) BGB). Terms acceptance alone is not sufficient evidence of these declarations. Verify the actual hosted checkout, what Stripe records, and the contract confirmation before enabling live payments. Suggested consent wording:
+   - For immediate delivery, obtain express consent to delivery before the withdrawal period ends and acknowledgment of losing the right when delivery begins (§ 356 (6) BGB). Terms acceptance alone is not sufficient evidence of these declarations. Verify the actual hosted checkout, what Stripe records, and the contract confirmation before enabling live payments. Suggested consent wording:
      > I agree that delivery of the license key begins immediately, and I know that I lose my right of withdrawal once delivery has begun. / Ich stimme zu, dass die Lieferung des Lizenzschlüssels sofort beginnt, und weiß, dass ich dadurch mein Widerrufsrecht verliere.
    - After payment: redirect to `https://stowgui.com/buy/success/`.
    - Put the link URL into the GitHub variable `PAYMENT_LINK` and its id (`plink_…`) into `STRIPE_PAYMENT_LINK_ID` in `worker/wrangler.toml`.
-5. **Webhook endpoint**: `https://stowgui-license.trainvent.workers.dev/stripe/webhook` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`, `charge.dispute.created`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
+5. **Webhook endpoint**: `https://stowgui-license.trainvent.workers.dev/stripe/webhook` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`, `charge.dispute.closed`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`. Dashboard dispute notifications remain necessary for handling cases and later reversals. [Stripe event definitions](https://docs.stripe.com/api/events/types).
 
 ## Resend setup
 

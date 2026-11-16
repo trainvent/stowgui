@@ -73,7 +73,7 @@ const en = {
       "Key arrives by email right after payment",
     ],
     free: "Explore packages and previews for free. A license unlocks linking, imports and other file changes. Unlinking stays available without a license.",
-    vat: "No VAT is charged under § 19 UStG (small business).",
+    vat: "Includes applicable taxes. Payment through Link.",
   },
   faq: {
     title: "FAQ",
@@ -146,6 +146,25 @@ const en = {
     noMail: "No email after a few minutes? Check your spam folder or request it again.",
     resend: "Send key again",
   },
+  withdrawal: {
+    title: "Withdraw from contract",
+    lead: "Send us your withdrawal declaration. You do not need an account or license key.",
+    details: "Your details",
+    name: "Name",
+    contract_reference: "Contract or order reference",
+    email: "Email for your receipt",
+    referenceHelp: "Use the reference in your purchase email, or describe the purchase you want to withdraw from.",
+    review: "Review declaration",
+    declaration: "I hereby withdraw from the contract identified below.",
+    edit: "Edit details",
+    confirm: "Confirm withdrawal",
+    received: "Withdrawal received",
+    sent: "Your declaration has been recorded. We will email your receipt. This confirms receipt; it does not mean a refund has already been approved.",
+    receipt: "Receipt reference",
+    receivedAt: "Received at",
+    error: "We could not confirm receipt. Try again with the same details. You can also send your withdrawal to support@trainvent.com.",
+    unavailable: "Please send your withdrawal declaration to support@trainvent.com.",
+  },
   license: {
     title: "Lost your key?",
     lead: "Enter the email address you used to pay. We'll send your key there.",
@@ -193,6 +212,7 @@ const en = {
       {
         heading: "Buying StowGUI",
         paragraphs: [
+          "For purchases marked ‘Sold through Link’, Stripe's affiliate Sold through Link, LLC (USA) acts as merchant of record and handles payment, applicable indirect taxes, invoices and transaction support. Stripe and Link process contact, billing, payment, transaction and any provided tax-ID data for these purposes. Stripe and Trainvent act as independent controllers for their respective processing. Stripe's privacy policy at https://link.com/privacy explains its processing, retention and safeguards for international transfers, including transfers to the USA.",
           "Payments are handled by Stripe Payments Europe Ltd., Ireland. Stripe processes your name, email address, billing address and payment details to process the payment (Art. 6 (1) (b) GDPR). Fraud prevention serves the legitimate interest in preventing unauthorized payments and financial loss (Art. 6 (1) (f) GDPR). Processing required by legal obligations is based on Art. 6 (1) (c) GDPR.",
           "To deliver and manage your license we store your email address, the purchase reference and your license key. This runs on Cloudflare, Inc. (USA, EU-US Data Privacy Framework). We send the key email through Resend (Plus Five Five, Inc., USA). Resend receives your email address, the message content including your license key and attached documents, and technical delivery data. Delivery, license management and recovery are necessary to perform the contract (Art. 6 (1) (b) GDPR). If you request your key again, we use your email address to find your active licenses and resend them to that address.",
           "Open and click tracking are disabled for our transactional emails. Resend sends these emails from Ireland but stores message content and delivery data in the USA. Our data processing agreement includes the EU Standard Contractual Clauses for transfers to the USA.",
@@ -215,6 +235,13 @@ const en = {
         ],
       },
       {
+        heading: "Withdrawal declarations",
+        paragraphs: [
+          "If you use the online withdrawal function, we process the name, contract description or order reference and email address you provide, your declaration, its receipt time and the receipt's delivery status. We use Cloudflare to record the declaration and Resend to send your receipt, as described above. This processing fulfills our statutory duties to receive and confirm online withdrawals (Art. 6 (1) (c) GDPR, section 356a BGB). We also process the declaration to handle the contract and any refund (Art. 6 (1) (b) GDPR).",
+          "We retain the declaration while needed to handle it and prove compliance with our duties, and where needed to establish, exercise or defend legal claims based on our legitimate interest in legal protection (Art. 6 (1) (f) GDPR). We delete it when those purposes cease, subject to statutory retention duties. The marked fields are required to submit the online declaration and deliver its receipt. You may describe the contract if you cannot find an order reference; no account or license key is required. You can also declare withdrawal by email or post.",
+        ],
+      },
+      {
         heading: "Your rights",
         paragraphs: [
           "You can ask for access, correction, deletion, restriction or a copy of your data, and object to processing. Write to support@trainvent.com. You can also complain to a data protection authority, for example the LDI NRW.",
@@ -230,6 +257,7 @@ const en = {
         heading: "1. Seller",
         paragraphs: [
           "StowGUI is sold by Trainvent, owner Leon Marquardt, Ravensbergerstraße 75, 33602 Bielefeld, Germany. Contact: support@trainvent.com.",
+          "For orders marked ‘Sold through Link’, Stripe's affiliate Sold through Link, LLC acts as merchant of record. Link handles payment, applicable indirect taxes, invoices and transaction support under the terms presented at checkout (https://link.com/terms). Trainvent provides StowGUI, the license and product support. Mandatory consumer rights remain unaffected.",
         ],
       },
       {
@@ -252,7 +280,7 @@ const en = {
         paragraphs: [
           "An internet connection is required for initial activation. The app then checks the license in the background at most once a day; you can also check manually. Each successful check allows up to 30 days of offline use. If that period expires, online verification is needed before you can apply further paid changes.",
           `Activating a further computer when all ${MAX_COMPUTERS} places are in use releases the installation with the oldest successful check. That installation locks paid changes at its next successful online check or when its current offline allowance expires. Reclaiming a place requires an explicit activation.`,
-          "A valid withdrawal or full purchase-price refund ends the corresponding right to use the paid features. Activation checks enforce this when the installation next checks online. Viewing packages and previews, unlinking files and keeping copies in place remain available without an active license. Your files remain yours.",
+          "A valid withdrawal or full purchase-price refund ends the corresponding right to use the paid features. Opening a payment dispute does not deactivate the license. If the dispute is closed against us and the payment is reversed, we deactivate the corresponding license. If that outcome is later overturned, contact support@trainvent.com so we can check and restore access where payment and the right to use have been reinstated. Your mandatory statutory rights remain unaffected. Activation checks enforce deactivation when the installation next checks online. Viewing packages and previews, unlinking files and keeping copies in place remain available without an active license. Your files remain yours.",
           "If we permanently discontinue the activation service, we will provide existing license holders with a free update or another means of continuing to use their licensed version without periodic online verification. This does not promise new features or compatibility with every future operating system.",
         ],
       },
@@ -267,16 +295,36 @@ const en = {
       {
         heading: "6. Right of withdrawal",
         paragraphs: [
-          "Consumers may withdraw from this contract within 14 days without giving a reason. The withdrawal period is 14 days from the day the contract is concluded.",
-          "To withdraw, inform Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, Germany, support@trainvent.com, +49 160 3455942, by a clear statement, for example an email. You may use the model form below, but do not have to. Sending the notice before the period ends is enough.",
-          "If you withdraw, we refund all payments received under the contract without undue delay and at the latest within 14 days after receiving your notice, using the same payment method unless expressly agreed otherwise. You incur no refund fee. The corresponding license is deactivated.",
+          "Right of withdrawal",
+          "You have the right to withdraw from this contract within fourteen days without giving any reason.",
+          "The withdrawal period will expire after fourteen days from the day of the conclusion of the contract.",
+          "To exercise the right of withdrawal, you must inform us (Trainvent, owner Leon Marquardt, Ravensbergerstraße 75, 33602 Bielefeld, Germany, telephone: +49 160 3455942, email: support@trainvent.com) of your decision to withdraw from this contract by an unequivocal statement (e.g. a letter sent by post or an email). You may use the attached model withdrawal form, but it is not obligatory.",
+          "You can also exercise your right of withdrawal online at https://stowgui.com/en/withdrawal/. If you use this online function, we will send you an acknowledgment on a durable medium (e.g. by email) without delay, containing information about your withdrawal declaration and the date and time of its receipt.",
+          "To meet the withdrawal deadline, it is sufficient for you to send your communication concerning your exercise of the right of withdrawal before the withdrawal period has expired.",
+          "Effects of withdrawal",
+          "If you withdraw from this contract, we shall reimburse to you all payments received from you, including the costs of delivery (with the exception of the supplementary costs resulting from your choice of a type of delivery other than the least expensive type of standard delivery offered by us), without undue delay and in any event not later than fourteen days from the day on which we are informed about your decision to withdraw from this contract.",
+          "We will carry out such reimbursement using the same means of payment as you used for the initial transaction, unless you have expressly agreed otherwise; in any event, you will not incur any fees as a result of such reimbursement.",
+        ],
+      },
+      {
+        heading: "Early expiry for digital content",
+        paragraphs: [
+          "For purchases marked ‘Sold through Link’, we do not rely on early expiry merely because the key was delivered. Any additional rights under Link's terms remain available, including the cooling-off period for EU consumers described there, which runs for 14 days from access to or delivery of the product.",
           "For paid digital content delivered without a physical medium, the withdrawal right ends early only if delivery has begun after you expressly consented to delivery before the withdrawal period ends, acknowledged that this causes you to lose your withdrawal right when delivery begins, and we have provided the legally required contract confirmation. This confirmation records that consent and acknowledgment. If these requirements are not met, immediate key delivery alone does not end the right.",
         ],
       },
       {
         heading: "Model withdrawal form",
         paragraphs: [
-          "To Trainvent, Ravensbergerstraße 75, 33602 Bielefeld, Germany, support@trainvent.com: I/We (*) hereby withdraw from my/our (*) contract for the purchase of the following digital content: StowGUI license. Ordered on/received on (*): … Name of consumer(s): … Address of consumer(s): … Signature of consumer(s), only if sent on paper: … Date: … (*) Delete as appropriate.",
+          "(Complete and return this form only if you wish to withdraw from the contract.)",
+          "To Trainvent, owner Leon Marquardt, Ravensbergerstraße 75, 33602 Bielefeld, Germany, email: support@trainvent.com:",
+          "I/We (*) hereby give notice that I/We (*) withdraw from my/our (*) contract of sale of the following goods (*)/for the provision of the following service (*)",
+          "Ordered on (*)/received on (*)",
+          "Name of consumer(s)",
+          "Address of consumer(s)",
+          "Signature of consumer(s) (only if this form is notified on paper)",
+          "Date",
+          "(*) Delete as appropriate.",
         ],
       },
       {

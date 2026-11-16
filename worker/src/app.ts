@@ -84,9 +84,9 @@ export function createApp(deps: Deps) {
         if (object.refunded === true && paymentIntent) await deps.store.revokeByPaymentIntent(paymentIntent, deps.now());
         return new Response("ok");
       }
-      case "charge.dispute.created": {
+      case "charge.dispute.closed": {
         const paymentIntent = str(object.payment_intent);
-        if (paymentIntent) await deps.store.revokeByPaymentIntent(paymentIntent, deps.now());
+        if (object.status === "lost" && paymentIntent) await deps.store.revokeByPaymentIntent(paymentIntent, deps.now());
         return new Response("ok");
       }
       default:

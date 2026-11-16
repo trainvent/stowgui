@@ -52,7 +52,7 @@ describe("Stripe webhook", () => {
     expect(response.status).toBe(400);
   });
 
-  it("revokes the key on a full refund and on a dispute", async () => {
+  it("revokes the key on a full refund and a lost dispute", async () => {
     const { deps, store } = await testDeps();
     const app = createApp(deps);
     await app(await webhookRequest(checkoutCompleted()));
@@ -62,11 +62,39 @@ describe("Stripe webhook", () => {
     expect(store.records[0].revoked_at).toBeNull();
 
     await app(await webhookRequest({ id: "evt_3", type: "charge.refunded", data: { object: { refunded: true, payment_intent: "pi_1" } } }));
-    await app(await webhookRequest({ id: "evt_4", type: "charge.dispute.created", data: { object: { payment_intent: "pi_2" } } }));
+    await app(await webhookRequest({ id: "evt_4", type: "charge.dispute.closed", data: { object: { status: "lost", payment_intent: "pi_2" } } }));
     expect(store.records.map((r) => r.revoked_at !== null)).toEqual([true, true]);
 
     const status = await app(new Request("https://license.stowgui.com/license/status?id=lic_1"));
     expect(await status.json()).toEqual({ active: false });
+  });
+
+  it("keeps access during disputes and after won or closed inquiries", async () => {
+    const { deps, store } = await testDeps();
+    const app = createApp(deps);
+    await app(await webhookRequest(checkoutCompleted()));
+    for (const [type, status] of [
+      ["charge.dispute.created", "needs_response"],
+      ["charge.dispute.updated", "under_review"],
+      ["charge.dispute.closed", "won"],
+      ["charge.dispute.closed", "warning_closed"],
+    ]) {
+      await app(await webhookRequest({ id: `evt_${status}`, type, data: { object: { status, payment_intent: "pi_1" } } }));
+      expect(store.records[0].revoked_at).toBeNull();
+    }
+  });
+
+  it("does not undo an independent refund on a won dispute or reinstated funds", async () => {
+    const { deps, store, advance } = await testDeps();
+    const app = createApp(deps);
+    await app(await webhookRequest(checkoutCompleted()));
+    await app(await webhookRequest({ id: "evt_refund", type: "charge.refunded", data: { object: { refunded: true, payment_intent: "pi_1" } } }));
+    const revokedAt = store.records[0].revoked_at;
+    advance(60);
+    for (const type of ["charge.dispute.closed", "charge.dispute.funds_reinstated"]) {
+      await app(await webhookRequest({ id: `evt_${type}`, type, data: { object: { status: "won", payment_intent: "pi_1" } } }));
+    }
+    expect(store.records[0].revoked_at).toBe(revokedAt);
   });
 });
 

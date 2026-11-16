@@ -4,7 +4,8 @@ Status: in progress, 2026-11-16. Keep sales disabled until the launch gates belo
 
 ## Confirmed decisions
 
-- Worldwide sales through a merchant of record (MoR), selected by the user on 2026-11-16. Provider selection and commercial terms remain open. Stripe Projects provisions infrastructure; it does not make the existing Stripe Payment Link a MoR checkout.
+- Worldwide sales through Stripe Managed Payments, selected by the user on 2026-11-16. The user approved personal utility purchases first (`txcd_10202001`) and creating the EUR5 tax-inclusive live link under the stated terms/fees, then immediately deactivating it. New live link `plink_1UcLkP3SIDKPozJgf3ky30XT` is verified inactive; the website and production Worker still use their previous configuration. Stripe Projects is unrelated to merchant-of-record checkout.
+- Keep access during open disputes; revoke on full refund or a confirmed lost chargeback. The user approved the dedicated withdrawal page, endpoint/records and separate notifications to `support@trainvent.com`. Local implementation and rollout gates are documented in [withdrawal](../docs/dev/withdrawal.md).
 - Replace Brevo with Resend. After Stripe rejected project creation for the existing Trainvent account, the user authorized direct Resend setup on 2026-11-16. The Stripe support request remains unsent.
 
 ## 1. Transactional email: first priority
@@ -30,17 +31,18 @@ Resend supports [domain-level tracking controls](https://resend.com/docs/api-ref
 - [x] Describe key recovery, email support and data needed to perform the contract.
 - [x] Add revision dates to all four documents and contract-language/input-correction/email-confirmation information to the terms. These describe the current checkout and require rechecking during MoR migration.
 - [x] Regenerate all four PDFs and inspect every rendered page; bundle and manifests match the dictionary texts. Archive each published revision and checkout configuration at publication. Hashes alone do not recover old PDFs.
-- [ ] Resolve section 4 dispute wording together with policy. The current handler permanently revokes on dispute creation and does not restore access after a won dispute. This is broader than a final chargeback. Do not add a sentence presenting all opened disputes as automatic lawful termination. Proposed policy for approval: suspend paid access during a dispute, restore it when resolved in the seller's favour, terminate only on a valid withdrawal/full refund or legally effective termination. Counsel must confirm wording and mandatory rights. Changing persisted revocation states requires user approval before implementation.
-- [ ] Replace withdrawal instructions/form with correctly completed current statutory models, with the early-expiry explanation outside the model notice. Reconcile MoR seller identity, refund recipient and withdrawal-function location. [Official model](https://www.gesetze-im-internet.de/bgbeg/art_253anlage_1.html).
+- [x] Implement the approved dispute policy locally and update DE/EN section 4: only closed/lost disputes or full refunds revoke; open/won/closed inquiries keep access. Later reversals have an explicit support review path, without automatically undoing independent refunds. No historical records were changed. Deployment/event-subscription update and counsel review remain open.
+- [x] Replace the local withdrawal notice/form with the completed current German statutory models and matching English copy; put early-expiry explanation outside the model and preserve Link's additional cooling-off rights. Reconcile Trainvent seller identity, Link's MoR role and the planned function URL. Do not publish these notices until that URL works. [Official model](https://www.gesetze-im-internet.de/bgbeg/art_253anlage_1.html).
 - [ ] Have counsel assess the combined terms/delivery checkbox; separate express consent and acknowledgment if the selected checkout permits. Treat withdrawal rights as continuing where early-expiry evidence is insufficient, rather than assuming the €5 price removes the risk.
 - [ ] Counsel review of low-priority business jurisdiction and applicable sanctions/export restrictions. Do not add a clause purporting to restrict consumer venue rights.
 
 ## 3. Worldwide checkout through a merchant of record
 
-- [ ] Select a provider accepting a German sole proprietor and downloadable desktop software. Compare net proceeds at €5, minimum payouts, supported countries, tax invoices/B2B IDs, refunds, disputes and customer support responsibilities. Worldwide means the provider's supported markets, subject to restrictions.
+- [x] Select Stripe Managed Payments, offered in Trainvent's live account. StowGUI is marked eligible under the user-approved personal utility category. Worldwide means supported markets, subject to restrictions; no business-use tax category was configured.
+- [x] Prepare a primary-source [provider comparison](mor-provider-comparison.md). Trainvent's live Dashboard offers Stripe Managed Payments onboarding; its introductory screen lists product-category and checkout setup steps. No agreement was accepted or checkout enabled. Provider choice is pending.
 - [ ] Confirm in writing who sells to the consumer, invoices, collects/remits indirect tax and handles withdrawal. MoR does not remove the developer's own income-tax/accounting or product obligations.
 - [ ] Replace direct Stripe checkout for new sales. Map signed, replay-safe paid/refund/dispute events to license issuance and revocation while preserving existing keys and legacy Stripe purchase handling. Propose schema/API changes for approval before implementation.
-- [ ] Remove the blanket §19 invoice footer from the new provider checkout; use the provider's correct tax invoices. Do not enable Stripe automatic tax as a substitute for MoR setup.
+- [x] The new inactive Managed Payments link has provider invoices enabled, no §19 footer, and a EUR5 inclusive price. Local pricing copy now states applicable taxes are included. The old direct helper remains explicitly documented as legacy only.
 - [ ] Test customer country and business-tax-ID handling, paid confirmation, duplicate events, refunds and disputes in the provider sandbox. Keep real checkout activation as a separate explicit launch step.
 
 The review's €10,000 claim needs qualification: the threshold combines relevant cross-border EU B2C electronic services and intra-EU distance goods sales across the business, in both the preceding and current calendar years. Germany's domestic exemption is not automatic EU-wide exemption; a separate cross-border SME scheme has existed since 2025. Ask the tax adviser to apply these rules to the actual business, rather than treating OSS as the only possible regime. [§3a(5) UStG](https://www.gesetze-im-internet.de/ustg_1980/__3a.html), [BMF cross-border SME guidance](https://www.bundesfinanzministerium.de/Content/DE/Downloads/BMF_Schreiben/Steuerarten/Umsatzsteuer/Umsatzsteuer-Anwendungserlass/2025-03-18-sonderregelung-kleinunternehmer.pdf?__blob=publicationFile&v=3).
@@ -50,11 +52,32 @@ The review's €10,000 claim needs qualification: the threshold combines relevan
 The final German law applies from 19 June 2026; this is already a launch requirement, not an unverified future proposal. [Promulgated law](https://eur-lex.europa.eu/legal-content/DE/TXT/PDF/?uri=NIM%3A202601649), [§356a BGB](https://www.gesetze-im-internet.de/bgb/__356a.html).
 
 - [ ] Confirm whether the selected MoR supplies the required function for these contracts. If not, agree the responsibility and implementation before integrating it.
-- [ ] Prepare 2-3 rough UI options before choosing the final design, as required by the user's UI rule. The minimum flow is a prominent `Vertrag widerrufen` entry, name/contract reference/acknowledgment email, review and `Widerruf bestätigen`, then immediate durable acknowledgment with the declaration and submission date/time. Do not require an account, license key or advance validity adjudication to submit.
-- [ ] Proposed fallback, not yet approved: a localized static withdrawal page calling a Worker `POST /withdrawal` endpoint with `{name, contract_reference, email}`; a durable submission/outbox record and retryable receipt delivery; origin checks, validation, abuse limits and duplicate protection. A receipt acknowledges submission and does not promise that eligibility or a refund has already been decided. Ask before introducing this public endpoint and stored-data schema.
+- [x] Present dedicated-page/dialog sketches; the user selected the dedicated page. Localized pages have a prominent footer entry, name/contract description/receipt email, review and confirmation; no login, key or advance validity adjudication.
+- [x] Implement the explicitly approved `POST /withdrawal` endpoint and migration locally, with original declaration/time, durable independent customer/support delivery states, origin checks, validation, limits and idempotency. Receipt acknowledgment does not decide eligibility or issue a refund. Production migration and deployment remain pending retention/operational review.
 - [ ] Test timely submission, invalid/missing input, duplicate requests, receipt failure/retry, inaccessible accounts and ambiguous/expired orders. Publish the function's location in the statutory notice and confirmation.
 
-Digital-content early expiry requires performance start, express consent, acknowledgment and contract confirmation; delivery alone is insufficient. The current statutory provision is [§356(6) BGB](https://www.gesetze-im-internet.de/bgb/__356.html). `docs/dev/selling.md` still cites paragraph 5; correct that citation together with the legally reviewed checkout changes.
+Digital-content early expiry requires performance start, express consent, acknowledgment and contract confirmation; delivery alone is insufficient. The current statutory provision is [§356(6) BGB](https://www.gesetze-im-internet.de/bgb/__356.html). `docs/dev/selling.md` now cites paragraph 6. The actual Managed Payments test did not collect early-expiry consent.
+
+## Current local acceptance (2026-11-16)
+
+- Worker type checking and 40 tests pass, including real D1 withdrawal storage,
+  duplicate/conflicting requests, concurrent claims, independent customer/support
+  failure/retry, abuse validation, receipt content and the new dispute policy.
+- DE/EN withdrawal review, edit, confirmation and focus handling passed browser
+  tests with temporary D1 and captured mail. No real declarations were created.
+- A real Stripe TEST Managed Payments purchase produced a locally captured key,
+  verified activation and full-refund revocation from signed Stripe events.
+  Germany displayed EUR0.80 VAT in the EUR5 total; France/UK previews displayed
+  EUR0.83 in the same total. Business tax-ID fields are available in Link, but a
+  completed validated B2B invoice case remains untested and outside the selected
+  personal-use first checkout scope. See [provider record](mor-provider-comparison.md).
+- All ten rendered pages of the four current review PDFs were inspected;
+  the bundled files and manifest match the dictionaries. These drafts are not
+  deployed or emailed to live buyers: the planned withdrawal URL is not live yet.
+- Managed Payments disables the seller terms checkbox/custom text. The completed
+  test had no recorded waiver. Link's own terms preserve a 14-day EU cooling-off
+  period from delivery/access. Resolve pre-contract presentation/incorporation of
+  the StowGUI licence terms before publication; do not fabricate consent.
 
 ## Launch gates
 
@@ -80,7 +103,7 @@ information and a documentation link, without an enable/onboarding action.
 What eligibility requirement or onboarding step is missing, and can Projects
 be enabled for this existing account?
 
-## Local verification
+## Earlier Resend cutover verification
 
 - Worker type checking and all 34 tests pass, including local D1 integration.
 - Website production build, type checking, lint and legal-attachment freshness pass.

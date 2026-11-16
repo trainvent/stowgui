@@ -29,6 +29,15 @@ a:hover { color: var(--arc-text-link-hover); }
 .site-footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 .site-footer a { color: var(--gray-11); text-decoration: none; }
 .site-footer a:hover { color: var(--gray-12); }
+.site-footer a.withdrawal-link { color: var(--gray-12); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.withdrawal-form { display: grid; gap: var(--space-5); }
+.withdrawal-field { display: grid; gap: var(--space-2); }
+.withdrawal-field label { font: 400 14px var(--font-ui); }
+.field-help { color: var(--gray-11); font-size: 14px; margin: 0; }
+.withdrawal-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.withdrawal-details { display: grid; gap: var(--space-4); }
+.withdrawal-details dt { color: var(--gray-11); font: 400 14px var(--font-ui); }
+.withdrawal-details dd { margin: var(--space-1) 0 0; overflow-wrap: anywhere; }
 
 /* Typography */
 h1 { font: 400 clamp(36px, 6vw, 64px)/1.05 var(--font-ui); letter-spacing: -0.04em; color: var(--arc-text-title); margin: 48px 0 16px; }

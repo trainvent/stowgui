@@ -216,3 +216,18 @@ After the normal resend cooldown, the recovery email received at 09:23:46 CET
 contains exactly one existing key, with the new left-aligned HTML and both
 current PDFs. Plain-text and rendered HTML key bytes agree. Recovery behavior
 for customers with multiple valid purchases was not changed.
+
+## Managed Payments and withdrawal preparation — 2026-11-16
+
+The user approved Stripe Managed Payments and a personal-use utility category.
+New EUR5 tax-inclusive live link `plink_1UcLkP3SIDKPozJgf3ky30XT` was created
+under explicit service/fee approval, immediately deactivated and verified inactive.
+It has current legal-revision hashes and `launch_status=pending_review` metadata.
+The website/production Worker still retain their old inactive-link setup.
+
+Local work includes the approved dispute policy, dedicated DE/EN withdrawal
+pages, durable customer/support receipt retries, current model notices and
+updated review PDFs. Forty Worker tests pass. A real Stripe TEST purchase,
+local key activation and full-refund revocation passed; no live payment or
+external key email was used. See [legal launch remediation](legal-launch-review.md)
+and [withdrawal rollout gates](../docs/dev/withdrawal.md) before deploying.

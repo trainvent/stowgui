@@ -8,6 +8,7 @@ export default function SiteFooter({ locale, dict }: { locale: Locale; dict: Dic
     <footer className="site-footer">
       <span>© {new Date().getFullYear()} {COMPANY.name}</span>
       <nav>
+        <Link className="withdrawal-link" href={localePath(locale, "/withdrawal")}>{dict.withdrawal.title}</Link>
         {RELEASED && <Link href={localePath(locale, "/license")}>{dict.footer.lostKey}</Link>}
         <Link href={localePath(locale, "/terms")}>{dict.footer.terms}</Link>
         <Link href={localePath(locale, "/privacy")}>{dict.footer.privacy}</Link>
