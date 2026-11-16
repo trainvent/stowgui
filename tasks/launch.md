@@ -184,3 +184,21 @@ acceptance checks remain separate launch items.
 This supersedes the earlier Brevo tracking launch items. The later privacy-only
 website publication was separately authorized; other pending local changes were
 not published and checkout remains disabled.
+
+## Email alignment and wrapping - 2026-11-16
+
+- [x] Remove the centered 640px content box and extra body padding.
+- [x] Replace CSS-only key wrapping with adjacent inline-block segments that
+  survive the relevant HTMLPurifier rules. Preserve original key text with no
+  spaces, hidden characters or hard line breaks.
+- [x] Reproduce the old inset/overflow in a filtered browser fixture and verify
+  zero horizontal overflow at narrow and wide widths. Clipboard copying of a
+  wrapped 327-character fixture key is byte-for-byte unchanged.
+- [x] Worker type checking and all 34 tests pass; deploy version
+  `01d37e01-d00c-426f-8508-a1015aa87986`.
+- [x] Received the updated recovery test at 09:18:27 CET in
+  `dummy@trainvent.com`. MIME HTML contains the new left-aligned wrapper and
+  inline-block key segments, no centered margin and no image tags. Both keys
+  and both unchanged PDFs are present.
+- [ ] User checks the newest message in Nextcloud; the agent could not inspect
+  the signed-in client. Separate recovery wording remains a follow-up.

@@ -24,10 +24,12 @@ const MESSAGES = {
   },
 } as const;
 
-const BODY_STYLE = "margin:0;padding:16px;font-family:Arial,sans-serif;font-size:16px;line-height:1.5;overflow-wrap:anywhere";
-const CONTENT_STYLE = "width:100%;max-width:640px;margin:0 auto";
+const BODY_STYLE = "margin:0;padding:0;font-family:Arial,sans-serif;font-size:16px;line-height:1.5;overflow-wrap:anywhere";
+const CONTENT_STYLE = "margin:0;padding:0;text-align:left";
 const PARAGRAPH_STYLE = "margin:0 0 16px";
 const KEY_STYLE = `${PARAGRAPH_STYLE};font-family:monospace;white-space:normal;overflow-wrap:anywhere;word-break:break-all`;
+const KEY_SEGMENT_LENGTH = 4;
+const KEY_SEGMENT_STYLE = "display:inline-block";
 
 function escapeHtml(text: string): string {
   return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
@@ -35,8 +37,13 @@ function escapeHtml(text: string): string {
 
 function htmlBody(text: string, keys: string[], locale: Locale): string {
   const paragraphs = text.split("\n\n").map((paragraph) => {
-    const style = keys.includes(paragraph) ? KEY_STYLE : PARAGRAPH_STYLE;
-    const content = escapeHtml(paragraph).replaceAll("\n", "<br>");
+    const isKey = keys.includes(paragraph);
+    const style = isKey ? KEY_STYLE : PARAGRAPH_STYLE;
+    // Nextcloud's purifier drops wrapping CSS and wbr; inline blocks wrap without changing copied key text.
+    const content = isKey
+      ? Array.from({ length: Math.ceil(paragraph.length / KEY_SEGMENT_LENGTH) }, (_, index) =>
+        `<span style="${KEY_SEGMENT_STYLE}">${escapeHtml(paragraph.slice(index * KEY_SEGMENT_LENGTH, (index + 1) * KEY_SEGMENT_LENGTH))}</span>`).join("")
+      : escapeHtml(paragraph).replaceAll("\n", "<br>");
     return `<p style="${style}">${content}</p>`;
   }).join("\n");
   return `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="${BODY_STYLE}"><div style="${CONTENT_STYLE}">${paragraphs}</div></body></html>`;

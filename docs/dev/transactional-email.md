@@ -38,3 +38,29 @@ reply-to and sender authentication.
 
 References: [send email](https://resend.com/docs/api-reference/emails/send-email),
 [domain tracking settings](https://resend.com/docs/api-reference/domains/update-domain).
+
+## Email layout
+
+Email content is left aligned without a centered width cap or extra body
+padding. License keys use adjacent inline-block spans, each containing four
+original characters. There are no inserted spaces, zero-width characters or
+hard line breaks; the text alternative and the selected/copied HTML text retain
+the original key bytes.
+
+This is a sanitizer workaround: Nextcloud Mail configures HTMLPurifier with
+`CSS.AllowTricky`, which preserves `display:inline-block`, while the purifier's
+CSS definitions do not include the wrapping properties used by the original
+message. Its XHTML rules also predate `wbr`. Keep the inline spans even when
+modern wrapping CSS works in a direct browser preview.
+
+Source references: [Nextcloud purifier setup](https://github.com/nextcloud/mail/blob/main/lib/Service/Html.php),
+[HTMLPurifier CSS definitions](https://github.com/ezyang/htmlpurifier/blob/master/library/HTMLPurifier/CSSDefinition.php).
+
+When changing layout, test with wrapping CSS removed, at both narrow and wide
+widths, and copy a wrapped key to confirm its bytes. The 2026-11-16 browser
+fixture reproduced a 130-pixel inset and 3280-pixel scroll width in a 900-pixel
+frame before the fix. Afterward, the inset was zero and scroll width matched the
+viewport at both 320- and 900-pixel frame widths. Copying a wrapped 327-character
+fixture key preserved every character. The user's own Nextcloud rendering
+check remains separate because the signed-in client was unavailable to the
+agent.

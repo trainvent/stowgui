@@ -3,6 +3,8 @@ import { resendMailer } from "../src/email";
 
 afterEach(() => vi.unstubAllGlobals());
 
+const withoutSpanTags = (html: string) => html.replace(/<\/?span\b[^>]*>/g, "");
+
 it("sends selectable wrapping HTML and a plain-text fallback without changing key bytes", async () => {
   const key = `${"a".repeat(240)}.${"b".repeat(86)}`;
   let payload: Record<string, string> = {};
@@ -12,7 +14,7 @@ it("sends selectable wrapping HTML and a plain-text fallback without changing ke
   });
   await resendMailer("test-key", { name: "StowGUI", email: "license@stowgui.com" }, "https://stowgui.com/en/download/")("test@example.com", "de", [key]);
   expect(payload.text).toContain(key);
-  expect(payload.html).toContain(key);
+  expect(withoutSpanTags(payload.html)).toContain(key);
   expect(payload.html).toContain("overflow-wrap:anywhere");
   expect(payload.html).toContain("word-break:break-all");
   expect(payload.html).not.toMatch(/<(img|iframe|script)\b|(?:^|[;\s])(?:height|max-height)\s*:/i);
@@ -27,8 +29,8 @@ it("escapes dynamic HTML and keeps multiple keys in separate wrapping blocks", a
     return new Response("{}", { status: 201 });
   });
   await resendMailer("test-key", { name: "StowGUI", email: "license@stowgui.com" }, "https://stowgui.com/en/download/?a=1&b=2")("test@example.com", "en", ["KEY<ONE>.SIG", "KEY&TWO.SIG"]);
-  expect(payload.html).toContain("KEY&lt;ONE&gt;.SIG");
-  expect(payload.html).toContain("KEY&amp;TWO.SIG");
+  expect(withoutSpanTags(payload.html)).toContain("KEY&lt;ONE&gt;.SIG");
+  expect(withoutSpanTags(payload.html)).toContain("KEY&amp;TWO.SIG");
   expect(payload.html).toContain("?a=1&amp;b=2");
   expect(payload.html.match(/word-break:break-all/g)).toHaveLength(2);
   expect(payload.text).toContain("KEY<ONE>.SIG\n\nKEY&TWO.SIG");
