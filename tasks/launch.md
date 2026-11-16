@@ -202,3 +202,17 @@ not published and checkout remains disabled.
   and both unchanged PDFs are present.
 - [ ] User checks the newest message in Nextcloud; the agent could not inspect
   the signed-in client. Separate recovery wording remains a follow-up.
+
+## Single-key recovery test - 2026-11-16
+
+The user explicitly approved retiring the older hosted test licence for
+`dummy@trainvent.com` and keeping the newer one. Licence
+`6931e38f-8853-4301-8c71-b0a816f49ed8` (Stripe test checkout, 11 November) was
+revoked with a guarded single-row update; its purchase record was preserved.
+Licence `7d012343-46aa-4ad6-8007-bae307e88bce` (12 November) remains active.
+The live status API confirms the older licence is inactive and the newer active.
+
+After the normal resend cooldown, the recovery email received at 09:23:46 CET
+contains exactly one existing key, with the new left-aligned HTML and both
+current PDFs. Plain-text and rendered HTML key bytes agree. Recovery behavior
+for customers with multiple valid purchases was not changed.
