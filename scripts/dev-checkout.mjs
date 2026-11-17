@@ -7,13 +7,11 @@ import { dirname, resolve, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tmpdir } from 'node:os';
 import assert from 'node:assert/strict';
-import { STRIPE_ACCOUNT_ID, TEST_PRODUCT_ID, PERSONAL_UTILITY_TAX_CODE, EVENTS, CONSENT, checkoutSettings, managedCheckoutSettings } from './stripe-checkout-settings.mjs';
+import { STRIPE_ACCOUNT_ID, TEST_PRODUCT_ID, PERSONAL_UTILITY_TAX_CODE, EVENTS, checkoutSettings } from './stripe-checkout-settings.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const workerDir = join(repo, 'worker');
 const check = process.argv.includes('--check');
-const managed = process.argv.includes('--managed');
-const settingsFor = managed ? managedCheckoutSettings : checkoutSettings;
 const appOnly = process.argv.includes('--app');
 const SITE_PORT = Number(process.env.STOWGUI_SITE_PORT ?? 3000);
 const API_PORT = Number(process.env.STOWGUI_CHECKOUT_PORT ?? 18766);
@@ -87,18 +85,15 @@ async function main() {
     if (selected.status !== 0) throw new Error('Authorize the Trainvent test account in Stripe CLI first.');
     const account = stripe('get', '/v1/account');
     if (account.id !== STRIPE_ACCOUNT_ID) throw new Error('Unexpected Stripe account.');
-    if (managed) {
-      const product = stripe('get', `/v1/products/${TEST_PRODUCT_ID}`);
-      if (product.livemode || product.name !== 'StowGUI license') throw new Error('Unexpected test product.');
-      if (product.tax_code !== PERSONAL_UTILITY_TAX_CODE) stripe('post', `/v1/products/${TEST_PRODUCT_ID}`, { tax_code: PERSONAL_UTILITY_TAX_CODE });
-    }
+    const product = stripe('get', `/v1/products/${TEST_PRODUCT_ID}`);
+    if (product.livemode || product.name !== 'StowGUI license') throw new Error('Unexpected test product.');
+    if (product.tax_code !== PERSONAL_UTILITY_TAX_CODE) stripe('post', `/v1/products/${TEST_PRODUCT_ID}`, { tax_code: PERSONAL_UTILITY_TAX_CODE });
     const prices = stripe('get', '/v1/prices', { product: TEST_PRODUCT_ID, active: 'true', limit: '100' });
-    let price = prices.data.find(item => !item.livemode && item.currency === 'eur' && item.unit_amount === 500 && item.type === 'one_time' && (!managed || item.tax_behavior === 'inclusive'));
-    if (!price && managed) price = stripe('post', '/v1/prices', { product: TEST_PRODUCT_ID, currency: 'eur', unit_amount: '500', tax_behavior: 'inclusive' });
-    if (!price) throw new Error('Expected €5 StowGUI test price is missing.');
-    const settings = settingsFor(price.id, `${site}/buy/success/`);
+    let price = prices.data.find(item => !item.livemode && item.currency === 'eur' && item.unit_amount === 500 && item.type === 'one_time' && item.tax_behavior === 'inclusive');
+    if (!price) price = stripe('post', '/v1/prices', { product: TEST_PRODUCT_ID, currency: 'eur', unit_amount: '500', tax_behavior: 'inclusive' });
+    const settings = checkoutSettings(price.id, `${site}/buy/success/`);
     const links = stripe('get', '/v1/payment_links', { limit: '100' });
-    link = links.data.find(item => !item.livemode && Boolean(item.managed_payments?.enabled) === managed && item.metadata?.app === 'stowgui' && item.metadata?.checkout_environment === 'local' && item.metadata?.legal_source_sha256 === settings.manifest.source && item.after_completion?.redirect?.url === `${site}/buy/success/`);
+    link = links.data.find(item => !item.livemode && Boolean(item.managed_payments?.enabled) && item.metadata?.app === 'stowgui' && item.metadata?.checkout_environment === 'local' && item.metadata?.legal_source_sha256 === settings.manifest.source && item.after_completion?.redirect?.url === `${site}/buy/success/`);
     if (!link) link = stripe('post', '/v1/payment_links', { ...settings.params, 'metadata[checkout_environment]': 'local' });
     if (link.livemode) throw new Error('Refusing to use a live Payment Link.');
     if (!link.active) link = stripe('post', `/v1/payment_links/${link.id}`, { active: 'true' });
@@ -189,16 +184,16 @@ async function main() {
       const signature = createHmac('sha256', webhookSecret).update(`${timestamp}.${payload}`).digest('hex');
       return fetch(`${address}/stripe/webhook`, { method: 'POST', body: payload, headers: { 'Stripe-Signature': `t=${timestamp},v1=${signature}` } });
     };
-    assert.equal((await event('checkout.session.completed', { id: 'cs_test_smoke', payment_link: link.id, payment_status: 'paid', amount_total: 500, currency: 'eur', payment_intent: 'pi_test_smoke', customer_details: { email: 'dummy@trainvent.com', address: { country: 'DE' } }, consent: { terms_of_service: 'accepted' }, ...(!managed ? { custom_text: { terms_of_service_acceptance: { message: CONSENT } } } : {}) })).status, 200);
+    assert.equal((await event('checkout.session.completed', { id: 'cs_test_smoke', payment_link: link.id, payment_status: 'paid', amount_total: 500, currency: 'eur', payment_intent: 'pi_test_smoke', customer_details: { email: 'dummy@trainvent.com', address: { country: 'DE' } }, consent: { terms_of_service: 'accepted' } })).status, 200);
     assert.ok(latestMail.text.includes('Im Checkout akzeptiert: StowGUI-AGB (im Anhang)'));
-    const manifest = settingsFor('unused').manifest;
+    const manifest = checkoutSettings('unused').manifest;
     for (const attachment of latestMail.attachments) assert.equal(createHash('sha256').update(Buffer.from(attachment.content, 'base64')).digest('hex'), manifest.pdfs[attachment.filename]);
     const key = (await readFile(join(profile, 'test-key.txt'), 'utf8')).trim();
     const activate = () => fetch(`${address}/license/activate`, { method: 'POST', body: JSON.stringify({ key, device_id: crypto.randomUUID() }) });
     assert.equal((await activate()).status, 200);
     assert.equal((await event('charge.refunded', { payment_intent: 'pi_test_smoke', refunded: true })).status, 200);
     assert.equal((await activate()).status, 403);
-    console.log(`Local ${managed ? 'Managed Payments' : 'direct'} checkout smoke passed: signed webhook, recorded consent only, email, PDF checksums, activation and refund revocation. No Stripe payment or real email was sent.`);
+    console.log(`Local checkout smoke passed: signed webhook, recorded consent only, email, PDF checksums, activation and refund revocation. No Stripe payment or real email was sent.`);
     await shutdown(); return;
   }
   const next = launch(process.execPath, [join(repo, 'node_modules/next/dist/bin/next'), 'dev', '--hostname', '127.0.0.1', '--port', String(SITE_PORT)], {

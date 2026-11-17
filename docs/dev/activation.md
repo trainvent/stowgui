@@ -1,6 +1,6 @@
 # Licenses and device activation
 
-The app uses the existing Cloudflare Worker and D1 database in `worker/`. It needs no Supabase project or customer accounts. The website's purchase keys remain unchanged. The user approved this policy on 2026-11-11:
+The app activates through the Worker and D1 database in `worker/`; there are no customer accounts. Policy:
 
 - Three active installations per license; a fourth releases the least recently seen installation.
 - A background check at most once every 24 hours, independent of update checks. Manual checks are also available.
@@ -13,9 +13,9 @@ The app uses the existing Cloudflare Worker and D1 database in `worker/`. It nee
 
 Both formats are `<base64url(JSON)>.<base64url(Ed25519 signature)>`, without padding. Sign the ASCII bytes of the first segment, not decoded JSON or a reserialized payload. The Worker holds the existing private signing key; the app embeds its public half in `stowgui-core/src/license.rs`. This is separate from the minisign key for application releases.
 
-Purchase key v1 remains `{v: 1, id, major: 1, issued}`. It contains no customer email. The sold entitlement is major 1, including prelaunch 0.x builds; change `LICENSED_MAJOR` deliberately before selling a new major.
+Purchase key v1 is `{v: 1, id, major: 1, issued}`. It contains no customer email. The sold entitlement is major 1, including prelaunch 0.x builds; change `LICENSED_MAJOR` deliberately before selling a new major.
 
-The new activation payload is:
+The activation payload is:
 
 ```json
 {
@@ -43,7 +43,7 @@ The app verifies the signature, format, kind, product, entitlement, license and 
 - Denial: `403 {error: "invalid" | "revoked" | "moved"}`. The app persists the denial and removes its old token.
 - Rate limiting: `429`; transient server, connection, malformed or unverifiable response errors preserve the existing token and its original expiry.
 
-D1 migration `0002_activations.sql` adds installation records with a composite license/device key. Activation upsert, eviction and result retrieval run in one transactional D1 batch. Every explicit activation replaces that installation's activation ID, invalidating old check-in credentials. Equal recency is resolved deterministically by device ID. Revocation is rechecked inside the write batch. A native Cloudflare rate-limit binding limits explicit activation bursts per license; its counters are approximate and local to a Cloudflare location.
+D1 migration `0002_activations.sql` holds installation records with a composite license/device key. Activation upsert, eviction and result retrieval run in one transactional D1 batch. Every explicit activation replaces that installation's activation ID, invalidating old check-in credentials. Equal recency is resolved deterministically by device ID. Revocation is rechecked inside the write batch. A native Cloudflare rate-limit binding limits explicit activation bursts per license; its counters are approximate and local to a Cloudflare location.
 
 ## App enforcement
 
@@ -54,8 +54,6 @@ The core library remains usable independently; enforcement is in the shipping ap
 ## Verification and rollout
 
 Core tests cover signatures, bindings, expiry boundaries, clock rollback, private storage, renewal, server failures and revocation. A shared fixed fixture is verified by both Rust and Worker tests. Worker tests cover four devices and stale credentials, plus real local D1 concurrency and eviction. UI tests exercise preview/apply locking and unlicensed unlink; layout and screenshot tests include the License tab.
-
-Before shipping the app, apply the new D1 migration and deploy the Worker with the `ACTIVATION_LIMIT` binding. Existing purchase keys and the old status/recovery endpoints remain valid. Then exercise activation/renewal from the built app against the deployed Worker using a test purchase. Local tests do not establish live deployment readiness. No migration, deployment, purchase, push or release is performed by building/testing this code.
 
 
 ## Active computer management
@@ -75,15 +73,9 @@ hostname is used again; active names must be unique per license (ASCII case-inse
 control characters and have a 128 Unicode character limit. Removing a computer
 invalidates its next check-in; issued offline tokens remain valid until expiry.
 
-Before distributing the updated desktop app, apply migration 0003 and deploy
-this Worker. This source change does not deploy or modify the live database.
-
-
-Device-name uniqueness uses migration `0004_unique_device_names.sql`. Existing
-collisions receive the next free numeric suffix; new automatically detected
+Device-name uniqueness uses migration `0004_unique_device_names.sql`. New automatically detected
 collisions become `Name (1)`, `Name (2)`, etc. The database index and allocation
 statement prevent concurrent activations from creating duplicate active names.
 Renaming to an occupied name returns `409 {error: "name_taken"}`; renaming a
 computer to its own current name remains valid. Names remain bounded to 128
-Unicode characters after adding a suffix. Apply migration 0004 before deploying
-this Worker. Sandbox rollout is separate from production rollout.
+Unicode characters after adding a suffix.

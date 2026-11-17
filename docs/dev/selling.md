@@ -1,8 +1,8 @@
 # Selling StowGUI
 
-The source and production Worker use Resend. Configuration and cutover checks
-are recorded in [transactional email](transactional-email.md) and the
-[legal-launch task](../../tasks/legal-launch-review.md).
+Sales run through Stripe Managed Payments: Stripe's affiliate Link is merchant of
+record and handles payment, VAT, invoices and transaction support. Trainvent
+provides the product, licence and support.
 
 ## Flow
 
@@ -12,59 +12,31 @@ are recorded in [transactional email](transactional-email.md) and the
 4. `charge.refunded` (full refund) and `charge.dispute.closed` with status `lost` revoke the key. Open disputes, wins and closed inquiries keep access. The app sees revocation at its next activation/check-in. An offline installation can use its existing token until its signed 30-day expiry. If a loss is later overturned, support must check payment and any independent refund/termination before restoring access; never clear revocation solely on a won-dispute or funds-reinstated event. Existing historical revocations are not automatically changed.
 5. `/license/` on the site lets buyers request their key again (`POST /license/resend`, 5-minute cooldown, same answer for unknown addresses).
 
-## Legacy direct Stripe setup (do not reuse for new worldwide sales)
+## Stripe setup
 
-The following records the old direct-payment setup. New sales are being prepared
-with Managed Payments; see the [migration task](../../tasks/legal-launch-review.md)
-and `managedCheckoutSettings` in `scripts/stripe-checkout-settings.mjs`.
-That helper omits the blanket §19 invoice footer and custom consent text:
-Managed Payments controls tax handling and does not support `custom_text`.
-It keeps the required terms checkbox, which links to the Terms of service URL in
-the account's public business details (`https://stowgui.com/en/terms/`).
-It must use a new, correctly categorized product/price/link and pass sandbox
-acceptance before publication. Do not treat the old combined checkbox as proof
-of early expiry for the new checkout.
+- **Product**: "StowGUI license", tax code `txcd_10202001` (personal utility software), one-time price 5,00 EUR tax-inclusive.
+- **Settings → Public details**: business name Trainvent, support email, terms URL `https://stowgui.com/en/terms/`, privacy URL `https://stowgui.com/en/privacy/`. The checkout's terms checkbox links to this terms URL; it applies to the whole Trainvent account.
+- **Payment Link** `plink_1UcLkP3SIDKPozJgf3ky30XT`: Managed Payments, quantity 1, billing address, terms acceptance required, redirect to `https://stowgui.com/buy/success/`. `scripts/stripe-checkout-settings.mjs` holds these settings. Managed Payments does not allow custom checkout text, so no early-expiry consent is collected: buyers keep the 14-day withdrawal right.
+- The link URL is the GitHub variable `PAYMENT_LINK`; its ID is `STRIPE_PAYMENT_LINK_ID` in `worker/wrangler.toml`. The Worker ignores purchases from other links.
+- **Webhook** `we_1Uc3U63SIDKPozJgYJaCYa0m` → `https://stowgui-license.trainvent.workers.dev/stripe/webhook`, events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`, `charge.dispute.closed`. Its signing secret is `STRIPE_WEBHOOK_SECRET`. Keep Dashboard dispute notifications on for handling cases and later reversals.
 
-1. **Product**: "StowGUI license", one-time price 5,00 EUR.
-2. **Settings → Public details**: business name Trainvent, support email, terms URL `https://stowgui.com/en/terms/`, privacy URL `https://stowgui.com/en/privacy/`.
-3. **Invoices**: enable post-payment invoices on the Payment Link and add the footer `Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.`
-4. **Payment Link**:
-   - Quantity fixed at 1, collect billing address (needed for invoices).
-   - Require agreement to the terms of service.
-   - For immediate delivery, obtain express consent to delivery before the withdrawal period ends and acknowledgment of losing the right when delivery begins (§ 356 (6) BGB). Terms acceptance alone is not sufficient evidence of these declarations. Verify the actual hosted checkout, what Stripe records, and the contract confirmation before enabling live payments. Suggested consent wording:
-     > I agree that delivery of the license key begins immediately, and I know that I lose my right of withdrawal once delivery has begun. / Ich stimme zu, dass die Lieferung des Lizenzschlüssels sofort beginnt, und weiß, dass ich dadurch mein Widerrufsrecht verliere.
-   - After payment: redirect to `https://stowgui.com/buy/success/`.
-   - Put the link URL into the GitHub variable `PAYMENT_LINK` and its id (`plink_…`) into `STRIPE_PAYMENT_LINK_ID` in `worker/wrangler.toml`.
-5. **Webhook endpoint**: `https://stowgui-license.trainvent.workers.dev/stripe/webhook` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`, `charge.dispute.closed`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`. Dashboard dispute notifications remain necessary for handling cases and later reversals. [Stripe event definitions](https://docs.stripe.com/api/events/types).
+## Withdrawals
 
-## Resend setup
+`/withdrawal/` stores the declaration and emails a receipt to the buyer and a notice to support (see [withdrawal](withdrawal.md)). It does not refund or revoke anything: support issues the full refund in the Stripe Dashboard, and the refund event revokes the key.
 
-Provision directly through the user-owned Resend account; the user approved
-this path after Stripe Projects rejected account eligibility. Verify the `stowgui.com` sending domain using
-Resend's required DNS records, keeping existing website and inbound-mail
-records. Disable open and click tracking at domain level and read back both
-settings. Store a domain-restricted sending key as `RESEND_API_KEY` with
-Wrangler. See [transactional email](transactional-email.md) for cutover checks.
+## Email
 
-Key emails come from `license@stowgui.com` with replies to support@trainvent.com.
+Key emails come from `license@stowgui.com` through Resend, with replies to support@trainvent.com. Open and click tracking are off; see [transactional email](transactional-email.md).
 
-## Local end-to-end test
+## Local test
 
-```sh
-cd worker
-npx wrangler d1 migrations apply stowgui-licenses --local
-printf 'STRIPE_WEBHOOK_SECRET=whsec_...\nLICENSE_SIGNING_KEY=...\nRESEND_API_KEY=re_...\n' > .dev.vars
-npm run dev
-stripe listen --forward-to localhost:8787/stripe/webhook   # prints the whsec_ secret
-stripe trigger checkout.session.completed
-npx wrangler d1 execute stowgui-licenses --local --command "SELECT id, email, revoked_at FROM licenses"
-```
+`npm run dev:checkout` runs the whole purchase flow against Stripe test mode with a local database and inbox; see [local checkout testing](local-checkout.md).
 
 ## Purchase terms and confirmation
 
 The German and English terms live in `dictionaries/de.ts` and `en.ts`. They cover personal/commercial use by one holder (one designated user for an organization), three installations, all 1.x versions, online activation and 30 days offline. The shutdown commitment is to provide existing holders a free update or another way to continue without periodic activation if the service is permanently discontinued.
 
-Before live sales, supply the required contract confirmation on a durable medium, such as an email with the applicable terms/withdrawal information as text or an attachment. A link to a mutable terms page alone is not the same as supplying that content. Record the consent/acknowledgment actually obtained; never infer it just from payment or claim consent in an email when it was not collected. The key email now attaches current terms (including withdrawal information and the model form) and the privacy notice. Purchase messages include the order reference, paid amount and, when Stripe records terms acceptance, a line stating the attached StowGUI terms were accepted at checkout. See [PDF generation and limitations](legal-documents.md). Verify the received message and actual checkout together before treating confirmation as complete. If the early-expiry conditions are not met, handle the statutory withdrawal right instead of relying on immediate key delivery.
+Each key email is the contract confirmation on a durable medium: it attaches the current terms (with withdrawal information and the model form) and the privacy notice, and states the order reference, amount paid and, when Stripe records it, that the terms were accepted at checkout. Never claim consent in an email that checkout did not collect. See [PDF generation and limitations](legal-documents.md).
 
 ## License transfers
 
@@ -78,8 +50,6 @@ The command uses the existing Wrangler login and D1 binding. It verifies the sup
 
 The local D1 integration test covers entitlement preservation, old-seat removal, recovery isolation, stale repeat requests and later refunds. No production customer has been transferred by these tests. No schema or issued-key format change is required.
 
-## Review before launch
+## Sources
 
-Have the German customer terms and actual checkout/confirmation reviewed together. Verify processor arrangements, international transfers and retention/deletion practices against the published privacy notice. The operational license store is separate from statutory accounting retention. Third-party notices for the desktop build are tracked in the app repository.
-
-Sources checked 2026-11-11: [§ 356 BGB](https://www.gesetze-im-internet.de/bgb/__356.html), [§ 312f BGB](https://www.gesetze-im-internet.de/bgb/__312f.html), [UsedSoft judgment summary](https://eur-lex.europa.eu/legal-content/EN/SUM/?uri=CELEX:62011CJ0128), [European Commission on personal data](https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/application-gdpr_en).
+The open legal review items are in [after launch](../../tasks/after-launch.md). Sources checked 2026-11-11: [§ 356 BGB](https://www.gesetze-im-internet.de/bgb/__356.html), [§ 312f BGB](https://www.gesetze-im-internet.de/bgb/__312f.html), [UsedSoft judgment summary](https://eur-lex.europa.eu/legal-content/EN/SUM/?uri=CELEX:62011CJ0128), [European Commission on personal data](https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/application-gdpr_en).

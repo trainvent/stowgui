@@ -16,36 +16,12 @@ and PDF SHA-256 values. Commit both generated files with changes to legal copy.
 Render and inspect every PDF page after regeneration. `npm run legal:check`
 checks source freshness and bundled checksums without Python; website CI runs
 it before building. Keep a copy of each published revision with its checkout
-configuration and purchase records. The preparation script adds document hashes
+configuration and purchase records. `scripts/stripe-checkout-settings.mjs` adds the document hashes
 to Payment Link metadata (copied by Stripe to Checkout Sessions).
 
-Purchase emails include the checkout reference and amount when supplied by
-Stripe. They repeat the exact accepted checkbox text only when the signed
-webhook reports terms acceptance and supplies that text. No consent is inferred
-from payment alone. Recovery messages do not claim to confirm a new purchase or
-consent; their attachments are current reference copies, not evidence of which
-revision a historical buyer originally accepted. Automatic recovery of historical
-contract PDFs is not implemented.
-
-PDF attachments alone do not establish explicit checkout consent, replace an
-invoice, establish the actual processor/retention practices, or complete a legal
-review of the German checkout and confirmation together.
-
-## Live checkout preparation
-
-`node scripts/prepare-live-checkout.mjs` previews the intended Stripe settings.
-With `--apply`, it creates a live Payment Link and immediately deactivates it before sharing the URL with explicit
-immediate-delivery/withdrawal wording, billing address, invoice and document
-hashes. It reuses a matching existing link and webhook, creates the four-event
-StowGUI webhook when absent, and installs a newly created webhook secret via
-Wrangler without printing it. On installation failure, the secret remains in
-`worker/.wrangler/live-webhook-secret.txt` with mode 0600; install it before
-continuing. Do not recreate an endpoint blindly after a failure.
-
-The CLI authorization needs Payment Links Write and Webhook Endpoints Write. The script verifies the intended account ID before provisioning. Stripe only accepts `active` on link update, so creation and deactivation are separate calls. Existing
-endpoints' secrets cannot be read back; verify a reused endpoint's secret and
-subscribed events before continuing. Set the Worker payment-link ID and deploy
-before activating the link. Complete a purchase/email/activation/refund check in Stripe Test-Modus using
-the same Worker code with isolated test settings, separately verify the live
-configuration,
-review the actual checkout, and only then enable the website Buy button.
+Purchase emails include the checkout reference and amount, and state that the
+attached terms were accepted only when the signed webhook reports terms
+acceptance. No consent is inferred from payment alone. Recovery messages do not
+claim to confirm a new purchase or consent; their attachments are current
+reference copies, not evidence of which revision a historical buyer originally
+accepted. Automatic recovery of historical contract PDFs is not implemented.

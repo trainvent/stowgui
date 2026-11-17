@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "node scripts/deploy.mjs",
+    "deploy": "wrangler deploy",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "keypair": "node scripts/gen-keypair.mjs",
@@ -12,14 +12,14 @@
     "sandbox:seed": "node scripts/sandbox-seed.mjs",
     "sandbox:migrate": "wrangler d1 migrations apply stowgui-licenses-sandbox --config wrangler.sandbox.toml --remote",
     "sandbox:mail-migrate": "wrangler d1 execute stowgui-licenses-sandbox --config wrangler.sandbox.toml --remote --file sandbox-migrations/0001_mail_capture.sql",
-    "sandbox:deploy": "node scripts/deploy.mjs --config wrangler.sandbox.toml --secrets-file .wrangler/sandbox/secrets.json"
+    "sandbox:deploy": "wrangler deploy --config wrangler.sandbox.toml --secrets-file .wrangler/sandbox/secrets.json"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "5.20261109.1",
+    "@cloudflare/workers-types": "5.20261117.1",
     "@types/node": "^26.6.6",
     "miniflare": "5.20261109.0-beta",
     "typescript": "7.0.2",
     "vitest": "5.1.0",
-    "wrangler": "4.159.0"
+    "wrangler": "4.164.0"
   }
 }
