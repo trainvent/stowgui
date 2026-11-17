@@ -165,7 +165,7 @@ The user set the account's public Terms of service URL to
 `https://stowgui.com/en/terms/`; the live link now requires terms acceptance.
 No early-expiry consent is collected: buyers keep the 14-day withdrawal right,
 which the user accepts. Purchase emails state that the attached terms were
-accepted when Stripe records it (Worker deploy pending).
+accepted when Stripe records it (Worker version `c51ba2f1-bc54-41eb-beb0-ce8a61e3766a`).
 
 Remaining before sales: activate the live link, then one real purchase and
 refund.
