@@ -12,7 +12,7 @@ not close these new launch gates.
 - [x] Enable GitHub Pages and set the custom domain and DNS (`docs/dev/deploy.md`).
 - [x] Create the Cloudflare D1 database, key pair and signing secret; deploy the Worker.
 - [x] Secure backups of the license and update signing keys confirmed by the user on 2026-11-15.
-- [ ] Move the private key from `~/Dokumente/Agents/stowgui/license-signing-key.txt` into your password manager, then delete the file.
+- [x] Move the private key from `~/Dokumente/Agents/stowgui/license-signing-key.txt` into your password manager, then delete the file (done 2026-11-17).
 - [x] Add the Worker secret `STRIPE_WEBHOOK_SECRET` (test mode).
 - [x] Add the Worker secret `BREVO_API_KEY` (`cd worker && npx wrangler secret put BREVO_API_KEY`).
 - [x] Embed the existing public key in the app repo (`stowgui_source`) for signature verification.
