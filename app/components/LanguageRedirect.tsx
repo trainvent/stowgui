@@ -17,8 +17,15 @@ export default function LanguageRedirect({ path = "/" }: { path?: string }) {
   }, [path]);
 
   return (
-    <p className="redirect-note">
-      <a href={localePath("en", path)}>English</a> · <a href={localePath("de", path)}>Deutsch</a>
-    </p>
+    <div className="redirect-note">
+      <p className="wordmark">
+        Stow<span>GUI</span>
+      </p>
+      <noscript>
+        <p>
+          <a href={localePath("en", path)}>English</a> · <a href={localePath("de", path)}>Deutsch</a>
+        </p>
+      </noscript>
+    </div>
   );
 }
