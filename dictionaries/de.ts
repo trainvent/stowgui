@@ -9,7 +9,6 @@ const de: Dictionary = {
     key: "Postfachschlüssel", open: "Postfach öffnen", refresh: "Aktualisieren", empty: "Noch keine Test-E-Mails.",
     error: "Das Postfach konnte nicht geöffnet werden. Prüfe den Schlüssel und versuche es erneut.",
     preview: "E-Mail-Vorschau", sentTo: "An", attachments: "Anhänge",
-    unavailable: "Das Testpostfach ist nur in der Sandbox verfügbar.",
   },
   meta: {
     title: "StowGUI – eine Desktop-App für GNU Stow",

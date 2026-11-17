@@ -143,3 +143,23 @@ customer/support receipts; the browser inbox and HTML preview were verified.
 No genuine Stripe purchase was made by that deployment check. The dedicated
 Stripe TEST link is active for the user's manual test. Production remains
 unpublished and its live checkout inactive. See [deployment details](../docs/dev/deploy.md).
+
+## Production staging — 2026-11-17
+
+The user, who manages the legal review themselves, authorized staging
+production with the live link still inactive:
+
+- Applied `0005_withdrawals.sql` to the production D1 database.
+- `STRIPE_PAYMENT_LINK_ID` now names the Managed Payments link
+  `plink_1UcLkP3SIDKPozJgf3ky30XT`. Refunds/disputes still match legacy
+  purchases by payment intent.
+- Live webhook `we_1Uc3U63SIDKPozJgYJaCYa0m` now subscribes to
+  `charge.dispute.closed` instead of `charge.dispute.created`, matching the
+  lost-dispute revocation policy.
+- Deployed Worker version `47a8a1ef-f33d-4ebc-8cdc-122f04531f4f`; `/withdrawal`
+  answers CORS preflight and rejects invalid input.
+- GitHub variable `PAYMENT_LINK` set to the live link; website pushed. The
+  sandbox inbox route renders a noindex 404 in production builds.
+
+Remaining before sales: activate the live link, then one real purchase and
+refund.

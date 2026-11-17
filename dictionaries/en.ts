@@ -10,7 +10,6 @@ const en = {
     key: "Inbox key", open: "Open inbox", refresh: "Refresh", empty: "No test emails yet.",
     error: "Could not open the inbox. Check the key and try again.",
     preview: "Email preview", sentTo: "To", attachments: "Attachments",
-    unavailable: "The test inbox is only available in the sandbox.",
   },
   meta: {
     title: "StowGUI — a desktop app for GNU Stow",

@@ -32,7 +32,7 @@ not close these new launch gates.
   - [x] Live Payment Link `plink_1Uc3U43SIDKPozJgQnOSxZjY` and webhook `we_1Uc3U63SIDKPozJgYJaCYa0m` created 2026-11-15 through the authorized CLI. Link is **inactive**. Required consent, billing address, post-payment invoice/footer, redirect and all four webhook events verified. Legal PDF/source hashes are recorded in link metadata.
   - [x] Store the live webhook secret and deploy the Worker with the live `STRIPE_PAYMENT_LINK_ID` (2026-11-15). `PAYMENT_LINK` remains unset and sales disabled.
   - [x] Repeat purchase → contract/key email with current consent and PDFs → activation → refund/revocation in Stripe Test-Modus using the same Worker code and isolated test payment settings; separately verify the live configuration. A live self-purchase is not a launch requirement.
-- [ ] Set the GitHub variable `PAYMENT_LINK` (`LICENSE_API_URL` is set).
+- [x] Set the GitHub variable `PAYMENT_LINK` to the inactive Managed Payments live link (2026-11-17; `LICENSE_API_URL` is set).
 - [x] Publish app builds as GitHub releases in trainvent/stowgui: Linux 0.1.0 on 2026-11-12. macOS follows (`stowgui_source/tasks/macos-release.md`); then add `"macos"` to `RELEASED_PLATFORMS` in `lib/config.ts`.
 - [x] Set `RELEASED = true` (2026-11-12). Buy stays disabled until the live-mode `PAYMENT_LINK` variable is set.
 - [ ] Replace the placeholder favicon (`app/icon.svg`) once there is a StowGUI logo.
