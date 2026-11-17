@@ -1,9 +1,8 @@
-import { Badge, Button, Card } from "@trainvent/arcubic";
+import { Button, Card } from "@trainvent/arcubic";
 import Link from "next/link";
 import AppMock from "../components/AppMock";
-import ReleaseAction from "../components/ReleaseAction";
+import BuyButton from "../components/BuyButton";
 import SiteHeader from "../components/SiteHeader";
-import { RELEASED } from "@/lib/config";
 import { localePath } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/metadata";
 import { resolveLang, type LangParams } from "@/lib/params";
@@ -21,18 +20,15 @@ export default async function Home(props: LangParams) {
       <main>
         <section className="hero">
           <div>
-            {!RELEASED && <Badge size="2" className="coming-soon">{dict.comingSoon}</Badge>}
             <h1>
               {dict.hero.titleStart} <span>{dict.hero.titleAccent}</span>
             </h1>
             <p className="lead">{dict.hero.lead}</p>
             <div className="actions">
-              <ReleaseAction dict={dict} />
-              {RELEASED && (
-                <Button size="3" variant="outline" asChild>
-                  <Link href={localePath(locale, "/download")}>{dict.downloadFree}</Link>
-                </Button>
-              )}
+              <BuyButton dict={dict} />
+              <Button size="3" variant="outline" asChild>
+                <Link href={localePath(locale, "/download")}>{dict.downloadFree}</Link>
+              </Button>
             </div>
           </div>
           <AppMock text={dict.mock} />
@@ -76,8 +72,8 @@ export default async function Home(props: LangParams) {
               </ul>
             </div>
             <div className="pricing-side">
-              <ReleaseAction dict={dict} />
-              <p>{RELEASED ? dict.pricing.free : dict.notifyHint}</p>
+              <BuyButton dict={dict} />
+              <p>{dict.pricing.free}</p>
               <small>{dict.pricing.vat}</small>
             </div>
           </Card>

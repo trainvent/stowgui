@@ -1,11 +1,11 @@
 import { handleActivation, type ActivationStore } from "./activation";
-import { pickLocale, type Locale, type Mailer, type PurchaseConfirmation } from "./email";
+import { MAX_EMAIL_LENGTH, pickLocale, type Locale, type Mailer, type PurchaseConfirmation } from "./email";
 import { newLicensePayload, signLicense } from "./license";
 import type { LicenseRecord, LicenseStore } from "./store";
 import { verifyStripeEvent } from "./stripe";
 
 export const RESEND_COOLDOWN_SECONDS = 300;
-const MAX_EMAIL_LENGTH = 254;
+const ACTIVATION_ROUTES = new Set(["activate", "check-in", "devices", "rename-device", "deactivate-device"].map((name) => `POST /license/${name}`));
 
 export type Deps = {
   store: LicenseStore;
@@ -140,7 +140,7 @@ export function createApp(deps: Deps) {
         return new Response(response.body, { status: response.status, headers });
       }
     }
-    if (route === "POST /license/activate" || route === "POST /license/check-in" || ["POST /license/devices", "POST /license/rename-device", "POST /license/deactivate-device"].includes(route)) {
+    if (ACTIVATION_ROUTES.has(route)) {
       return handleActivation(request, url.pathname.split("/").pop()!, deps);
     }
     if (route === "POST /stripe/webhook") return handleWebhook(request);

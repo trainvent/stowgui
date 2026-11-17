@@ -1,14 +1,12 @@
-import type { Locale } from "./email";
+import { MAX_EMAIL_LENGTH, RESEND_URL, SUPPORT_EMAIL, type Locale, type Sender } from "./email";
+import { readBody, UUID_V4 } from "./http";
 
 const MAX_BODY_BYTES = 4096;
 const MAX_NAME_LENGTH = 200;
 const MAX_REFERENCE_LENGTH = 500;
-const MAX_EMAIL_LENGTH = 254;
 const DELIVERY_LEASE_SECONDS = 300;
 const MAX_RETRY_SECONDS = 3600;
 const RETRY_BATCH_SIZE = 20;
-const RESEND_URL = "https://api.resend.com/emails";
-const SUPPORT_EMAIL = "support@trainvent.com";
 const MAIL_TIMEOUT_MS = 15_000;
 type Recipient = "customer" | "support";
 const RECEIPT_TEXT = {
@@ -59,7 +57,7 @@ export function d1Withdrawals(db: D1Database, recipient: Recipient = "customer")
 }
 
 export type WithdrawalMail = (record: Withdrawal) => Promise<void>;
-export function withdrawalMailer(key: string, sender: { name: string; email: string }, recipient: Recipient = "customer", transport: typeof fetch = fetch): WithdrawalMail {
+export function withdrawalMailer(key: string, sender: Sender, recipient: Recipient = "customer", transport: typeof fetch = fetch): WithdrawalMail {
   return async (r) => {
     const t = RECEIPT_TEXT[r.locale];
     const received = new Date(r.received_at * 1000).toISOString();
@@ -109,23 +107,12 @@ export function withdrawalHandler(deps: {
     if (request.method !== "POST") return reply({ error: "method" }, 405);
     if (!await deps.allow(request.headers.get("CF-Connecting-IP") ?? "unknown")) return reply({ error: "rate" }, 429);
     const id = request.headers.get("Idempotency-Key") ?? "";
-    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) return reply({ error: "id" }, 400);
+    if (!UUID_V4.test(id)) return reply({ error: "id" }, 400);
     if (!request.headers.get("Content-Type")?.startsWith("application/json")) return reply({ error: "type" }, 415);
-    const reader = request.body?.getReader();
-    if (!reader) return reply({ error: "body" }, 400);
-    let raw = "";
-    let bytes = 0;
-    const decoder = new TextDecoder();
-    while (true) {
-      const chunk = await reader.read();
-      if (chunk.done) break;
-      bytes += chunk.value.byteLength;
-      if (bytes > MAX_BODY_BYTES) { await reader.cancel(); return reply({ error: "size" }, 413); }
-      raw += decoder.decode(chunk.value, { stream: true });
-    }
-    raw += decoder.decode();
+    const read = await readBody(request, MAX_BODY_BYTES);
+    if ("error" in read) return read.error === "missing" ? reply({ error: "body" }, 400) : reply({ error: "size" }, 413);
     let body: Record<string, unknown>;
-    try { body = JSON.parse(raw); } catch { return reply({ error: "body" }, 400); }
+    try { body = JSON.parse(read.text); } catch { return reply({ error: "body" }, 400); }
     if (!body || typeof body !== "object") return reply({ error: "body" }, 400);
     const name = field(body.name, MAX_NAME_LENGTH);
     const reference = field(body.contract_reference, MAX_REFERENCE_LENGTH);

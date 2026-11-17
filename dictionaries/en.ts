@@ -33,9 +33,6 @@ const en = {
   },
   buy: `Buy for ${PRICE}`,
   downloadFree: "Download free",
-  comingSoon: "Coming soon",
-  notify: "Get notified on GitHub",
-  notifyHint: "Watch the repository on GitHub and choose “Releases” to get an email when StowGUI is out.",
   hero: {
     titleStart: "Your dotfiles,",
     titleAccent: "visible.",

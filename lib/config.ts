@@ -1,8 +1,3 @@
-/** Switch to true when the first version is out: shows Buy and Download instead of "Coming soon". */
-export const RELEASED = true;
-/** Platforms with a published build; the others show "Coming soon" on the download page. */
-export const RELEASED_PLATFORMS: readonly ("linux" | "macos")[] = ["linux", "macos"];
-
 export const SITE_URL = "https://stowgui.com";
 export const ICON_URL = `${SITE_URL}/icon.png`;
 export const APP_ID = "com.trainvent.StowGUI";

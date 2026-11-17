@@ -1,6 +1,8 @@
 import legalAttachments from "./legal/attachments.json";
 
-const RESEND_URL = "https://api.resend.com/emails";
+export const RESEND_URL = "https://api.resend.com/emails";
+export const SUPPORT_EMAIL = "support@trainvent.com";
+export const MAX_EMAIL_LENGTH = 254;
 const GERMAN_COUNTRIES = new Set(["DE", "AT", "CH", "LI"]);
 
 export type Locale = "en" | "de";
@@ -69,7 +71,7 @@ function purchaseDetails(purchase: PurchaseConfirmation, locale: Locale): string
 
 export type Sender = { name: string; email: string };
 
-export function resendMailer(apiKey: string, sender: Sender, downloadUrl: string, replyTo = "support@trainvent.com", transport: typeof fetch = fetch): Mailer {
+export function resendMailer(apiKey: string, sender: Sender, downloadUrl: string, replyTo = SUPPORT_EMAIL, transport: typeof fetch = fetch): Mailer {
   return async (to, locale, licenseKeys, purchase) => {
     const message = MESSAGES[locale];
     const download = locale === "de" ? downloadUrl.replace("/en/", "/de/") : downloadUrl;
@@ -83,7 +85,7 @@ export function resendMailer(apiKey: string, sender: Sender, downloadUrl: string
         reply_to: replyTo,
         subject: message.subject,
         attachments: legalAttachments[locale].map(({ name, content }) => ({ filename: name, content })),
-        text: text,
+        text,
         html: htmlBody(text, licenseKeys, locale),
       }),
     });

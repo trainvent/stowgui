@@ -32,9 +32,6 @@ const de: Dictionary = {
   },
   buy: `Für ${PRICE} kaufen`,
   downloadFree: "Kostenlos laden",
-  comingSoon: "Bald verfügbar",
-  notify: "Auf GitHub benachrichtigen lassen",
-  notifyHint: "Beobachte das Repository auf GitHub und wähle „Releases“, um eine E-Mail zu bekommen, sobald StowGUI erscheint.",
   hero: {
     titleStart: "Deine Dotfiles,",
     titleAccent: "sichtbar.",

@@ -1,4 +1,5 @@
 import { encode } from "./base64url";
+import { readBody, UUID_V4 } from "./http";
 import type { LicenseStore } from "./store";
 
 export const MAX_ACTIVE_DEVICES = 3;
@@ -6,7 +7,6 @@ export const OFFLINE_SECONDS = 30 * 24 * 60 * 60;
 export const MAX_BODY_BYTES = 4096;
 export const MAX_DEVICE_NAME = 128;
 const DEFAULT_DEVICE_NAME = "Computer";
-const DEVICE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export type ActivationRecord = {
   device_name?: string;
@@ -37,31 +37,17 @@ export type ActivationDeps = {
 export async function handleActivation(request: Request, operation: string, deps: ActivationDeps): Promise<Response> {
   const activate = operation === "activate";
   const manage = ["devices", "rename-device", "deactivate-device"].includes(operation);
-  // Bound the stream, including requests without a Content-Length header.
-  const reader = request.body?.getReader();
-  if (!reader) return new Response("missing body", { status: 400 });
-  let text = "";
-  let bytes = 0;
-  const decoder = new TextDecoder();
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    bytes += value.byteLength;
-    if (bytes > MAX_BODY_BYTES) {
-      await reader.cancel();
-      return new Response("body too large", { status: 413 });
-    }
-    text += decoder.decode(value, { stream: true });
-  }
+  const read = await readBody(request, MAX_BODY_BYTES);
+  if ("error" in read) return read.error === "missing" ? new Response("missing body", { status: 400 }) : new Response("body too large", { status: 413 });
   let body: Record<string, unknown>;
   try {
-    body = JSON.parse(text + decoder.decode());
+    body = JSON.parse(read.text);
     if (!body || typeof body !== "object" || Array.isArray(body)) throw new Error();
   } catch {
     return new Response("invalid body", { status: 400 });
   }
   const { key, device_id, activation_id } = body;
-  if (typeof key !== "string" || typeof device_id !== "string" || !DEVICE_ID.test(device_id) ||
+  if (typeof key !== "string" || typeof device_id !== "string" || !UUID_V4.test(device_id) ||
       (!activate && !manage && typeof activation_id !== "string")) return new Response("invalid request", { status: 400 });
   const name = body.device_name;
   if (name !== undefined && (typeof name !== "string" || !name.trim() || [...name.trim()].length > MAX_DEVICE_NAME || /[\x00-\x1f\x7f-\x9f]/.test(name))) {

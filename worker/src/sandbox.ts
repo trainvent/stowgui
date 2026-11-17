@@ -1,5 +1,6 @@
 import { createWorker } from "./index";
 import type { Env } from "./env";
+import { readBody } from "./http";
 import { verifyStripeEvent } from "./stripe";
 
 export interface SandboxEnv extends Env {
@@ -41,21 +42,10 @@ export async function sandboxFetch(request: Request, env: SandboxEnv): Promise<R
   if (path === "/sandbox/login" && request.method === "POST") {
     if (request.headers.get("Origin") !== url.origin) return new Response("forbidden", { status: 403 });
     if (!(await env.ACTIVATION_LIMIT.limit({ key: `sandbox-login:${request.headers.get("CF-Connecting-IP") ?? "unknown"}` })).success) return new Response("rate limited", { status: 429 });
-    const reader = request.body?.getReader();
-    if (!reader) return new Response("invalid", { status: 400 });
-    let raw = "";
-    let bytes = 0;
-    const decoder = new TextDecoder();
-    while (true) {
-      const chunk = await reader.read();
-      if (chunk.done) break;
-      bytes += chunk.value.byteLength;
-      if (bytes > MAX_LOGIN_BYTES) { await reader.cancel(); return new Response("too large", { status: 413 }); }
-      raw += decoder.decode(chunk.value, { stream: true });
-    }
-    raw += decoder.decode();
+    const read = await readBody(request, MAX_LOGIN_BYTES);
+    if ("error" in read) return read.error === "missing" ? new Response("invalid", { status: 400 }) : new Response("too large", { status: 413 });
     let token: unknown;
-    try { token = (JSON.parse(raw) as { token?: unknown }).token; } catch { return new Response("invalid", { status: 400 }); }
+    try { token = (JSON.parse(read.text) as { token?: unknown }).token; } catch { return new Response("invalid", { status: 400 }); }
     if (typeof token !== "string" || !await equalToken(token, env.SANDBOX_INBOX_TOKEN)) return new Response("unauthorized", { status: 401 });
     return new Response(null, { status: 204, headers: { "Set-Cookie": `${INBOX_COOKIE}=${token}; Path=/sandbox/; HttpOnly; Secure; SameSite=Strict; Max-Age=${COOKIE_SECONDS}` } });
   }
