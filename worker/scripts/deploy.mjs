@@ -30,6 +30,7 @@ config.unsafe.bindings = [
 ];
 delete config.d1_databases;
 config.main = resolve(workerDir, config.main);
+if (config.assets?.directory) config.assets.directory = resolve(dirname(sourceConfig), config.assets.directory);
 const temporary = mkdtempSync(join(tmpdir(), "stowgui-deploy-"));
 let result;
 try {

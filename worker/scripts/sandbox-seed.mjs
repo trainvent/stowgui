@@ -35,7 +35,10 @@ for (const purchase of [state.interactive, state.smoke]) {
   const [body, signature] = purchase.key.split(".");
   if (sign(null, Buffer.from(body), signingKey).toString("base64url") !== signature) throw new Error("Sandbox credentials do not match");
 }
-await writeFile(path.join(stateDir, "secrets.json"), JSON.stringify({ LICENSE_SIGNING_KEY: state.signingKey }), { mode: 0o600 });
+const secretsPath = path.join(stateDir, "secrets.json");
+let secrets = {};
+try { secrets = JSON.parse(await readFile(secretsPath, "utf8")); } catch (error) { if (error.code !== "ENOENT") throw error; }
+await writeFile(secretsPath, JSON.stringify({ ...secrets, LICENSE_SIGNING_KEY: state.signingKey }), { mode: 0o600 });
 const sql = [state.interactive, state.smoke].map(p =>
   `INSERT INTO licenses (id,email,locale,checkout_session,license_key,created_at) VALUES (${sqlText(p.id)},'sandbox@example.invalid','en',${sqlText(`sandbox-${p.id}`)},${sqlText(p.key)},${p.issued}) ON CONFLICT(id) DO NOTHING;`
 ).join("\n");

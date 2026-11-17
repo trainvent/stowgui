@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "sandbox:build": "node scripts/build-sandbox.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "legal:check": "node scripts/legal-documents.mjs --check",

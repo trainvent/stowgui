@@ -59,12 +59,12 @@ export function d1Withdrawals(db: D1Database, recipient: Recipient = "customer")
 }
 
 export type WithdrawalMail = (record: Withdrawal) => Promise<void>;
-export function withdrawalMailer(key: string, sender: { name: string; email: string }, recipient: Recipient = "customer"): WithdrawalMail {
+export function withdrawalMailer(key: string, sender: { name: string; email: string }, recipient: Recipient = "customer", transport: typeof fetch = fetch): WithdrawalMail {
   return async (r) => {
     const t = RECEIPT_TEXT[r.locale];
     const received = new Date(r.received_at * 1000).toISOString();
     const text = `${r.declaration}\n\n${t.name}: ${r.name}\n${t.reference}: ${r.contract_reference}\n${t.email}: ${r.email}\n${t.received}: ${received}\n${t.id}: ${r.id}\n\n${t.note}`;
-    const response = await fetch(RESEND_URL, {
+    const response = await transport(RESEND_URL, {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json", "Idempotency-Key": `withdrawal-${r.id}-${recipient}` },
       signal: AbortSignal.timeout(MAIL_TIMEOUT_MS),

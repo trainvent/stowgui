@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "@trainvent/arcubic/styles.css";
 import "../globals.css";
 import SiteFooter from "../components/SiteFooter";
 import ThemeProvider from "../components/ThemeProvider";
-import { SITE_URL } from "@/lib/config";
+import { SITE_URL, SANDBOX } from "@/lib/config";
+import { localePath } from "@/lib/i18n";
 import { generateStaticParams, resolveLang, type LangParams } from "@/lib/params";
 
 export { generateStaticParams };
@@ -25,6 +27,7 @@ export default async function LangLayout(props: LangParams & { children: React.R
       <body>
         <ThemeProvider>
           <div className="page">
+            {SANDBOX && <aside className="sandbox-banner">{dict.sandbox.banner} <Link href={localePath(locale, "/sandbox")}>{dict.sandbox.inbox}</Link></aside>}
             {props.children}
             <SiteFooter locale={locale} dict={dict} />
           </div>

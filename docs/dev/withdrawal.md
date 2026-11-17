@@ -1,6 +1,6 @@
 # Online withdrawal
 
-Implementation is local and not yet deployed. The user approved the dedicated
+Implementation is deployed to the isolated hosted sandbox only; production remains unchanged. The user approved the dedicated
 page, public endpoint and stored records on 2026-11-16. Keep sales disabled
 until the rollout gates below are resolved.
 

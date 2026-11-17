@@ -127,3 +127,19 @@ GitHub Actions. Live `/de/privacy/` and `/en/privacy/` return the updated Resend
 notice, disabled tracking and US storage/SCC disclosure without Brevo. The
 publication was merged into local main, preserving all unpushed work. Checkout
 activation and publication of other pending local changes remain separate.
+
+## Isolated hosted sandbox — 2026-11-16
+
+The user requested deployment for another sandbox test and explicitly selected
+a separate hosted environment, then approved its mail-capture table and private
+inbox/login APIs. The sandbox now hosts the DE/EN site, Stripe TEST checkout,
+key delivery/activation and withdrawal receipts in its separate database. All
+email is captured; no production mail credential is installed.
+
+Thirty-eight tests pass after consolidating the previous three route-only sandbox
+tests into a real D1 end-to-end test with access-control and live-event checks.
+Hosted signed synthetic acceptance passed, including all four PDF hashes and
+customer/support receipts; the browser inbox and HTML preview were verified.
+No genuine Stripe purchase was made by that deployment check. The dedicated
+Stripe TEST link is active for the user's manual test. Production remains
+unpublished and its live checkout inactive. See [deployment details](../docs/dev/deploy.md).

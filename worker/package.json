@@ -11,6 +11,7 @@
     "db:migrate": "wrangler d1 migrations apply stowgui-licenses --remote",
     "sandbox:seed": "node scripts/sandbox-seed.mjs",
     "sandbox:migrate": "wrangler d1 migrations apply stowgui-licenses-sandbox --config wrangler.sandbox.toml --remote",
+    "sandbox:mail-migrate": "wrangler d1 execute stowgui-licenses-sandbox --config wrangler.sandbox.toml --remote --file sandbox-migrations/0001_mail_capture.sql",
     "sandbox:deploy": "node scripts/deploy.mjs --config wrangler.sandbox.toml --secrets-file .wrangler/sandbox/secrets.json"
   },
   "devDependencies": {

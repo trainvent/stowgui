@@ -1,6 +1,6 @@
 const SIGNATURE_TOLERANCE_SECONDS = 300;
 
-export type StripeEvent = { id: string; type: string; data: { object: Record<string, unknown> } };
+export type StripeEvent = { id: string; type: string; livemode?: boolean; data: { object: Record<string, unknown> } };
 
 function hex(bytes: ArrayBuffer): string {
   return [...new Uint8Array(bytes)].map((b) => b.toString(16).padStart(2, "0")).join("");

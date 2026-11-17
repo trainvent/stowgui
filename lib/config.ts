@@ -15,6 +15,7 @@ export const GNU_STOW_URL = "https://www.gnu.org/software/stow/";
 
 export const PAYMENT_LINK = process.env.NEXT_PUBLIC_PAYMENT_LINK ?? "";
 export const LICENSE_API_URL = process.env.NEXT_PUBLIC_LICENSE_API_URL ?? "";
+export const SANDBOX = process.env.NEXT_PUBLIC_SANDBOX === "true";
 
 export const COMPANY = {
   name: "Trainvent",

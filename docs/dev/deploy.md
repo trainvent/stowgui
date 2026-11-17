@@ -50,9 +50,11 @@ The separate Worker is `https://stowgui-license-sandbox.trainvent.workers.dev`.
 Its configuration is `worker/wrangler.sandbox.toml`; its D1 database is
 `stowgui-licenses-sandbox` (`2aebb254-ecf8-483c-81d0-62930fc9c33c`). Its signing
 key, credentials and rate-limit namespace are separate from production.
-The sandbox entrypoint runs the production license handler but exposes only
-activation, check-in, list, rename and deactivate routes, plus a `/health`
-marker. Payment webhooks, recovery email and all other routes return 404.
+The sandbox hosts a separately built static site plus the production purchase,
+activation, recovery and withdrawal handlers. It accepts only correctly signed
+Stripe TEST events, uses a dedicated TEST Managed Payments link and captures all
+email into its own D1 database. No Resend credential or external email delivery
+is used. Production data, signing keys, website and live checkout are separate.
 
 From `worker/`, prepare private test credentials and desktop profiles:
 
@@ -79,7 +81,9 @@ npm run sandbox:deploy
 
 The deployment wrapper now accepts `--config`; its default remains the original
 production `wrangler.toml`. Sandbox deployment explicitly selects the separate
-config and uploads only the sandbox signing key using `--secrets-file`.
+config and uploads the sandbox signing key, TEST webhook secret and private
+inbox token using `--secrets-file`. `sandbox:seed` preserves these additional
+secrets rather than overwriting them.
 The database seed is idempotent and does not reset existing activation or
 revocation scenarios. Interactive testing and the Rust smoke check use different
 synthetic licenses.
@@ -113,3 +117,55 @@ Renaming to an occupied name returns `409 {error: "name_taken"}`; renaming a
 computer to its own current name remains valid. Names remain bounded to 128
 Unicode characters after adding a suffix. Apply migration 0004 before deploying
 this Worker. Sandbox rollout is separate from production rollout.
+
+
+## Hosted checkout and withdrawal tests (2026-11-16)
+
+Open https://stowgui-license-sandbox.trainvent.workers.dev/de/ (or `/en/`).
+The sandbox banner links to its private test inbox. The Buy buttons use only
+the dedicated Stripe TEST link; its success redirect returns to this site.
+Use synthetic customer details and Stripe test payment data. Captured keys
+require the desktop sandbox profile above, not the normal production verifier.
+
+The inbox key is kept privately in `worker/.wrangler/sandbox/inbox-key.txt`.
+The login sets a one-hour Secure/HttpOnly/SameSite=Strict cookie scoped to the
+sandbox inbox API. Message lists, isolated HTML previews and PDF attachment
+URLs all require it. Keys are never put in URLs or the static build.
+
+The user explicitly approved the sandbox-only mail table and inbox/login APIs.
+`worker/sandbox-migrations/0001_mail_capture.sql` is separate from production
+migrations and idempotent. Migration 0005 supplies the already approved
+withdrawal records; customer and support notifications are captured independently.
+
+From the website repository root, build the static sandbox separately:
+
+```sh
+npm run sandbox:build
+```
+
+This reads the private sandbox `checkout.json`, refuses live checkout URLs,
+copies the build into `worker/.wrangler/sandbox/site`, removes CNAME/sitemap,
+and installs a disallow-all robots file. Every sandbox response also has an
+X-Robots-Tag noindex header. Normal production builds do not show the banner
+or enable the inbox UI.
+
+From `worker/`, migrate and deploy only the sandbox:
+
+```sh
+npm run sandbox:migrate
+npm run sandbox:mail-migrate
+npm run sandbox:deploy
+```
+
+From the repository root, `node scripts/check-hosted-sandbox.mjs` verifies the
+hosted site, private capture access, rejection of live events, duplicate-safe
+issuance, all four PDF checksums, sandbox signatures/activation, dispute and
+full-refund revocation, and duplicate-safe withdrawal receipts. It creates
+explicitly synthetic signed fixtures, not real Stripe payments, and records
+its result privately in `worker/.wrangler/sandbox/acceptance.json`. Test messages
+use `deployment-check@example.invalid`; these are separate from manual purchases.
+
+Stripe TEST link: `plink_1UcMFl3SIDKPozJgaof11Fv0`. TEST webhook:
+`we_1UcMFn3SIDKPozJg9VqHhjEp`, subscribed to paid checkout, async paid checkout,
+full-refund and dispute-closed events. Keep all live links inactive until the
+separate legal/launch gates are resolved.

@@ -2,6 +2,15 @@ import { MAX_COMPUTERS, PRICE } from "@/lib/config";
 import type { Dictionary } from "./en";
 
 const de: Dictionary = {
+  sandbox: {
+    banner: "Sandbox: keine echten Zahlungen. E-Mails bleiben im Testpostfach.",
+    inbox: "Testpostfach",
+    lead: "Prüfe die Lizenz-E-Mails, PDF-Anhänge und Widerrufsbestätigungen deiner Tests.",
+    key: "Postfachschlüssel", open: "Postfach öffnen", refresh: "Aktualisieren", empty: "Noch keine Test-E-Mails.",
+    error: "Das Postfach konnte nicht geöffnet werden. Prüfe den Schlüssel und versuche es erneut.",
+    preview: "E-Mail-Vorschau", sentTo: "An", attachments: "Anhänge",
+    unavailable: "Das Testpostfach ist nur in der Sandbox verfügbar.",
+  },
   meta: {
     title: "StowGUI – eine Desktop-App für GNU Stow",
     description:
