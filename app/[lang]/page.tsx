@@ -17,7 +17,7 @@ export default async function Home(props: LangParams) {
   return (
     <>
       <SiteHeader locale={locale} dict={dict} />
-      <main>
+      <main className="landing">
         <section className="hero">
           <div>
             <h1>
@@ -31,7 +31,7 @@ export default async function Home(props: LangParams) {
               </Button>
             </div>
           </div>
-          <AppMock text={dict.mock} />
+          <AppMock />
         </section>
 
         <section id="features">

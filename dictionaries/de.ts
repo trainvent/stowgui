@@ -37,16 +37,6 @@ const de: Dictionary = {
     titleAccent: "sichtbar.",
     lead: "Eine freundliche Desktop-App für GNU Stow. Sieh jedes Paket, prüfe jede Verknüpfung vorab und überschreibe nie versehentlich eine Datei.",
   },
-  mock: {
-    import: "+ Importieren",
-    packages: "Pakete",
-    git: "Git",
-    settings: "Einstellungen",
-    linked: "✓ Verknüpft",
-    notLinked: "Nicht verknüpft",
-    link: "Verknüpfen…",
-    unlink: "Lösen…",
-  },
   features: {
     title: "Warum StowGUI",
     items: [

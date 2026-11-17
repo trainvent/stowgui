@@ -38,16 +38,6 @@ const en = {
     titleAccent: "visible.",
     lead: "A friendly desktop app for GNU Stow. See every package, preview every link, and never overwrite a file by accident.",
   },
-  mock: {
-    import: "+ Import",
-    packages: "Packages",
-    git: "Git",
-    settings: "Settings",
-    linked: "✓ Linked",
-    notLinked: "Not linked",
-    link: "Link…",
-    unlink: "Unlink…",
-  },
   features: {
     title: "Why StowGUI",
     items: [
