@@ -167,5 +167,7 @@ No early-expiry consent is collected: buyers keep the 14-day withdrawal right,
 which the user accepts. Purchase emails state that the attached terms were
 accepted when Stripe records it (Worker version `c51ba2f1-bc54-41eb-beb0-ce8a61e3766a`).
 
-Remaining before sales: activate the live link, then one real purchase and
-refund.
+The user activated sales on 2026-11-17: live link `plink_1UcLkP3SIDKPozJgf3ky30XT`
+is active. The legacy direct link stays inactive.
+
+Remaining: one real purchase and full refund to verify the live flow.
