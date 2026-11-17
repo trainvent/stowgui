@@ -19,6 +19,8 @@ with Managed Payments; see the [migration task](../../tasks/legal-launch-review.
 and `managedCheckoutSettings` in `scripts/stripe-checkout-settings.mjs`.
 That helper omits the blanket §19 invoice footer and custom consent text:
 Managed Payments controls tax handling and does not support `custom_text`.
+It keeps the required terms checkbox, which links to the Terms of service URL in
+the account's public business details (`https://stowgui.com/en/terms/`).
 It must use a new, correctly categorized product/price/link and pass sandbox
 acceptance before publication. Do not treat the old combined checkbox as proof
 of early expiry for the new checkout.
@@ -62,7 +64,7 @@ npx wrangler d1 execute stowgui-licenses --local --command "SELECT id, email, re
 
 The German and English terms live in `dictionaries/de.ts` and `en.ts`. They cover personal/commercial use by one holder (one designated user for an organization), three installations, all 1.x versions, online activation and 30 days offline. The shutdown commitment is to provide existing holders a free update or another way to continue without periodic activation if the service is permanently discontinued.
 
-Before live sales, supply the required contract confirmation on a durable medium, such as an email with the applicable terms/withdrawal information as text or an attachment. A link to a mutable terms page alone is not the same as supplying that content. Record the consent/acknowledgment actually obtained; never infer it just from payment or claim consent in an email when it was not collected. The key email now attaches current terms (including withdrawal information and the model form) and the privacy notice. Purchase messages include the order reference, paid amount and the exact accepted checkbox text when Stripe supplies that evidence. See [PDF generation and limitations](legal-documents.md). Verify the received message and actual checkout together before treating confirmation as complete. If the early-expiry conditions are not met, handle the statutory withdrawal right instead of relying on immediate key delivery.
+Before live sales, supply the required contract confirmation on a durable medium, such as an email with the applicable terms/withdrawal information as text or an attachment. A link to a mutable terms page alone is not the same as supplying that content. Record the consent/acknowledgment actually obtained; never infer it just from payment or claim consent in an email when it was not collected. The key email now attaches current terms (including withdrawal information and the model form) and the privacy notice. Purchase messages include the order reference, paid amount and, when Stripe records terms acceptance, a line stating the attached StowGUI terms were accepted at checkout. See [PDF generation and limitations](legal-documents.md). Verify the received message and actual checkout together before treating confirmation as complete. If the early-expiry conditions are not met, handle the statutory withdrawal right instead of relying on immediate key delivery.
 
 ## License transfers
 

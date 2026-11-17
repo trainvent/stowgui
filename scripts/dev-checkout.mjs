@@ -189,8 +189,8 @@ async function main() {
       const signature = createHmac('sha256', webhookSecret).update(`${timestamp}.${payload}`).digest('hex');
       return fetch(`${address}/stripe/webhook`, { method: 'POST', body: payload, headers: { 'Stripe-Signature': `t=${timestamp},v1=${signature}` } });
     };
-    assert.equal((await event('checkout.session.completed', { id: 'cs_test_smoke', payment_link: link.id, payment_status: 'paid', amount_total: 500, currency: 'eur', payment_intent: 'pi_test_smoke', customer_details: { email: 'dummy@trainvent.com', address: { country: 'DE' } }, ...(!managed ? { consent: { terms_of_service: 'accepted' }, custom_text: { terms_of_service_acceptance: { message: CONSENT } } } : {}) })).status, 200);
-    assert.equal(latestMail.text.includes(CONSENT), !managed);
+    assert.equal((await event('checkout.session.completed', { id: 'cs_test_smoke', payment_link: link.id, payment_status: 'paid', amount_total: 500, currency: 'eur', payment_intent: 'pi_test_smoke', customer_details: { email: 'dummy@trainvent.com', address: { country: 'DE' } }, consent: { terms_of_service: 'accepted' }, ...(!managed ? { custom_text: { terms_of_service_acceptance: { message: CONSENT } } } : {}) })).status, 200);
+    assert.ok(latestMail.text.includes('Im Checkout akzeptiert: StowGUI-AGB (im Anhang)'));
     const manifest = settingsFor('unused').manifest;
     for (const attachment of latestMail.attachments) assert.equal(createHash('sha256').update(Buffer.from(attachment.content, 'base64')).digest('hex'), manifest.pdfs[attachment.filename]);
     const key = (await readFile(join(profile, 'test-key.txt'), 'utf8')).trim();

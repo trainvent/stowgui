@@ -161,5 +161,11 @@ production with the live link still inactive:
 - GitHub variable `PAYMENT_LINK` set to the live link; website pushed. The
   sandbox inbox route renders a noindex 404 in production builds.
 
+The user set the account's public Terms of service URL to
+`https://stowgui.com/en/terms/`; the live link now requires terms acceptance.
+No early-expiry consent is collected: buyers keep the 14-day withdrawal right,
+which the user accepts. Purchase emails state that the attached terms were
+accepted when Stripe records it (Worker deploy pending).
+
 Remaining before sales: activate the live link, then one real purchase and
 refund.

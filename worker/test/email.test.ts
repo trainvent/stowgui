@@ -59,10 +59,10 @@ it("records purchase details and only the consent actually supplied by checkout"
     return new Response("{}", { status: 201 });
   });
   const mail = resendMailer("test-key", { name: "StowGUI", email: "license@stowgui.com" }, "https://stowgui.com/en/download/");
-  await mail("test@example.com", "en", ["KEY.SIG"], { reference: "cs_test", amount: 500, currency: "eur", acceptedText: "I agree to immediate delivery." });
+  await mail("test@example.com", "en", ["KEY.SIG"], { reference: "cs_test", amount: 500, currency: "eur", termsAccepted: true });
   expect(payload?.text).toContain("Purchase reference: cs_test");
   expect(payload?.text).toContain("€5.00");
-  expect(payload?.text).toContain("Agreement accepted at checkout: I agree to immediate delivery.");
-  await mail("test@example.com", "en", ["KEY.SIG"], { reference: "cs_test", amount: 500, currency: "eur" });
-  expect(payload?.text).not.toContain("Agreement accepted at checkout:");
+  expect(payload?.text).toContain("Accepted at checkout: StowGUI terms (attached)");
+  await mail("test@example.com", "en", ["KEY.SIG"], { reference: "cs_test", amount: 500, currency: "eur", termsAccepted: false });
+  expect(payload?.text).not.toContain("Accepted at checkout:");
 });

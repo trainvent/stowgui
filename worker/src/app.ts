@@ -38,12 +38,9 @@ export function createApp(deps: Deps) {
     const email = str(details.email)?.toLowerCase();
     if (!sessionId || !email) return new Response("missing session or email", { status: 400 });
 
-    const consent = session.consent as Obj | undefined;
-    const customText = session.custom_text as Obj | undefined;
-    const termsAcceptance = customText?.terms_of_service_acceptance as Obj | undefined;
     const purchase: PurchaseConfirmation | undefined = typeof session.amount_total === "number" && typeof session.currency === "string"
       ? { reference: sessionId, amount: session.amount_total, currency: session.currency,
-          acceptedText: consent?.terms_of_service === "accepted" ? str(termsAcceptance?.message) ?? undefined : undefined }
+          termsAccepted: (session.consent as Obj | null | undefined)?.terms_of_service === "accepted" }
       : undefined;
     const existing = await deps.store.findBySession(sessionId);
     if (existing) {

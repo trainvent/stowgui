@@ -32,6 +32,5 @@ export function checkoutSettings(price, successUrl = SUCCESS_URL) {
 
 export function managedCheckoutSettings(price, successUrl = SUCCESS_URL) {
   const { params, manifest } = commonSettings(price, successUrl);
-  delete params['consent_collection[terms_of_service]'];
   return { params: { ...params, 'managed_payments[enabled]': 'true', 'metadata[checkout_provider]': 'managed' }, manifest };
 }

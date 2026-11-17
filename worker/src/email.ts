@@ -53,7 +53,7 @@ export type PurchaseConfirmation = {
   reference: string;
   amount: number;
   currency: string;
-  acceptedText?: string;
+  termsAccepted: boolean;
 };
 
 export type Mailer = (to: string, locale: Locale, licenseKeys: string[], purchase?: PurchaseConfirmation) => Promise<void>;
@@ -63,7 +63,7 @@ function purchaseDetails(purchase: PurchaseConfirmation, locale: Locale): string
   const lines = locale === "de"
     ? [`Kaufreferenz: ${purchase.reference}`, `Gesamtbetrag: ${amount}`]
     : [`Purchase reference: ${purchase.reference}`, `Total paid: ${amount}`];
-  if (purchase.acceptedText) lines.push(locale === "de" ? `Im Checkout bestätigte Erklärung: ${purchase.acceptedText}` : `Agreement accepted at checkout: ${purchase.acceptedText}`);
+  if (purchase.termsAccepted) lines.push(locale === "de" ? "Im Checkout akzeptiert: StowGUI-AGB (im Anhang)" : "Accepted at checkout: StowGUI terms (attached)");
   return lines.join("\n\n");
 }
 
