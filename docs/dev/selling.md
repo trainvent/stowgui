@@ -38,6 +38,10 @@ The German and English terms live in `dictionaries/de.ts` and `en.ts`. They cove
 
 Each key email is the contract confirmation on a durable medium: it attaches the current terms (with withdrawal information and the model form) and the privacy notice, and states the order reference, amount paid and, when Stripe records it, that the terms were accepted at checkout. Never claim consent in an email that checkout did not collect. See [PDF generation and limitations](legal-documents.md).
 
+## Unpaid licences
+
+For personal use and gifts, `node worker/scripts/issue-licenses.mjs --email <holder> --count <n> [--locale de|en]` previews; add `--apply --signing-key-file <file>` to issue. It refuses any signing key other than the production one, stores each licence with a `gift:<id>` reference and no payment, and prints no keys. The holder receives all their active keys through the website's key recovery form. Refunds and disputes never touch these licences; revoke one by its ID if needed. To make a gift recipient the holder (so they can recover it themselves), transfer it with the command below.
+
 ## License transfers
 
 The holder may sell or give the complete license without a transfer fee, after stopping paid use and deleting licensed copies, keys and activation tokens under their control (including backups). Required purchase records may be retained without a right to reuse the credentials. The license cannot be split into seats or shared between holders.
