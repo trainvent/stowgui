@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { createInterface } from 'node:readline';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
@@ -7,6 +8,15 @@ export const PRODUCTION_PUBLIC_KEY = '9uNumF5g3RuMcoNIqrzns1SqX6O2DE_EHdiZ8HspLp
 const MAX_COUNT = 20;
 const LICENSED_MAJOR = 1;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const KEY_PROMPT = 'Paste the signing key (input hidden): ';
+
+function promptHidden(question) {
+  const prompt = createInterface({ input: process.stdin, output: process.stdout, terminal: true });
+  let asked = false;
+  prompt._writeToOutput = text => { if (!asked) { process.stdout.write(text); asked = true; } };
+  return new Promise(done => prompt.question(question, answer => { prompt.close(); process.stdout.write('\n'); done(answer); }));
+}
+
 const literal = value => value === null ? 'NULL' : `'${String(value).replaceAll("'", "''")}'`;
 
 export async function issuePlan({ email, count, locale, signingKey, publicKey = PRODUCTION_PUBLIC_KEY, now = Math.floor(Date.now() / 1000), newId = () => crypto.randomUUID() }) {
@@ -36,9 +46,9 @@ async function main() {
   const count = Number(get('--count'));
   const locale = args.includes('--locale') ? get('--locale') : 'de';
   console.log(`Issue ${count} unpaid licence(s) to ${email.trim().toLowerCase()} (${locale}).`);
-  if (!args.includes('--apply')) { console.log('Preview only. Add --apply --signing-key-file <file> to issue them.'); return; }
-  if (!args.includes('--signing-key-file')) throw new Error('Required: --signing-key-file');
-  const encoded = readFileSync(get('--signing-key-file'), 'utf8').trim().match(/[A-Za-z0-9_-]{60,}/)?.[0];
+  if (!args.includes('--apply')) { console.log('Preview only. Add --apply to issue them; it asks for the signing key unless --signing-key-file <file> is given.'); return; }
+  const source = args.includes('--signing-key-file') ? readFileSync(get('--signing-key-file'), 'utf8') : await promptHidden(KEY_PROMPT);
+  const encoded = source.trim().match(/[A-Za-z0-9_-]{60,}/)?.[0];
   if (!encoded) throw new Error('No PKCS#8 base64url signing key found.');
   const signingKey = await crypto.subtle.importKey('pkcs8', Buffer.from(encoded, 'base64url'), 'Ed25519', true, ['sign']);
   const plan = await issuePlan({ email, count, locale, signingKey });

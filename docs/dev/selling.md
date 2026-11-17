@@ -40,7 +40,7 @@ Each key email is the contract confirmation on a durable medium: it attaches the
 
 ## Unpaid licences
 
-For personal use and gifts, `node worker/scripts/issue-licenses.mjs --email <holder> --count <n> [--locale de|en]` previews; add `--apply --signing-key-file <file>` to issue. It refuses any signing key other than the production one, stores each licence with a `gift:<id>` reference and no payment, and prints no keys. The holder receives all their active keys through the website's key recovery form. Refunds and disputes never touch these licences; revoke one by its ID if needed. To make a gift recipient the holder (so they can recover it themselves), transfer it with the command below.
+For personal use and gifts, `node worker/scripts/issue-licenses.mjs --email <holder> --count <n> [--locale de|en]` previews; add `--apply` to issue; it asks for the signing key with hidden input (or reads `--signing-key-file <file>`). It refuses any signing key other than the production one, stores each licence with a `gift:<id>` reference and no payment, and prints no keys. The holder receives all their active keys through the website's key recovery form. Refunds and disputes never touch these licences; revoke one by its ID if needed. To make a gift recipient the holder (so they can recover it themselves), transfer it with the command below.
 
 ## License transfers
 
