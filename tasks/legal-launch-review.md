@@ -170,4 +170,7 @@ accepted when Stripe records it (Worker version `c51ba2f1-bc54-41eb-beb0-ce8a61e
 The user activated sales on 2026-11-17: live link `plink_1UcLkP3SIDKPozJgf3ky30XT`
 is active. The legacy direct link stays inactive.
 
-Remaining: one real purchase and full refund to verify the live flow.
+Live acceptance passed on 2026-11-17: real EUR5 purchase on the live link issued
+and emailed a key, the key activated, the withdrawal form stored the declaration
+and sent both receipts, and the full refund revoked the key (revoked_at set by
+the signed `charge.refunded` event). The app enforces it at its next check-in.
